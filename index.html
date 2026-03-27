@@ -355,17 +355,209 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
   margin-top: 40px;
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
-  .chart-grid { grid-template-columns: 1fr; }
-  .profile-layout { grid-template-columns: 1fr; }
-  .scenario-grid { grid-template-columns: 1fr; }
-  .storyline-grid { grid-template-columns: 1fr; }
+/* ===== RESPONSIVE — TABLET LANDSCAPE (≤1024px) ===== */
+@media (max-width: 1024px) {
+  .container { padding: 0 16px; }
+  .kpi-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .chart-grid { gap: 14px; }
+  .scenario-grid { grid-template-columns: 1fr 1fr; }
+  .dict-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 }
+
+/* ===== RESPONSIVE — TABLET PORTRAIT (≤768px) ===== */
+@media (max-width: 768px) {
+  .container { padding: 0 14px; }
+
+  /* Header */
+  .header { padding: 18px 0 14px; }
+  .header-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .header h1 { font-size: 18px; }
+  .header h1 span { font-size: 13px; margin-left: 6px; }
+  .header-meta { text-align: left; font-size: 11px; }
+
+  /* Nav — scrollable, touch-friendly */
+  .nav { top: 62px; -webkit-overflow-scrolling: touch; }
+  .nav-inner { gap: 0; }
+  .nav a { padding: 10px 14px; font-size: 11.5px; }
+
+  /* Sections */
+  .section { padding: 24px 0 18px; }
+  .section-header { flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .section-header h2 { font-size: 15px; }
+
+  /* KPI */
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .kpi-card { padding: 14px 16px; }
+  .kpi-value { font-size: 22px; }
+  .kpi-label { font-size: 10px; }
+
+  /* Charts */
+  .chart-grid { grid-template-columns: 1fr; gap: 14px; }
+  .chart-card { padding: 14px; }
+  .chart-card h4 { font-size: 12px; }
+  .chart-card canvas { max-height: 320px; }
+  .chart-tall { min-height: 450px; }
+
+  /* Storyline */
+  .storyline { padding: 16px 18px; }
+  .storyline-grid { grid-template-columns: 1fr; gap: 12px; }
+  .insight-card .insight-metric { font-size: 18px; }
+
+  /* Peer groups */
+  .peer-grid { grid-template-columns: 1fr; gap: 12px; }
+  .peer-card { padding: 14px 16px; }
+  .peer-card h4 { font-size: 13px; flex-wrap: wrap; }
+
+  /* Profile */
+  .profile-layout { grid-template-columns: 1fr; gap: 16px; }
+  .profile-panel { padding: 16px; }
+
+  /* Scenarios */
+  .scenario-grid { grid-template-columns: 1fr; gap: 14px; }
+  .scenario-card { padding: 16px; }
+  .scenario-card h4 { font-size: 13px; }
+
+  /* Dictionary */
+  .dict-grid { grid-template-columns: 1fr; gap: 10px; }
+
+  /* Tables — horizontal scroll wrapper */
+  .data-table { font-size: 12px; }
+  .data-table th { padding: 8px 10px; font-size: 10.5px; }
+  .data-table td { padding: 7px 10px; }
+
+  /* Table controls */
+  .table-controls { gap: 8px; }
+  .table-controls input { width: 100%; min-width: 0; }
+  .table-controls select { min-width: 0; flex: 1; }
+  .table-controls .count { margin-left: 0; width: 100%; text-align: right; }
+
+  /* Heatmap weights */
+  .heatmap-weights { gap: 8px; }
+
+  /* Methodology note */
+  .methodology-note { font-size: 10.5px; padding: 8px 10px; }
+
+  /* Footer */
+  .footer { padding: 16px 14px; font-size: 10px; }
+}
+
+/* ===== RESPONSIVE — SMARTPHONE (≤480px) ===== */
+@media (max-width: 480px) {
+  .container { padding: 0 10px; }
+
+  /* Header — compact */
+  .header { padding: 14px 0 10px; }
+  .header h1 { font-size: 16px; letter-spacing: 0; }
+  .header h1 span { display: block; margin-left: 0; margin-top: 2px; font-size: 12px; }
+  .header-meta { font-size: 10px; line-height: 1.5; }
+
+  /* Nav — smaller touch targets but still usable (44px min) */
+  .nav { top: 56px; }
+  .nav a { padding: 10px 12px; font-size: 11px; min-height: 44px; display: flex; align-items: center; }
+
+  /* Sections */
+  .section { padding: 20px 0 14px; }
+  .section-header h2 { font-size: 14px; line-height: 1.3; }
+  .section-header .subtitle { font-size: 11px; }
+
+  /* KPI — 2 col on phone, stacks well */
+  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .kpi-card { padding: 12px 14px; }
+  .kpi-value { font-size: 20px; }
+  .kpi-label { font-size: 9.5px; letter-spacing: 0.3px; }
+  .kpi-sub { font-size: 11px; }
+  .kpi-sub .method { font-size: 9px; }
+
+  /* Charts */
+  .chart-card { padding: 12px; }
+  .chart-card h4 { font-size: 11.5px; margin-bottom: 8px; }
+  .chart-card .chart-note { font-size: 10px; }
+  .chart-card canvas { max-height: 260px; }
+  .chart-tall { min-height: 380px; }
+
+  /* Storyline */
+  .storyline { padding: 12px 14px; margin-bottom: 16px; }
+  .insight-card { padding: 10px 12px; }
+  .insight-card .insight-label { font-size: 10px; }
+  .insight-card .insight-text { font-size: 12px; }
+  .insight-card .insight-metric { font-size: 16px; }
+
+  /* Tables — ensure scroll container */
+  .data-table { font-size: 11px; min-width: 600px; }
+  .data-table th { padding: 7px 8px; font-size: 9.5px; }
+  .data-table td { padding: 6px 8px; }
+
+  /* Table controls — stack */
+  .table-controls { flex-direction: column; gap: 6px; }
+  .table-controls input, .table-controls select { width: 100%; padding: 10px 12px; font-size: 14px; min-height: 44px; }
+  .table-controls .count { text-align: center; }
+
+  /* Peer group */
+  .peer-card { padding: 12px 14px; }
+  .peer-card h4 { font-size: 12px; }
+  .peer-stat { font-size: 12px; padding: 4px 0; }
+  .peer-finding { font-size: 11px; }
+
+  /* Profile */
+  .profile-panel { padding: 14px; }
+  .profile-panel h4 { font-size: 13px; }
+  .profile-stat { font-size: 12px; }
+  .rec-list li { font-size: 12px; padding: 7px 10px; }
+
+  /* Scenarios */
+  .scenario-card { padding: 14px; }
+  .scenario-card h4 { font-size: 12.5px; }
+  .scenario-card .scenario-desc { font-size: 11.5px; }
+  .scenario-card .assumptions { font-size: 10.5px; padding: 8px 10px; }
+  .scenario-card label { font-size: 11px; flex-wrap: wrap; }
+  .scenario-card label strong { font-size: 13px; }
+  .scenario-slider { height: 28px; margin: 6px 0 10px; }
+  .scenario-result { font-size: 12px; padding: 10px 12px; }
+
+  /* Dictionary */
+  .dict-item { padding: 12px 14px; }
+  .dict-item .dict-name { font-size: 12px; }
+  .dict-item .dict-formula { font-size: 10.5px; }
+  .dict-item .dict-desc { font-size: 11px; }
+
+  /* Methodology note */
+  .methodology-note { font-size: 10px; padding: 6px 8px; }
+
+  /* Heatmap weights — stack */
+  .heatmap-weights { flex-direction: column; gap: 4px; }
+  .weight-item { font-size: 11px; }
+
+  /* Footer */
+  .footer { padding: 14px 10px; font-size: 9.5px; margin-top: 24px; }
+
+  /* Profile inner grid — single column on phone */
+  .profile-panel div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===== TOUCH USABILITY ===== */
+@media (pointer: coarse) {
+  .nav a { min-height: 44px; display: flex; align-items: center; }
+  .table-controls input, .table-controls select { min-height: 44px; }
+  select#profileSelect { min-height: 44px; font-size: 14px; padding: 10px 14px; }
+  .scenario-slider { height: 28px; }
+  .data-table th { min-height: 40px; }
+}
+
+/* ===== SCROLLABLE TABLE CONTAINERS ===== */
+div[style*="overflow-x"] {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+/* ===== PRINT ===== */
 @media print {
   .header, .nav { position: static; }
   .nav { display: none; }
   body { background: #fff; }
+  .chart-grid { grid-template-columns: 1fr; }
+  .profile-layout { grid-template-columns: 1fr; }
 }
 </style>
 </head>
