@@ -378,8 +378,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
       <h1>BRANCH INTELLIGENCE <span>NLB Kosovo</span></h1>
     </div>
     <div class="header-meta">
-      29 Branches &middot; 240,157 PI Clients &middot; 13,169 Business Clients<br>
-      Data: FY 2025 &middot; Generated March 2026
+      29 City Locations &middot; 240,157 PI Clients &middot; 13,169 Business Clients<br>
+      City-level network view &middot; Data: FY 2025 &middot; Generated March 2026
     </div>
   </div>
 </div>
@@ -389,11 +389,11 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
   <div class="container nav-inner">
     <a class="active" onclick="scrollToSec('sec-story')">Executive Summary</a>
     <a onclick="scrollToSec('sec-kpi')">Network KPIs</a>
-    <a onclick="scrollToSec('sec-table')">Branch Table</a>
+    <a onclick="scrollToSec('sec-table')">City Table</a>
     <a onclick="scrollToSec('sec-charts')">Analytics</a>
     <a onclick="scrollToSec('sec-peers')">Peer Benchmarking</a>
     <a onclick="scrollToSec('sec-heatmap')">Opportunity Map</a>
-    <a onclick="scrollToSec('sec-profile')">Branch Profile</a>
+    <a onclick="scrollToSec('sec-profile')">City Profile</a>
     <a onclick="scrollToSec('sec-expansion')">Expansion</a>
     <a onclick="scrollToSec('sec-scenarios')">Scenarios</a>
     <a onclick="scrollToSec('sec-dictionary')">Methodology</a>
@@ -413,11 +413,16 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
     </div>
   </div>
 
+  <!-- DATA LEVEL DISCLOSURE -->
+  <div class="methodology-note" style="margin-top:8px;padding:10px 14px;font-size:12px;line-height:1.6;">
+    <strong>Data granularity note:</strong> This draft uses city-level aggregated branch presence and commercial activity. In locations with multiple branches (e.g. Prishtine: 5 branches, Prizren: 2, Mitrovica: 2), results reflect the combined city footprint rather than individual outlet performance. This version should be interpreted as a <strong>city / territory-level management view</strong>, not a branch-by-branch operational analysis. A later version will incorporate detailed branch-level activity, transaction, exposure, and FTE data.
+  </div>
+
   <!-- B. KPI CARDS -->
   <div class="section" id="sec-kpi">
     <div class="section-header">
       <h2>Network Performance</h2>
-      <span class="subtitle">Aggregated across 29 branches</span>
+      <span class="subtitle">Aggregated across 29 city locations</span>
     </div>
     <div class="kpi-grid" id="kpiGrid"></div>
     <div class="methodology-note" id="kpiMethodNote"></div>
@@ -426,11 +431,11 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
   <!-- C. BRANCH TABLE -->
   <div class="section" id="sec-table">
     <div class="section-header">
-      <h2>Branch Performance Table</h2>
-      <span class="subtitle">All metrics &middot; peer-relative traffic lights &middot; outlier flags</span>
+      <h2>City Performance Table</h2>
+      <span class="subtitle">All metrics &middot; peer-relative traffic lights &middot; outlier flags &middot; city-level aggregated data</span>
     </div>
     <div class="table-controls">
-      <input type="text" id="searchCity" placeholder="Search branch..." oninput="renderTable()">
+      <input type="text" id="searchCity" placeholder="Search city..." oninput="renderTable()">
       <select id="filterPeer" onchange="renderTable()"><option value="">All Peer Groups</option></select>
       <select id="filterSegment" onchange="renderTable()"><option value="">All Segments</option></select>
       <span class="count" id="tableCount"></span>
@@ -451,7 +456,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
     </div>
     <div class="chart-grid">
       <div class="chart-card full chart-tall">
-        <h4>PI Penetration by Branch</h4>
+        <h4>PI Penetration by City</h4>
         <div class="chart-note">Excludes Mit. Veriore (135.5%) and nascent entries. Network median shown as reference line.</div>
         <canvas id="chartPiPen"></canvas>
       </div>
@@ -480,7 +485,7 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
   <div class="section" id="sec-peers">
     <div class="section-header">
       <h2>Peer Group Benchmarking</h2>
-      <span class="subtitle">Branches grouped by comparable market characteristics</span>
+      <span class="subtitle">City locations grouped by comparable market characteristics</span>
     </div>
     <div class="methodology-note">
       <strong>Peer groups:</strong>
@@ -508,8 +513,8 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
   <!-- G. BRANCH PROFILE -->
   <div class="section" id="sec-profile">
     <div class="section-header">
-      <h2>Branch Deep Dive</h2>
-      <span class="subtitle">Rule-based diagnostics &middot; peer-relative radar</span>
+      <h2>City Profile</h2>
+      <span class="subtitle">Rule-based diagnostics &middot; peer-relative radar &middot; city-level aggregated view</span>
     </div>
     <div style="margin-bottom:14px;">
       <select id="profileSelect" onchange="renderProfile()" style="padding:8px 14px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--font);min-width:240px;"></select>
@@ -557,9 +562,10 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); font
 
 <!-- FOOTER -->
 <div class="footer">
-  <strong>NLB Banka sh.a. &mdash; Branch Intelligence Dashboard</strong><br>
+  <strong>NLB Banka sh.a. &mdash; Branch Intelligence Dashboard</strong> <span style="opacity:0.7">(City-level draft)</span><br>
   Data: NLB Internal Analytics &middot; Kosovo Agency of Statistics &middot; Central Bank of Kosovo (BQK)<br>
-  CONFIDENTIAL &mdash; For internal strategic use only
+  CONFIDENTIAL &mdash; For internal strategic use only<br>
+  <span style="opacity:0.8; margin-top:4px; display:inline-block;">Curated by Orik Drancolli</span>
 </div>
 
 <script>
@@ -729,10 +735,10 @@ function renderStoryline() {
       text: `Gjakove lost 14% of business clients YoY (${Math.abs(Math.round(gjakove.bizClients*0.14))} clients). Growth has stalled at ${gjakove.piGrowth}% PI. Requires immediate turnaround plan.` },
     { label:'Business Banking Opportunity', cls:'',
       metric: pct(medBizPen),
-      text: `Only ${pct(NET.bizClients/NET.biz)} of 77,712 registered businesses are banked. Median branch business penetration is ${pct(medBizPen)}. Over 64,000 businesses remain unbanked.` },
+      text: `Only ${pct(NET.bizClients/NET.biz)} of 77,712 registered businesses are banked. Median city-level business penetration is ${pct(medBizPen)}. Over 64,000 businesses remain unbanked.` },
     { label:'Digital Divide', cls:'',
       metric: pct(totalMbank/totalPI),
-      text: `Network M-Banking adoption is ${pct(totalMbank/totalPI)} but ranges from ${pct(Math.min(...coreBranches.map(b=>b.mbank/b.piClients)))} to ${pct(Math.max(...coreBranches.map(b=>b.mbank/b.piClients)))} across branches. Standardization could unlock significant cost savings.` },
+      text: `Network M-Banking adoption is ${pct(totalMbank/totalPI)} but ranges from ${pct(Math.min(...coreBranches.map(b=>b.mbank/b.piClients)))} to ${pct(Math.max(...coreBranches.map(b=>b.mbank/b.piClients)))} across city locations. Standardization could unlock significant cost savings.` },
     { label:'Whitespace', cls:'success',
       metric: unservedPop.toLocaleString(),
       text: `9 municipalities with ${unservedPop.toLocaleString()} combined population have no NLB presence. Dragash (29K) and Shtime (24K) are priority targets.` },
@@ -768,22 +774,22 @@ function renderKPIs() {
   const kpis = [
     { label:'Total PI Clients', value:totalPI.toLocaleString(),
       sub:`<span class="up">&#9650; ${medPiGrowth.toFixed(1)}% median growth</span>`,
-      method:`Median of ${coreBranches.length} core branches (excl. structural outliers, nascent)` },
+      method:`Median of ${coreBranches.length} core city locations (excl. structural outliers, nascent)` },
     { label:'Total Biz Clients', value:totalBiz.toLocaleString(),
       sub:`<span class="${medBizGrowth>=0?'up':'down'}">${medBizGrowth>=0?'&#9650;':'&#9660;'} ${medBizGrowth.toFixed(1)}% median growth</span>`,
-      method:`Median growth across core branches` },
+      method:`Median growth across core city locations` },
     { label:'Network PI Penetration', value:pct(netPiPen),
-      sub:`Median branch: ${pct(medPiPen)}`,
-      method:`Network = total PI clients / pop 15+ (1.25M). Branch median excludes outliers.` },
+      sub:`Median city: ${pct(medPiPen)}`,
+      method:`Network = total PI clients / pop 15+ (1.25M). City median excludes outliers.` },
     { label:'Business Penetration', value:pct(netBizPen),
-      sub:`Median branch: ${pct(medBizPen)}`,
+      sub:`Median city: ${pct(medBizPen)}`,
       method:`Active biz clients / registered businesses per municipality` },
     { label:'M-Banking Adoption', value:pct(totalMbank/totalPI),
       sub:`${totalMbank.toLocaleString()} users`,
       method:`M-Banking users / PI clients. Network-level aggregate.` },
-    { label:'Branches', value:'29',
+    { label:'City Locations', value:'29',
       sub:`${Object.keys(PEER_COLORS).filter(p=>coreBranches.some(b=>b.peer===p)).length} peer groups`,
-      method:`Serving ${NET.pop.toLocaleString()} population across Kosovo` },
+      method:`City-level aggregated view. Some cities contain multiple branches.` },
   ];
 
   document.getElementById('kpiGrid').innerHTML = kpis.map(k=>`
@@ -794,8 +800,9 @@ function renderKPIs() {
     </div>`).join('');
 
   document.getElementById('kpiMethodNote').innerHTML = `
-    <strong>Methodology:</strong> All central tendency measures use <strong>median</strong> (not mean) to avoid distortion
-    from structural outliers. Growth rates use trimmed mean (10% trim) where noted.
+    <strong>Methodology:</strong> Data is aggregated at <strong>city level</strong> — some cities contain multiple branches.
+    All central tendency measures use <strong>median</strong> (not mean) to avoid distortion from structural outliers.
+    Growth rates use trimmed mean (10% trim) where noted.
     Mit. Veriore (PI pen 135.5%), Leposaviq (+101.6% growth), and Zubin Potok (+371.8% growth)
     are excluded from all aggregate calculations as structural exceptions.`;
 }
@@ -805,7 +812,7 @@ function renderKPIs() {
 // ================================================================
 let sortCol = 'piPen', sortDir = -1;
 const columns = [
-  {key:'city', label:'Branch', fmt:v=>v},
+  {key:'city', label:'City', fmt:v=>v},
   {key:'peer', label:'Peer', fmt:v=>peerBadge(v)},
   {key:'piPen', label:'PI Pen', fmt:(v,b)=>{
     const flag = isException(b) ? '<span class="outlier-flag" title="Structural exception">&#9888;</span>' : '';
@@ -873,7 +880,7 @@ function renderTable() {
     const val = c.key.startsWith('_') ? null : b[c.key];
     return `<td>${c.fmt(val,b)}</td>`;
   }).join('')+'</tr>').join('');
-  document.getElementById('tableCount').textContent = `${data.length} of ${branches.length} branches`;
+  document.getElementById('tableCount').textContent = `${data.length} of ${branches.length} city locations`;
 }
 
 function sortTable(key) {
@@ -1050,7 +1057,7 @@ function renderPeerGroups() {
     if (!stats) return '';
     const c = PEER_COLORS[peer];
     return `<div class="peer-card" style="border-left-color:${c.border}">
-      <h4>${peerBadge(peer)} <span style="font-weight:400;font-size:12px;color:var(--text-muted)">${stats.count} branches</span></h4>
+      <h4>${peerBadge(peer)} <span style="font-weight:400;font-size:12px;color:var(--text-muted)">${stats.count} cities</span></h4>
       <div class="peer-stat"><span class="label">PI Penetration (median)</span><span class="val">${pct(stats.piPen.median)}</span></div>
       <div class="peer-stat"><span class="label">Biz Penetration (median)</span><span class="val">${pct(stats.bizPen.median)}</span></div>
       <div class="peer-stat"><span class="label">PI Growth (median)</span><span class="val">${stats.piGrowth.median.toFixed(1)}%</span></div>
@@ -1058,21 +1065,21 @@ function renderPeerGroups() {
       <div class="peer-stat"><span class="label">M-Banking Rate (median)</span><span class="val">${pct(stats.mRate.median)}</span></div>
       <div class="peer-stat"><span class="label">Product Depth (median)</span><span class="val">${stats.productDepth.median.toFixed(3)}</span></div>
       <div class="peer-stat"><span class="label">POS/1K Biz (median)</span><span class="val">${stats.posRate.median.toFixed(1)}</span></div>
-      <div class="peer-finding"><strong>Branches:</strong> ${stats.branches.map(b=>b.city).join(', ')}</div>
+      <div class="peer-finding"><strong>Cities:</strong> ${stats.branches.map(b=>b.city).join(', ')}</div>
     </div>`;
   }).join('');
 
   // Add structural outlier card
   const outliers = branches.filter(b=>b.segment==='Structural Outlier'||b.segment==='Nascent Entry');
   const outlierCard = `<div class="peer-card" style="border-left-color:${PEER_COLORS['Structural Outlier'].border}">
-    <h4>${peerBadge('Structural Outlier')} / ${peerBadge('Nascent')} <span style="font-weight:400;font-size:12px;color:var(--text-muted)">${outliers.length} branches</span></h4>
+    <h4>${peerBadge('Structural Outlier')} / ${peerBadge('Nascent')} <span style="font-weight:400;font-size:12px;color:var(--text-muted)">${outliers.length} locations</span></h4>
     <div class="peer-finding" style="margin-top:0;border-top:none;">
-      <strong>Excluded from benchmarks.</strong> These branches serve populations beyond municipal boundaries
+      <strong>Excluded from benchmarks.</strong> These locations serve populations beyond municipal boundaries
       (Mit. Veriore: cross-border flows, PI pen 135.5%) or are nascent entries off a tiny base
       (Leposaviq: +101.6%, Zubin Potok: +371.8%). Gra&ccedil;anic&euml; and Shterpc&euml; have unique
       demographic profiles. Evaluate individually, not comparatively.
     </div>
-    <div class="peer-stat"><span class="label">Branches</span><span class="val">${outliers.map(b=>b.city).join(', ')}</span></div>
+    <div class="peer-stat"><span class="label">Locations</span><span class="val">${outliers.map(b=>b.city).join(', ')}</span></div>
   </div>`;
 
   document.getElementById('peerGrid').innerHTML = html + outlierCard;
@@ -1128,7 +1135,7 @@ function renderHeatmap() {
   function textColor(g) { return g > 0.5 ? '#fff' : '#1A1A2E'; }
 
   let html = `<thead><tr>
-    <th>Branch</th><th>Peer</th>
+    <th>City</th><th>Peer</th>
     <th>PI Gap</th><th>Biz Gap</th><th>Digital Gap</th><th>Product Gap</th>
     <th>Score</th><th>Interpretation</th>
   </tr></thead><tbody>`;
@@ -1154,7 +1161,7 @@ function renderHeatmap() {
 }
 
 // ================================================================
-// G. BRANCH PROFILE — Rule-based recommendations
+// G. CITY PROFILE — Rule-based recommendations
 // ================================================================
 let radarChart = null;
 
@@ -1207,9 +1214,9 @@ function generateRecommendations(b) {
 
   // Rule 4: Digital adoption
   if (peerMed.mRate && mRate < peerMed.mRate * 0.7) {
-    recs.push({priority:'med', text:`M-Banking adoption (${pct(mRate)}) significantly below peer median (${pct(peerMed.mRate)}). Drive digital onboarding at branch counter. Set staff KPIs for digital migration.`});
+    recs.push({priority:'med', text:`M-Banking adoption (${pct(mRate)}) significantly below peer median (${pct(peerMed.mRate)}). Drive digital onboarding at service points. Set staff KPIs for digital migration.`});
   } else if (peerMed.mRate && mRate < peerMed.mRate) {
-    recs.push({priority:'low', text:`M-Banking adoption (${pct(mRate)}) below peer median (${pct(peerMed.mRate)}). Incremental digital push through in-branch campaigns.`});
+    recs.push({priority:'low', text:`M-Banking adoption (${pct(mRate)}) below peer median (${pct(peerMed.mRate)}). Incremental digital push through local campaigns.`});
   }
 
   // Rule 5: Product depth
@@ -1224,7 +1231,7 @@ function generateRecommendations(b) {
 
   // Rule 7: Growth stall
   if (!isException(b) && b.piGrowth < 1 && b.piPen < 0.25) {
-    recs.push({priority:'high', text:`Growth has stalled (${b.piGrowth}%) with penetration still low (${pct(b.piPen)}). This branch requires a strategic review and potential operational restructuring.`});
+    recs.push({priority:'high', text:`Growth has stalled (${b.piGrowth}%) with penetration still low (${pct(b.piPen)}). This city footprint requires a strategic review and potential operational restructuring.`});
   }
 
   // Rule 8: High performer retention
@@ -1408,7 +1415,7 @@ function renderScenarios() {
       <div class="scenario-desc">Prizren (pop 147K) has ${pct(prizren.piPen)} PI penetration vs Metro peer median ${pct(medPiPen)}.</div>
       <div class="assumptions">
         <strong>Assumptions:</strong> Revenue/client = EUR 85 annual fee income (NLB average).
-        Acquisition cost = EUR 35/client (branch marketing). Timeline: 18-24 months.
+        Acquisition cost = EUR 35/client (local marketing). Timeline: 18-24 months.
         Does not account for competitive response or market saturation effects.
       </div>
       <label>Target PI Penetration: <strong id="s1val">${(medPiPen*100).toFixed(1)}%</strong></label>
@@ -1436,7 +1443,7 @@ function renderScenarios() {
       <div class="scenario-desc">Current network M-Banking rate: ${pct(currentMrate)}. Range: ${pct(Math.min(...coreBranches.map(b=>b.mbank/b.piClients)))} to ${pct(Math.max(...coreBranches.map(b=>b.mbank/b.piClients)))}.</div>
       <div class="assumptions">
         <strong>Assumptions:</strong> Channel migration savings = EUR 12/user/year (industry benchmark).
-        Adoption requires in-branch onboarding + staff KPIs. Excludes app development costs.
+        Adoption requires onboarding at service points + staff KPIs. Excludes app development costs.
       </div>
       <label>Target M-Banking rate: <strong id="s3val">10%</strong></label>
       <input type="range" class="scenario-slider" id="s3slider" min="${(currentMrate*100).toFixed(0)}" max="30" step="1" value="10" oninput="updateS3()">
@@ -1445,12 +1452,12 @@ function renderScenarios() {
 
     <!-- Scenario 4: Expansion -->
     <div class="scenario-card">
-      <h4>4. Open Branches in Dragash + Shtime</h4>
+      <h4>4. Expand into Dragash + Shtime</h4>
       <div class="scenario-desc">Two largest unserved municipalities: combined pop ${(unserved[0].pop+unserved[1].pop).toLocaleString()}, ${(unserved[0].biz+unserved[1].biz).toLocaleString()} businesses.</div>
       <div class="assumptions">
-        <strong>Assumptions:</strong> New branch setup cost = EUR 250-350K.
+        <strong>Assumptions:</strong> New location setup cost = EUR 250-350K.
         Break-even at ~2,500 PI clients + 150 biz clients (estimated 24-36 months).
-        Penetration target based on comparable small-town branches.
+        Penetration target based on comparable small-town locations.
       </div>
       <label>Assumed PI Penetration: <strong id="s4val">15.0%</strong></label>
       <input type="range" class="scenario-slider" id="s4slider" min="5" max="30" step="0.5" value="15" oninput="updateS4()">
@@ -1506,7 +1513,7 @@ function updateS3() {
   const savings = totalNew * 12;
   document.getElementById('s3result').innerHTML = `
     <strong>Impact:</strong> +${totalNew.toLocaleString()} new M-Banking users needed<br>
-    ${affected} of 29 branches currently below target<br>
+    ${affected} of 29 city locations currently below target<br>
     <strong>Cost savings:</strong> EUR ${(savings*0.7).toLocaleString()} &ndash; ${(savings*1.3).toLocaleString()}/yr<br>
     <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Savings at EUR 12/user/yr channel migration (industry benchmark, &plusmn;30%)</div>`;
 }
@@ -1524,10 +1531,10 @@ function updateS4() {
   document.getElementById('s4result').innerHTML = `
     <strong>Impact:</strong><br>
     Dragash: ~${piD.toLocaleString()} PI clients &middot; Shtime: ~${piS.toLocaleString()} PI clients<br>
-    Total new: <strong>${totalNew.toLocaleString()}</strong> &middot; Network: 31 branches<br>
+    Total new: <strong>${totalNew.toLocaleString()}</strong> &middot; Network: 31 city locations<br>
     Network penetration: ${pct(totalPI/NET.pop15)} &rarr; <strong>${((totalPI+totalNew)/newPop15*100).toFixed(1)}%</strong><br>
     <strong>Revenue:</strong> EUR ${(revenue*0.8).toLocaleString()} &ndash; ${(revenue*1.2).toLocaleString()}/yr<br>
-    <strong>Setup cost:</strong> EUR 500K &ndash; 700K (two branches)<br>
+    <strong>Setup cost:</strong> EUR 500K &ndash; 700K (two locations)<br>
     <strong>Break-even:</strong> ~24&ndash;36 months at target penetration
     <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Biz opportunity: ~${Math.round((dragash.biz+shtime.biz)*pen)} potential biz clients at same penetration rate</div>`;
 }
@@ -1539,16 +1546,16 @@ function renderDictionary() {
   const metrics = [
     {name:'PI Penetration', formula:'Active PI Clients / Population aged 15+', desc:'Measures retail banking reach. Population 15+ from Kosovo Agency of Statistics (2024 estimates). Structural outliers (>100%) indicate cross-border service catchment.'},
     {name:'Business Penetration', formula:'Active Business Clients / Registered Businesses', desc:'Measures commercial banking reach. Business count from Kosovo Business Registration Agency (KBRA). Includes all active legal entities.'},
-    {name:'PI Growth (YoY)', formula:'(PI Clients_t - PI Clients_t-1) / PI Clients_t-1', desc:'Year-over-year change in personal banking clients. Nascent entries (Leposaviq, Zubin Potok) show >100% growth off tiny bases — not comparable to established branches.'},
+    {name:'PI Growth (YoY)', formula:'(PI Clients_t - PI Clients_t-1) / PI Clients_t-1', desc:'Year-over-year change in personal banking clients. Nascent entries (Leposaviq, Zubin Potok) show >100% growth off tiny bases — not comparable to established city locations.'},
     {name:'Business Growth (YoY)', formula:'(Biz Clients_t - Biz Clients_t-1) / Biz Clients_t-1', desc:'Year-over-year change in business clients. Negative values indicate client attrition. Gjakove (-14%) is the most severe decline in the network.'},
     {name:'M-Banking Adoption', formula:'M-Banking Users / PI Clients', desc:'Share of retail clients using mobile banking. Proxy for digital maturity and channel migration potential.'},
     {name:'E-Banking Adoption', formula:'E-Banking Users / PI Clients', desc:'Share of retail clients using internet banking platform.'},
     {name:'Product Depth', formula:'(Mortgages + Consumer Loans + Credit Cards) / PI Clients', desc:'Average number of lending products per retail client. Higher values indicate successful cross-selling. Excludes overdrafts.'},
     {name:'POS Density', formula:'POS Terminals / Registered Businesses × 1,000', desc:'Point-of-sale terminal deployment intensity. Proxy for merchant acquisition effort and card acceptance infrastructure.'},
     {name:'Lending Intensity', formula:'(Mortgages + Consumer Loans) / PI Clients', desc:'Share of clients with at least one lending product (mortgage or consumer loan).'},
-    {name:'Opportunity Score', formula:'Weighted composite of peer-relative gaps', desc:`Weights: PI Gap ${HEATMAP_WEIGHTS.piGap*100}%, Biz Gap ${HEATMAP_WEIGHTS.bizGap*100}%, Digital Gap ${HEATMAP_WEIGHTS.digitalGap*100}%, Product Gap ${HEATMAP_WEIGHTS.productGap*100}%. Each gap = 1 - (branch value / peer group best). Score 0-100: higher = more opportunity.`},
-    {name:'Peer Group', formula:'Population-based classification', desc:'Metro (>100K): Prishtine, Prizren, Ferizaj. Regional (50-100K): 7 branches. Town (20-50K): 10 branches. Small/Border (<20K): 4 branches. Structural Outlier/Nascent: excluded from benchmarks.'},
-    {name:'Network Median', formula:'Middle value of sorted core branches', desc:'All central tendency measures use median rather than mean to prevent distortion from structural outliers. Core branches = 24 (excludes 5 structural outliers and nascent entries).'},
+    {name:'Opportunity Score', formula:'Weighted composite of peer-relative gaps', desc:`Weights: PI Gap ${HEATMAP_WEIGHTS.piGap*100}%, Biz Gap ${HEATMAP_WEIGHTS.bizGap*100}%, Digital Gap ${HEATMAP_WEIGHTS.digitalGap*100}%, Product Gap ${HEATMAP_WEIGHTS.productGap*100}%. Each gap = 1 - (city value / peer group best). Score 0-100: higher = more opportunity.`},
+    {name:'Peer Group', formula:'Population-based classification', desc:'Metro (>100K): Prishtine, Prizren, Ferizaj. Regional (50-100K): 7 cities. Town (20-50K): 10 cities. Small/Border (<20K): 4 cities. Structural Outlier/Nascent: excluded from benchmarks.'},
+    {name:'Network Median', formula:'Middle value of sorted core city locations', desc:'All central tendency measures use median rather than mean to prevent distortion from structural outliers. Core locations = 24 (excludes 5 structural outliers and nascent entries). Data is aggregated at city level; some cities contain multiple branches.'},
   ];
 
   document.getElementById('dictGrid').innerHTML = metrics.map(m => `
