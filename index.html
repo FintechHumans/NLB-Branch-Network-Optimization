@@ -3,767 +3,311 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NLB Kosovo — Branch Intelligence</title>
+<title>NLB Kosovo - Branch Network Optimization Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-/* ===== DESIGN SYSTEM ===== */
 :root {
-  --nlb-navy: #002B49;
-  --nlb-dark: #001A2E;
-  --nlb-mid: #003D6B;
-  --nlb-accent: #0072BC;
-  --nlb-light: #E8F1F8;
-  --nlb-lighter: #F4F8FB;
-  --bg: #F7F8FA;
+  --navy: #1F4E79;
+  --navy-dark: #163a5c;
+  --blue-med: #2E75B6;
+  --blue-light: #D6E4F0;
+  --blue-accent: #5B9BD5;
   --white: #FFFFFF;
-  --text: #1A1A2E;
-  --text-secondary: #5A6474;
-  --text-muted: #8C95A6;
-  --border: #E2E6EC;
-  --border-light: #EEF0F4;
-  --green: #0D8050;
-  --green-bg: #E6F4ED;
-  --amber: #C87619;
-  --amber-bg: #FFF3E0;
-  --red: #C62828;
-  --red-bg: #FDEAEA;
-  --radius: 8px;
-  --shadow-sm: 0 1px 3px rgba(0,43,73,0.06);
-  --shadow: 0 2px 8px rgba(0,43,73,0.08);
-  --shadow-lg: 0 4px 20px rgba(0,43,73,0.10);
-  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  --bg: #F0F4F8;
+  --text: #2C3E50;
+  --text-light: #7F8C8D;
+  --green: #27AE60;
+  --amber: #F39C12;
+  --red: #E74C3C;
+  --seg-dominant: #1F4E79;
+  --seg-star: #F1C40F;
+  --seg-cashcow: #27AE60;
+  --seg-growth: #2E75B6;
+  --seg-high: #8E44AD;
+  --seg-mature: #16A085;
+  --seg-stable: #7F8C8D;
+  --seg-under: #E74C3C;
+  --seg-critical: #C0392B;
+  --seg-outlier: #E67E22;
+  --seg-nascent: #3498DB;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 24px rgba(0,0,0,0.12);
+  --radius: 10px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); line-height:1.5; }
+a { color: var(--blue-med); text-decoration:none; }
 
-/* ===== LAYOUT ===== */
-.container { max-width: 1360px; margin: 0 auto; padding: 0 24px; }
+/* Header */
+.header { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%); color:white; padding:18px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; position:sticky; top:0; z-index:100; box-shadow: 0 2px 16px rgba(0,0,0,0.2); }
+.header-left { display:flex; align-items:center; gap:16px; }
+.logo-box { background:white; color:var(--navy); font-weight:900; font-size:22px; padding:6px 14px; border-radius:6px; letter-spacing:1px; }
+.header h1 { font-size:20px; font-weight:600; }
+.header-sub { font-size:12px; opacity:0.8; }
+.header-right { display:flex; gap:10px; align-items:center; }
+.header-badge { background:rgba(255,255,255,0.15); padding:5px 14px; border-radius:20px; font-size:12px; }
 
-/* ===== HEADER ===== */
-.header {
-  background: var(--nlb-navy);
-  color: #fff;
-  padding: 28px 0 20px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header-inner { display: flex; justify-content: space-between; align-items: flex-end; }
-.header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
-.header h1 span { font-weight: 300; opacity: 0.7; font-size: 16px; margin-left: 8px; }
-.header-meta { font-size: 12px; opacity: 0.6; text-align: right; line-height: 1.6; }
+/* Navigation */
+.nav { background:white; border-bottom:1px solid #ddd; padding:0 32px; display:flex; gap:0; overflow-x:auto; position:sticky; top:64px; z-index:99; }
+.nav a { padding:12px 18px; font-size:13px; font-weight:500; color:var(--text-light); border-bottom:3px solid transparent; transition:all 0.2s; white-space:nowrap; cursor:pointer; }
+.nav a:hover, .nav a.active { color:var(--navy); border-bottom-color:var(--blue-med); }
 
-/* ===== NAV ===== */
-.nav {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 76px;
-  z-index: 99;
-  overflow-x: auto;
-}
-.nav-inner { display: flex; gap: 0; }
-.nav a {
-  padding: 12px 18px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-decoration: none;
-  white-space: nowrap;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s;
-  cursor: pointer;
-}
-.nav a:hover { color: var(--nlb-accent); }
-.nav a.active { color: var(--nlb-navy); border-bottom-color: var(--nlb-accent); font-weight: 600; }
+/* Container */
+.container { max-width:1440px; margin:0 auto; padding:24px 24px 60px; }
 
-/* ===== SECTIONS ===== */
-.section { padding: 32px 0 24px; }
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-light);
-}
-.section-header h2 { font-size: 17px; font-weight: 600; color: var(--nlb-navy); }
-.section-header .subtitle { font-size: 12px; color: var(--text-muted); }
-.methodology-note {
-  font-size: 11px;
-  color: var(--text-muted);
-  background: var(--nlb-lighter);
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
-  padding: 6px 10px;
-  margin-top: 8px;
-  line-height: 1.5;
-}
-.methodology-note strong { color: var(--text-secondary); }
+/* Section */
+.section { margin-bottom:36px; }
+.section-title { font-size:20px; font-weight:700; color:var(--navy); margin-bottom:16px; padding-bottom:8px; border-bottom:3px solid var(--blue-med); display:flex; align-items:center; gap:10px; }
+.section-title .icon { font-size:22px; }
 
-/* ===== EXECUTIVE STORYLINE ===== */
-.storyline {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px 28px;
-  margin-bottom: 24px;
-  box-shadow: var(--shadow-sm);
-}
-.storyline h3 { font-size: 15px; color: var(--nlb-navy); margin-bottom: 12px; font-weight: 600; }
-.storyline-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-.insight-card {
-  background: var(--nlb-lighter);
-  border-left: 3px solid var(--nlb-accent);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  padding: 14px 16px;
-}
-.insight-card .insight-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--nlb-accent); margin-bottom: 4px; }
-.insight-card .insight-text { font-size: 13px; color: var(--text); line-height: 1.5; }
-.insight-card .insight-metric { font-size: 20px; font-weight: 700; color: var(--nlb-navy); margin: 4px 0; }
-.insight-card.alert { border-left-color: var(--red); }
-.insight-card.alert .insight-label { color: var(--red); }
-.insight-card.success { border-left-color: var(--green); }
-.insight-card.success .insight-label { color: var(--green); }
+/* KPI Cards */
+.kpi-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:16px; margin-bottom:28px; }
+.kpi-card { background:white; border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); border-top:4px solid var(--blue-med); transition:transform 0.2s, box-shadow 0.2s; }
+.kpi-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+.kpi-label { font-size:12px; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+.kpi-value { font-size:28px; font-weight:700; color:var(--navy); }
+.kpi-sub { font-size:12px; color:var(--text-light); margin-top:4px; display:flex; align-items:center; gap:4px; }
+.kpi-sub .up { color:var(--green); }
+.kpi-sub .down { color:var(--red); }
 
-/* ===== KPI CARDS ===== */
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 8px; }
-.kpi-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  box-shadow: var(--shadow-sm);
-}
-.kpi-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 500; }
-.kpi-value { font-size: 26px; font-weight: 700; color: var(--nlb-navy); margin: 4px 0; font-feature-settings: "tnum"; }
-.kpi-sub { font-size: 12px; color: var(--text-secondary); }
-.kpi-sub .up { color: var(--green); }
-.kpi-sub .down { color: var(--red); }
-.kpi-sub .method { font-size: 10px; color: var(--text-muted); display: block; margin-top: 3px; font-style: italic; }
+/* Table */
+.table-controls { display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap; align-items:center; }
+.table-controls input, .table-controls select { padding:8px 14px; border:1px solid #ccc; border-radius:6px; font-size:13px; background:white; }
+.table-controls input { min-width:220px; }
+.table-wrap { overflow-x:auto; border-radius:var(--radius); box-shadow:var(--shadow); }
+table.data-table { width:100%; border-collapse:collapse; background:white; font-size:13px; }
+table.data-table thead { background:var(--navy); color:white; }
+table.data-table th { padding:10px 12px; text-align:left; cursor:pointer; white-space:nowrap; user-select:none; position:relative; font-weight:500; }
+table.data-table th:hover { background:var(--navy-dark); }
+table.data-table th .sort-arrow { margin-left:4px; font-size:10px; opacity:0.5; }
+table.data-table th.sorted .sort-arrow { opacity:1; }
+table.data-table td { padding:8px 12px; border-bottom:1px solid #eee; white-space:nowrap; }
+table.data-table tr:hover { background:var(--blue-light); }
+table.data-table tr:nth-child(even) { background:#fafbfc; }
+table.data-table tr:nth-child(even):hover { background:var(--blue-light); }
 
-/* ===== TABLE ===== */
-.table-controls {
-  display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; align-items: center;
-}
-.table-controls input, .table-controls select {
-  padding: 7px 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 13px;
-  font-family: var(--font);
-  background: var(--white);
-}
-.table-controls input { width: 200px; }
-.table-controls .count { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+/* Badges */
+.badge { display:inline-block; padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; color:white; }
+.badge-dominant { background:var(--seg-dominant); }
+.badge-star { background:var(--seg-star); color:#333; }
+.badge-cashcow { background:var(--seg-cashcow); }
+.badge-growth { background:var(--seg-growth); }
+.badge-high { background:var(--seg-high); }
+.badge-mature { background:var(--seg-mature); }
+.badge-stable { background:var(--seg-stable); }
+.badge-under { background:var(--seg-under); }
+.badge-critical { background:var(--seg-critical); }
+.badge-outlier { background:var(--seg-outlier); }
+.badge-nascent { background:var(--seg-nascent); }
 
-.data-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  font-size: 13px;
-}
-.data-table th {
-  background: var(--nlb-lighter);
-  color: var(--nlb-navy);
-  font-weight: 600;
-  font-size: 11.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  padding: 10px 12px;
-  text-align: left;
-  cursor: pointer;
-  white-space: nowrap;
-  border-bottom: 2px solid var(--border);
-  user-select: none;
-}
-.data-table th:hover { background: var(--nlb-light); }
-.data-table th.sorted { color: var(--nlb-accent); }
-.data-table th .arrow { font-size: 10px; margin-left: 3px; opacity: 0.4; }
-.data-table th.sorted .arrow { opacity: 1; }
-.data-table td { padding: 9px 12px; border-bottom: 1px solid var(--border-light); }
-.data-table tbody tr:hover { background: var(--nlb-lighter); }
-.data-table tbody tr:last-child td { border-bottom: none; }
+/* Traffic lights */
+.tl { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:4px; vertical-align:middle; }
+.tl-green { background:var(--green); }
+.tl-amber { background:var(--amber); }
+.tl-red { background:var(--red); }
 
-/* Peer group badge */
-.peer-tag {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 3px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-.peer-metro { background: #E3F2FD; color: #1565C0; }
-.peer-regional { background: #E8F5E9; color: #2E7D32; }
-.peer-town { background: #FFF8E1; color: #F57F17; }
-.peer-small { background: #F3E5F5; color: #7B1FA2; }
-.peer-outlier { background: #FBE9E7; color: #BF360C; }
-.peer-nascent { background: #E0F7FA; color: #00695C; }
+/* Charts grid */
+.charts-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(440px,1fr)); gap:20px; }
+.chart-card { background:white; border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); }
+.chart-card h3 { font-size:14px; color:var(--navy); margin-bottom:12px; font-weight:600; }
+.chart-card canvas { width:100%!important; }
 
-/* Traffic light */
-.tl { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
-.tl-green { background: var(--green); }
-.tl-amber { background: var(--amber); }
-.tl-red { background: var(--red); }
-.outlier-flag { font-size: 10px; color: var(--amber); font-weight: 600; margin-left: 3px; }
+/* Segment cards */
+.seg-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:16px; }
+.seg-card { background:white; border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); border-left:5px solid var(--blue-med); transition:transform 0.2s; }
+.seg-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+.seg-card h4 { font-size:15px; margin-bottom:8px; }
+.seg-card .stat-row { display:flex; justify-content:space-between; font-size:12px; padding:3px 0; border-bottom:1px solid #f0f0f0; }
+.seg-card .stat-row:last-child { border:none; }
+.seg-card .finding { font-size:12px; color:var(--text-light); margin-top:8px; font-style:italic; }
 
-/* ===== CHARTS ===== */
-.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.chart-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: var(--shadow-sm);
-}
-.chart-card h4 { font-size: 13px; font-weight: 600; color: var(--nlb-navy); margin-bottom: 12px; }
-.chart-card .chart-note { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; font-style: italic; }
-.chart-card canvas { max-height: 400px; }
-.chart-card.full { grid-column: 1 / -1; }
-.chart-tall { min-height: 600px; }
+/* Heatmap */
+table.heatmap { width:100%; border-collapse:collapse; background:white; font-size:13px; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+table.heatmap thead { background:var(--navy); color:white; }
+table.heatmap th { padding:10px 12px; text-align:center; font-weight:500; }
+table.heatmap th:first-child { text-align:left; }
+table.heatmap td { padding:8px 12px; text-align:center; border-bottom:1px solid #eee; }
+table.heatmap td:first-child { text-align:left; font-weight:600; }
 
-/* ===== SEGMENT / PEER GROUP ===== */
-.peer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-.peer-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--nlb-accent);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  box-shadow: var(--shadow-sm);
-}
-.peer-card h4 { font-size: 14px; font-weight: 600; color: var(--nlb-navy); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-.peer-stat { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; border-bottom: 1px solid var(--border-light); }
-.peer-stat:last-child { border-bottom: none; }
-.peer-stat .label { color: var(--text-secondary); }
-.peer-stat .val { font-weight: 600; color: var(--text); font-feature-settings: "tnum"; }
-.peer-finding { font-size: 12px; color: var(--text-secondary); margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-light); line-height: 1.5; }
+/* Profile panel */
+.profile-section { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.profile-details { background:white; border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); }
+.profile-details h4 { color:var(--navy); margin-bottom:12px; font-size:15px; }
+.profile-stat { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #f0f0f0; font-size:13px; }
+.profile-stat:last-child { border:none; }
+.profile-stat .label { color:var(--text-light); }
+.profile-stat .val { font-weight:600; }
+.profile-rec { margin-top:14px; background:var(--blue-light); padding:14px; border-radius:8px; font-size:13px; border-left:4px solid var(--blue-med); }
+.profile-rec strong { color:var(--navy); }
 
-/* ===== HEATMAP ===== */
-.heatmap-weights {
-  display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; align-items: center;
-}
-.weight-item { font-size: 12px; color: var(--text-secondary); }
-.weight-item strong { color: var(--nlb-navy); }
+/* Expansion table */
+table.expansion { width:100%; border-collapse:collapse; background:white; font-size:13px; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); }
+table.expansion thead { background:var(--navy); color:white; }
+table.expansion th { padding:10px 14px; text-align:left; font-weight:500; }
+table.expansion td { padding:8px 14px; border-bottom:1px solid #eee; }
+table.expansion tr:hover { background:var(--blue-light); }
+.rank-bar { height:8px; border-radius:4px; background:var(--blue-med); display:inline-block; vertical-align:middle; }
 
-/* ===== PROFILE ===== */
-.profile-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.profile-panel {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: var(--shadow-sm);
-}
-.profile-panel h4 { font-size: 14px; font-weight: 600; color: var(--nlb-navy); margin-bottom: 12px; }
-.profile-stat { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; border-bottom: 1px solid var(--border-light); }
-.profile-stat .label { color: var(--text-secondary); }
-.profile-stat .val { font-weight: 600; color: var(--text); font-feature-settings: "tnum"; }
-.rec-list { list-style: none; padding: 0; margin: 12px 0 0; }
-.rec-list li {
-  padding: 8px 12px;
-  margin-bottom: 6px;
-  border-radius: 6px;
-  font-size: 13px;
-  line-height: 1.4;
-}
-.rec-list li.rec-high { background: var(--red-bg); border-left: 3px solid var(--red); }
-.rec-list li.rec-med { background: var(--amber-bg); border-left: 3px solid var(--amber); }
-.rec-list li.rec-low { background: var(--green-bg); border-left: 3px solid var(--green); }
-.rec-list li .rec-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 2px; }
-.rec-high .rec-tag { color: var(--red); }
-.rec-med .rec-tag { color: var(--amber); }
-.rec-low .rec-tag { color: var(--green); }
+/* Scenario cards */
+.scenario-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(360px,1fr)); gap:20px; }
+.scenario-card { background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); border-top:4px solid var(--blue-accent); }
+.scenario-card h4 { font-size:15px; color:var(--navy); margin-bottom:10px; }
+.scenario-card p { font-size:13px; color:var(--text-light); margin-bottom:14px; }
+.scenario-card .impact { font-size:14px; font-weight:600; color:var(--navy); }
+.scenario-slider { width:100%; margin:10px 0; accent-color:var(--blue-med); }
+.scenario-result { background:var(--blue-light); padding:12px; border-radius:8px; margin-top:10px; font-size:13px; }
 
-/* ===== SCENARIOS ===== */
-.scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
-.scenario-card {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px;
-  box-shadow: var(--shadow-sm);
-}
-.scenario-card h4 { font-size: 14px; font-weight: 600; color: var(--nlb-navy); margin-bottom: 8px; }
-.scenario-card .scenario-desc { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
-.scenario-card .assumptions {
-  background: var(--nlb-lighter);
-  border: 1px solid var(--border-light);
-  border-radius: 4px;
-  padding: 10px 12px;
-  margin-bottom: 14px;
-  font-size: 11.5px;
-  color: var(--text-secondary);
-}
-.scenario-card .assumptions strong { color: var(--nlb-navy); }
-.scenario-card label { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
-.scenario-card label strong { color: var(--nlb-navy); font-size: 14px; }
-.scenario-slider {
-  width: 100%;
-  margin: 8px 0 12px;
-  accent-color: var(--nlb-accent);
-}
-.scenario-result {
-  background: var(--nlb-lighter);
-  border-radius: 6px;
-  padding: 14px 16px;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.scenario-result strong { color: var(--nlb-navy); }
+/* Footer */
+.footer { background:var(--navy); color:rgba(255,255,255,0.7); text-align:center; padding:20px 32px; font-size:12px; margin-top:40px; }
+.footer strong { color:white; }
 
-/* ===== DICTIONARY ===== */
-.dict-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
-.dict-item {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  box-shadow: var(--shadow-sm);
+/* Responsive */
+@media(max-width:900px) {
+  .header { padding:14px 16px; }
+  .header h1 { font-size:16px; }
+  .container { padding:16px 12px 40px; }
+  .charts-grid { grid-template-columns:1fr; }
+  .profile-section { grid-template-columns:1fr; }
+  .scenario-grid { grid-template-columns:1fr; }
+  .nav { padding:0 12px; }
+  .nav a { padding:10px 12px; font-size:12px; }
 }
-.dict-item .dict-name { font-weight: 600; color: var(--nlb-navy); font-size: 13px; margin-bottom: 4px; }
-.dict-item .dict-formula { font-family: var(--mono); font-size: 11.5px; color: var(--nlb-accent); background: var(--nlb-lighter); padding: 3px 8px; border-radius: 3px; display: inline-block; margin-bottom: 4px; }
-.dict-item .dict-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
-
-/* ===== EXPANSION ===== */
-.rank-bar {
-  display: inline-block;
-  height: 16px;
-  background: linear-gradient(90deg, var(--nlb-accent), var(--nlb-mid));
-  border-radius: 3px;
-  vertical-align: middle;
-  min-width: 4px;
+@media(max-width:600px) {
+  .kpi-row { grid-template-columns:repeat(2,1fr); }
+  .seg-grid { grid-template-columns:1fr; }
+  .charts-grid { grid-template-columns:1fr; min-width:0; }
+  .charts-grid .chart-card { min-width:0; }
 }
 
-/* ===== FOOTER ===== */
-.footer {
-  background: var(--nlb-dark);
-  color: rgba(255,255,255,0.6);
-  text-align: center;
-  padding: 20px;
-  font-size: 11px;
-  line-height: 1.7;
-  margin-top: 40px;
-}
+/* Smooth scroll */
+html { scroll-behavior:smooth; }
+.hidden { display:none!important; }
 
-/* ===== RESPONSIVE — TABLET LANDSCAPE (≤1024px) ===== */
-@media (max-width: 1024px) {
-  .container { padding: 0 16px; }
-  .kpi-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .chart-grid { gap: 14px; }
-  .scenario-grid { grid-template-columns: 1fr 1fr; }
-  .dict-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-}
-
-/* ===== RESPONSIVE — TABLET PORTRAIT (≤768px) ===== */
-@media (max-width: 768px) {
-  .container { padding: 0 14px; }
-
-  /* Header */
-  .header { padding: 18px 0 14px; }
-  .header-inner { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .header h1 { font-size: 18px; }
-  .header h1 span { font-size: 13px; margin-left: 6px; }
-  .header-meta { text-align: left; font-size: 11px; }
-
-  /* Nav — scrollable, touch-friendly */
-  .nav { top: 62px; -webkit-overflow-scrolling: touch; }
-  .nav-inner { gap: 0; }
-  .nav a { padding: 10px 14px; font-size: 11.5px; }
-
-  /* Sections */
-  .section { padding: 24px 0 18px; }
-  .section-header { flex-direction: column; gap: 4px; margin-bottom: 14px; }
-  .section-header h2 { font-size: 15px; }
-
-  /* KPI */
-  .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .kpi-card { padding: 14px 16px; }
-  .kpi-value { font-size: 22px; }
-  .kpi-label { font-size: 10px; }
-
-  /* Charts */
-  .chart-grid { grid-template-columns: 1fr; gap: 14px; }
-  .chart-card { padding: 14px; }
-  .chart-card h4 { font-size: 12px; }
-  .chart-card canvas { max-height: 320px; }
-  .chart-tall { min-height: 450px; }
-
-  /* Storyline */
-  .storyline { padding: 16px 18px; }
-  .storyline-grid { grid-template-columns: 1fr; gap: 12px; }
-  .insight-card .insight-metric { font-size: 18px; }
-
-  /* Peer groups */
-  .peer-grid { grid-template-columns: 1fr; gap: 12px; }
-  .peer-card { padding: 14px 16px; }
-  .peer-card h4 { font-size: 13px; flex-wrap: wrap; }
-
-  /* Profile */
-  .profile-layout { grid-template-columns: 1fr; gap: 16px; }
-  .profile-panel { padding: 16px; }
-
-  /* Scenarios */
-  .scenario-grid { grid-template-columns: 1fr; gap: 14px; }
-  .scenario-card { padding: 16px; }
-  .scenario-card h4 { font-size: 13px; }
-
-  /* Dictionary */
-  .dict-grid { grid-template-columns: 1fr; gap: 10px; }
-
-  /* Tables — horizontal scroll wrapper */
-  .data-table { font-size: 12px; }
-  .data-table th { padding: 8px 10px; font-size: 10.5px; }
-  .data-table td { padding: 7px 10px; }
-
-  /* Table controls */
-  .table-controls { gap: 8px; }
-  .table-controls input { width: 100%; min-width: 0; }
-  .table-controls select { min-width: 0; flex: 1; }
-  .table-controls .count { margin-left: 0; width: 100%; text-align: right; }
-
-  /* Heatmap weights */
-  .heatmap-weights { gap: 8px; }
-
-  /* Methodology note */
-  .methodology-note { font-size: 10.5px; padding: 8px 10px; }
-
-  /* Footer */
-  .footer { padding: 16px 14px; font-size: 10px; }
-}
-
-/* ===== RESPONSIVE — SMARTPHONE (≤480px) ===== */
-@media (max-width: 480px) {
-  .container { padding: 0 10px; }
-
-  /* Header — compact */
-  .header { padding: 14px 0 10px; }
-  .header h1 { font-size: 16px; letter-spacing: 0; }
-  .header h1 span { display: block; margin-left: 0; margin-top: 2px; font-size: 12px; }
-  .header-meta { font-size: 10px; line-height: 1.5; }
-
-  /* Nav — smaller touch targets but still usable (44px min) */
-  .nav { top: 56px; }
-  .nav a { padding: 10px 12px; font-size: 11px; min-height: 44px; display: flex; align-items: center; }
-
-  /* Sections */
-  .section { padding: 20px 0 14px; }
-  .section-header h2 { font-size: 14px; line-height: 1.3; }
-  .section-header .subtitle { font-size: 11px; }
-
-  /* KPI — 2 col on phone, stacks well */
-  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .kpi-card { padding: 12px 14px; }
-  .kpi-value { font-size: 20px; }
-  .kpi-label { font-size: 9.5px; letter-spacing: 0.3px; }
-  .kpi-sub { font-size: 11px; }
-  .kpi-sub .method { font-size: 9px; }
-
-  /* Charts */
-  .chart-card { padding: 12px; }
-  .chart-card h4 { font-size: 11.5px; margin-bottom: 8px; }
-  .chart-card .chart-note { font-size: 10px; }
-  .chart-card canvas { max-height: 260px; }
-  .chart-tall { min-height: 380px; }
-
-  /* Storyline */
-  .storyline { padding: 12px 14px; margin-bottom: 16px; }
-  .insight-card { padding: 10px 12px; }
-  .insight-card .insight-label { font-size: 10px; }
-  .insight-card .insight-text { font-size: 12px; }
-  .insight-card .insight-metric { font-size: 16px; }
-
-  /* Tables — ensure scroll container */
-  .data-table { font-size: 11px; min-width: 600px; }
-  .data-table th { padding: 7px 8px; font-size: 9.5px; }
-  .data-table td { padding: 6px 8px; }
-
-  /* Table controls — stack */
-  .table-controls { flex-direction: column; gap: 6px; }
-  .table-controls input, .table-controls select { width: 100%; padding: 10px 12px; font-size: 14px; min-height: 44px; }
-  .table-controls .count { text-align: center; }
-
-  /* Peer group */
-  .peer-card { padding: 12px 14px; }
-  .peer-card h4 { font-size: 12px; }
-  .peer-stat { font-size: 12px; padding: 4px 0; }
-  .peer-finding { font-size: 11px; }
-
-  /* Profile */
-  .profile-panel { padding: 14px; }
-  .profile-panel h4 { font-size: 13px; }
-  .profile-stat { font-size: 12px; }
-  .rec-list li { font-size: 12px; padding: 7px 10px; }
-
-  /* Scenarios */
-  .scenario-card { padding: 14px; }
-  .scenario-card h4 { font-size: 12.5px; }
-  .scenario-card .scenario-desc { font-size: 11.5px; }
-  .scenario-card .assumptions { font-size: 10.5px; padding: 8px 10px; }
-  .scenario-card label { font-size: 11px; flex-wrap: wrap; }
-  .scenario-card label strong { font-size: 13px; }
-  .scenario-slider { height: 28px; margin: 6px 0 10px; }
-  .scenario-result { font-size: 12px; padding: 10px 12px; }
-
-  /* Dictionary */
-  .dict-item { padding: 12px 14px; }
-  .dict-item .dict-name { font-size: 12px; }
-  .dict-item .dict-formula { font-size: 10.5px; }
-  .dict-item .dict-desc { font-size: 11px; }
-
-  /* Methodology note */
-  .methodology-note { font-size: 10px; padding: 6px 8px; }
-
-  /* Heatmap weights — stack */
-  .heatmap-weights { flex-direction: column; gap: 4px; }
-  .weight-item { font-size: 11px; }
-
-  /* Footer */
-  .footer { padding: 14px 10px; font-size: 9.5px; margin-top: 24px; }
-
-  /* Profile inner grid — single column on phone */
-  .profile-panel div[style*="grid-template-columns: 1fr 1fr"] {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* ===== TOUCH USABILITY ===== */
-@media (pointer: coarse) {
-  .nav a { min-height: 44px; display: flex; align-items: center; }
-  .table-controls input, .table-controls select { min-height: 44px; }
-  select#profileSelect { min-height: 44px; font-size: 14px; padding: 10px 14px; }
-  .scenario-slider { height: 28px; }
-  .data-table th { min-height: 40px; }
-}
-
-/* ===== SCROLLABLE TABLE CONTAINERS ===== */
-div[style*="overflow-x"] {
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-}
-
-/* ===== PRINT ===== */
-@media print {
-  .header, .nav { position: static; }
-  .nav { display: none; }
-  body { background: #fff; }
-  .chart-grid { grid-template-columns: 1fr; }
-  .profile-layout { grid-template-columns: 1fr; }
-}
+/* Animate */
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.section { animation:fadeIn 0.4s ease-out; }
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div class="header">
-  <div class="container header-inner">
+  <div class="header-left">
+    <div class="logo-box">NLB</div>
     <div>
-      <h1>BRANCH INTELLIGENCE <span>NLB Kosovo</span></h1>
+      <h1>Kosovo Branch Network Optimization</h1>
+      <div class="header-sub">Strategic Dashboard &middot; 29 Branches &middot; 9 Unserved Municipalities</div>
     </div>
-    <div class="header-meta">
-      29 City Locations &middot; 240,157 PI Clients &middot; 13,169 Business Clients<br>
-      City-level network view &middot; Data: FY 2025 &middot; Generated March 2026
-    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-badge">Q1 2026</span>
+    <span class="header-badge">CONFIDENTIAL</span>
   </div>
 </div>
 
-<!-- NAV -->
-<div class="nav">
-  <div class="container nav-inner">
-    <a class="active" onclick="scrollToSec('sec-story')">Executive Summary</a>
-    <a onclick="scrollToSec('sec-kpi')">Network KPIs</a>
-    <a onclick="scrollToSec('sec-table')">City Table</a>
-    <a onclick="scrollToSec('sec-charts')">Analytics</a>
-    <a onclick="scrollToSec('sec-peers')">Peer Benchmarking</a>
-    <a onclick="scrollToSec('sec-heatmap')">Opportunity Map</a>
-    <a onclick="scrollToSec('sec-profile')">City Profile</a>
-    <a onclick="scrollToSec('sec-expansion')">Expansion</a>
-    <a onclick="scrollToSec('sec-scenarios')">Scenarios</a>
-    <a onclick="scrollToSec('sec-dictionary')">Methodology</a>
-  </div>
+<!-- NAVIGATION -->
+<div class="nav" id="topnav">
+  <a class="active" onclick="scrollToSec('sec-kpi')">KPIs</a>
+  <a onclick="scrollToSec('sec-table')">Branch Table</a>
+  <a onclick="scrollToSec('sec-charts')">Charts</a>
+  <a onclick="scrollToSec('sec-segments')">Segments</a>
+  <a onclick="scrollToSec('sec-heatmap')">Opportunity Map</a>
+  <a onclick="scrollToSec('sec-profile')">Branch Profile</a>
+  <a onclick="scrollToSec('sec-expansion')">Expansion</a>
+  <a onclick="scrollToSec('sec-scenarios')">Scenarios</a>
 </div>
 
 <div class="container">
 
-  <!-- A. EXECUTIVE STORYLINE -->
-  <div class="section" id="sec-story">
-    <div class="section-header">
-      <h2>Executive Diagnostic</h2>
-      <span class="subtitle">Key findings requiring board attention</span>
-    </div>
-    <div class="storyline">
-      <div class="storyline-grid" id="storylineGrid"></div>
-    </div>
-  </div>
+<!-- A. EXECUTIVE KPI CARDS -->
+<div class="section" id="sec-kpi">
+  <div class="section-title"><span class="icon">&#9632;</span> Executive Summary</div>
+  <div class="kpi-row" id="kpiRow"></div>
+</div>
 
-  <!-- DATA LEVEL DISCLOSURE -->
-  <div class="methodology-note" style="margin-top:8px;padding:10px 14px;font-size:12px;line-height:1.6;">
-    <strong>Data granularity note:</strong> This draft uses city-level aggregated branch presence and commercial activity. In locations with multiple branches (e.g. Prishtine: 5 branches, Prizren: 2, Mitrovica: 2), results reflect the combined city footprint rather than individual outlet performance. This version should be interpreted as a <strong>city / territory-level management view</strong>, not a branch-by-branch operational analysis. A later version will incorporate detailed branch-level activity, transaction, exposure, and FTE data.
+<!-- B. INTERACTIVE BRANCH TABLE -->
+<div class="section" id="sec-table">
+  <div class="section-title"><span class="icon">&#9632;</span> Branch Performance Table</div>
+  <div class="table-controls">
+    <input type="text" id="searchCity" placeholder="Search by city name..." oninput="renderTable()">
+    <select id="filterSegment" onchange="renderTable()">
+      <option value="">All Segments</option>
+    </select>
+    <span style="font-size:12px;color:var(--text-light);margin-left:auto;" id="tableCount"></span>
   </div>
+  <div class="table-wrap">
+    <table class="data-table" id="branchTable">
+      <thead id="branchThead"></thead>
+      <tbody id="branchTbody"></tbody>
+    </table>
+  </div>
+</div>
 
-  <!-- B. KPI CARDS -->
-  <div class="section" id="sec-kpi">
-    <div class="section-header">
-      <h2>Network Performance</h2>
-      <span class="subtitle">Aggregated across 29 city locations</span>
-    </div>
-    <div class="kpi-grid" id="kpiGrid"></div>
-    <div class="methodology-note" id="kpiMethodNote"></div>
+<!-- C. CHARTS SECTION -->
+<div class="section" id="sec-charts">
+  <div class="section-title"><span class="icon">&#9632;</span> Visual Analytics</div>
+  <div class="charts-grid">
+    <div class="chart-card"><h3>PI Penetration by Branch (sorted)</h3><canvas id="chartPiPen"></canvas></div>
+    <div class="chart-card"><h3>PI Penetration vs Business Penetration</h3><canvas id="chartScatter"></canvas></div>
+    <div class="chart-card"><h3>PI Client Growth % by Branch</h3><canvas id="chartGrowth"></canvas></div>
+    <div class="chart-card"><h3>Client Distribution by Segment</h3><canvas id="chartDoughnut"></canvas></div>
+    <div class="chart-card"><h3>POS Deployment per 1,000 Businesses</h3><canvas id="chartPOS"></canvas></div>
   </div>
+</div>
 
-  <!-- C. BRANCH TABLE -->
-  <div class="section" id="sec-table">
-    <div class="section-header">
-      <h2>City Performance Table</h2>
-      <span class="subtitle">All metrics &middot; peer-relative traffic lights &middot; outlier flags &middot; city-level aggregated data</span>
-    </div>
-    <div class="table-controls">
-      <input type="text" id="searchCity" placeholder="Search city..." oninput="renderTable()">
-      <select id="filterPeer" onchange="renderTable()"><option value="">All Peer Groups</option></select>
-      <select id="filterSegment" onchange="renderTable()"><option value="">All Segments</option></select>
-      <span class="count" id="tableCount"></span>
-    </div>
-    <div style="overflow-x:auto;">
-      <table class="data-table" id="branchTable">
-        <thead id="branchThead"></thead>
-        <tbody id="branchTbody"></tbody>
-      </table>
-    </div>
-  </div>
+<!-- D. SEGMENT SUMMARY CARDS -->
+<div class="section" id="sec-segments">
+  <div class="section-title"><span class="icon">&#9632;</span> Segment Analysis</div>
+  <div class="seg-grid" id="segGrid"></div>
+</div>
 
-  <!-- D. CHARTS -->
-  <div class="section" id="sec-charts">
-    <div class="section-header">
-      <h2>Visual Analytics</h2>
-      <span class="subtitle">Structural outliers annotated separately</span>
-    </div>
-    <div class="chart-grid">
-      <div class="chart-card full chart-tall">
-        <h4>PI Penetration by City</h4>
-        <div class="chart-note">Excludes Mit. Veriore (135.5%) and nascent entries. Network median shown as reference line.</div>
-        <canvas id="chartPiPen"></canvas>
-      </div>
-      <div class="chart-card">
-        <h4>Penetration Landscape</h4>
-        <div class="chart-note">PI vs Business penetration. Bubble size = population. Structural outliers excluded.</div>
-        <canvas id="chartScatter"></canvas>
-      </div>
-      <div class="chart-card">
-        <h4>Client Distribution by Segment</h4>
-        <canvas id="chartDoughnut"></canvas>
-      </div>
-      <div class="chart-card">
-        <h4>PI Client Growth (YoY %)</h4>
-        <div class="chart-note">Excludes nascent entries with &gt;100% growth off tiny base.</div>
-        <canvas id="chartGrowth"></canvas>
-      </div>
-      <div class="chart-card">
-        <h4>POS Density (per 1,000 businesses)</h4>
-        <canvas id="chartPOS"></canvas>
-      </div>
-    </div>
+<!-- E. OPPORTUNITY HEATMAP -->
+<div class="section" id="sec-heatmap">
+  <div class="section-title"><span class="icon">&#9632;</span> Opportunity Heatmap</div>
+  <p style="font-size:13px;color:var(--text-light);margin-bottom:14px;">Darker shading indicates larger gaps vs. network best-in-class. Higher composite score = larger overall opportunity.</p>
+  <div class="table-wrap">
+    <table class="heatmap" id="heatmapTable"></table>
   </div>
+</div>
 
-  <!-- E. PEER GROUP BENCHMARKING -->
-  <div class="section" id="sec-peers">
-    <div class="section-header">
-      <h2>Peer Group Benchmarking</h2>
-      <span class="subtitle">City locations grouped by comparable market characteristics</span>
-    </div>
-    <div class="methodology-note">
-      <strong>Peer groups:</strong>
-      Metro (pop &gt;100K) &middot;
-      Regional (50K&ndash;100K) &middot;
-      Town (20K&ndash;50K) &middot;
-      Small/Border (&lt;20K) &middot;
-      Structural Outlier (Mit. Veriore, Zve&ccedil;an — cross-border/demographic exceptions)
-    </div>
-    <div class="peer-grid" id="peerGrid" style="margin-top:16px;"></div>
+<!-- F. BRANCH PROFILE PANELS -->
+<div class="section" id="sec-profile">
+  <div class="section-title"><span class="icon">&#9632;</span> Branch Profile Deep Dive</div>
+  <div style="margin-bottom:14px;">
+    <select id="profileSelect" onchange="renderProfile()" style="padding:8px 14px;border:1px solid #ccc;border-radius:6px;font-size:14px;min-width:260px;">
+    </select>
   </div>
+  <div class="profile-section">
+    <div class="profile-details" id="profileLeft"></div>
+    <div class="chart-card" id="profileRight"><h3>Performance Radar</h3><canvas id="chartRadar"></canvas></div>
+  </div>
+</div>
 
-  <!-- F. OPPORTUNITY HEATMAP -->
-  <div class="section" id="sec-heatmap">
-    <div class="section-header">
-      <h2>Opportunity Scoring</h2>
-      <span class="subtitle">Peer-relative gap analysis with transparent weighting</span>
-    </div>
-    <div class="heatmap-weights" id="heatmapWeights"></div>
-    <div style="overflow-x:auto;">
-      <table class="data-table" id="heatmapTable"></table>
-    </div>
+<!-- G. EXPANSION OPPORTUNITY -->
+<div class="section" id="sec-expansion">
+  <div class="section-title"><span class="icon">&#9632;</span> Expansion Opportunities &mdash; Unserved Municipalities</div>
+  <div class="table-wrap">
+    <table class="expansion" id="expansionTable"></table>
   </div>
+</div>
 
-  <!-- G. BRANCH PROFILE -->
-  <div class="section" id="sec-profile">
-    <div class="section-header">
-      <h2>City Profile</h2>
-      <span class="subtitle">Rule-based diagnostics &middot; peer-relative radar &middot; city-level aggregated view</span>
-    </div>
-    <div style="margin-bottom:14px;">
-      <select id="profileSelect" onchange="renderProfile()" style="padding:8px 14px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--font);min-width:240px;"></select>
-    </div>
-    <div class="profile-layout">
-      <div class="profile-panel" id="profileLeft"></div>
-      <div class="profile-panel">
-        <h4>Performance Radar (vs peer group median)</h4>
-        <canvas id="chartRadar" height="300"></canvas>
-        <div id="profileRecs" style="margin-top:16px;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- H. EXPANSION -->
-  <div class="section" id="sec-expansion">
-    <div class="section-header">
-      <h2>Expansion Opportunities</h2>
-      <span class="subtitle">9 unserved municipalities ranked by market attractiveness</span>
-    </div>
-    <div style="overflow-x:auto;">
-      <table class="data-table" id="expansionTable"></table>
-    </div>
-  </div>
-
-  <!-- I. SCENARIOS -->
-  <div class="section" id="sec-scenarios">
-    <div class="section-header">
-      <h2>Scenario Modeling</h2>
-      <span class="subtitle">Transparent assumptions &middot; adjustable parameters &middot; output ranges</span>
-    </div>
-    <div class="scenario-grid" id="scenarioGrid"></div>
-  </div>
-
-  <!-- J. METHODOLOGY / DICTIONARY -->
-  <div class="section" id="sec-dictionary">
-    <div class="section-header">
-      <h2>Metric Dictionary &amp; Methodology</h2>
-      <span class="subtitle">Definitions, formulas, and data sources</span>
-    </div>
-    <div class="dict-grid" id="dictGrid"></div>
-  </div>
+<!-- H. SCENARIO SECTION -->
+<div class="section" id="sec-scenarios">
+  <div class="section-title"><span class="icon">&#9632;</span> What-If Scenarios</div>
+  <div class="scenario-grid" id="scenarioGrid"></div>
+</div>
 
 </div><!-- /container -->
 
-<!-- FOOTER -->
+<!-- I. FOOTER -->
 <div class="footer">
-  <strong>NLB Banka sh.a. &mdash; Branch Intelligence Dashboard</strong> <span style="opacity:0.7">(City-level draft)</span><br>
-  Data: NLB Internal Analytics &middot; Kosovo Agency of Statistics &middot; Central Bank of Kosovo (BQK)<br>
-  CONFIDENTIAL &mdash; For internal strategic use only<br>
-  <span style="opacity:0.8; margin-top:4px; display:inline-block;">Curated by Orik Drancolli</span>
+  <strong>NLB Banka sh.a. &mdash; Kosovo Branch Network Optimization Dashboard</strong><br>
+  Data Source: NLB Internal Analytics, KBRA Municipal Registry, Kosovo Agency of Statistics &middot; Generated March 2026<br>
+  <em>CONFIDENTIAL &mdash; For internal strategic use only. Not for distribution.</em>
 </div>
 
 <script>
-// ================================================================
-// DATA
-// ================================================================
+// ========= DATA =========
 const branches = [
   {code:"0001",city:"PRISHTINE",pop:227466,pop15:177302,biz:21396,piClients:47635,bizClients:4216,piPen:0.269,bizPen:0.197,piGrowth:4.9,bizGrowth:1.2,mortgage:3386,consumer:7665,cc:312,ovd:245,pos:1705,mbank:3347,ebank:2958,bizLT:832,segment:"Dominant Hub"},
   {code:"1005",city:"PRIZREN",pop:147246,pop15:115421,biz:7119,piClients:16152,bizClients:905,piPen:0.140,bizPen:0.127,piGrowth:5.0,bizGrowth:-4.2,mortgage:427,consumer:1382,cc:58,ovd:75,pos:156,mbank:620,ebank:411,bizLT:288,segment:"High Potential"},
@@ -810,244 +354,84 @@ const unserved = [
 
 const NET = {pop:1602515,pop15:1252619,biz:77712,piClients:240157,bizClients:13169};
 
-// ================================================================
-// STRUCTURAL EXCEPTION RULE
-// Mit. Veriore and Zvecan are STRUCTURAL OUTLIERS — they serve
-// populations beyond their municipal boundaries (cross-border flows,
-// regional catchment). Their penetration >100% is a data artifact,
-// not an error. They MUST be excluded from all averages, medians,
-// percentile calculations, and benchmarks. They are shown with
-// explicit annotation wherever they appear.
-// ================================================================
-const STRUCTURAL_EXCEPTIONS = ['MIT. VERIORE', 'ZUBIN POTOK', 'LEPOSAVIQ'];
-const isException = b => STRUCTURAL_EXCEPTIONS.includes(b.city) || b.segment === 'Structural Outlier' || b.segment === 'Nascent Entry';
-const coreBranches = branches.filter(b => !isException(b));
-
-// ================================================================
-// PEER GROUP ASSIGNMENT
-// ================================================================
-function getPeerGroup(b) {
-  if (b.segment === 'Structural Outlier') return 'Structural Outlier';
-  if (b.segment === 'Nascent Entry') return 'Nascent';
-  if (b.pop >= 100000) return 'Metro';
-  if (b.pop >= 50000) return 'Regional';
-  if (b.pop >= 20000) return 'Town';
-  return 'Small/Border';
-}
-branches.forEach(b => { b.peer = getPeerGroup(b); });
-
-const PEER_COLORS = {
-  'Metro': {bg:'#E3F2FD',fg:'#1565C0',border:'#1565C0'},
-  'Regional': {bg:'#E8F5E9',fg:'#2E7D32',border:'#2E7D32'},
-  'Town': {bg:'#FFF8E1',fg:'#F57F17',border:'#F57F17'},
-  'Small/Border': {bg:'#F3E5F5',fg:'#7B1FA2',border:'#7B1FA2'},
-  'Structural Outlier': {bg:'#FBE9E7',fg:'#BF360C',border:'#BF360C'},
-  'Nascent': {bg:'#E0F7FA',fg:'#00695C',border:'#00695C'}
-};
-
-function peerBadge(peer) {
-  const cls = {'Metro':'metro','Regional':'regional','Town':'town','Small/Border':'small','Structural Outlier':'outlier','Nascent':'nascent'}[peer]||'town';
-  return `<span class="peer-tag peer-${cls}">${peer}</span>`;
-}
-
-// ================================================================
-// STATISTICAL HELPERS
-// ================================================================
-function median(arr) {
-  const s = [...arr].sort((a,b) => a-b);
-  const mid = Math.floor(s.length/2);
-  return s.length % 2 !== 0 ? s[mid] : (s[mid-1]+s[mid])/2;
-}
-function trimmedMean(arr, pct=0.1) {
-  const s = [...arr].sort((a,b)=>a-b);
-  const cut = Math.floor(s.length * pct);
-  const trimmed = s.slice(cut, s.length-cut);
-  return trimmed.reduce((a,b)=>a+b,0)/trimmed.length;
-}
-function percentile(arr, p) {
-  const s = [...arr].sort((a,b)=>a-b);
-  const idx = (p/100)*(s.length-1);
-  const lo = Math.floor(idx), hi = Math.ceil(idx);
-  return lo===hi ? s[lo] : s[lo]+(s[hi]-s[lo])*(idx-lo);
-}
-function peerMedian(peer, field, fn) {
-  const group = coreBranches.filter(b => b.peer === peer);
-  if (group.length === 0) return 0;
-  const vals = group.map(fn || (b => b[field]));
-  return median(vals);
-}
-function peerStats(peer) {
-  const group = coreBranches.filter(b => b.peer === peer);
-  if (group.length === 0) return null;
-  return {
-    count: group.length,
-    branches: group,
-    piPen: { median: median(group.map(b=>b.piPen)), mean: trimmedMean(group.map(b=>b.piPen)) },
-    bizPen: { median: median(group.map(b=>b.bizPen)), mean: trimmedMean(group.map(b=>b.bizPen)) },
-    piGrowth: { median: median(group.map(b=>b.piGrowth)), mean: trimmedMean(group.map(b=>b.piGrowth)) },
-    bizGrowth: { median: median(group.map(b=>b.bizGrowth)), mean: trimmedMean(group.map(b=>b.bizGrowth)) },
-    mRate: { median: median(group.map(b=>b.mbank/b.piClients)), mean: trimmedMean(group.map(b=>b.mbank/b.piClients)) },
-    productDepth: { median: median(group.map(b=>(b.mortgage+b.consumer+b.cc)/b.piClients)), mean: trimmedMean(group.map(b=>(b.mortgage+b.consumer+b.cc)/b.piClients)) },
-    posRate: { median: median(group.map(b=>b.pos/b.biz*1000)), mean: trimmedMean(group.map(b=>b.pos/b.biz*1000)) }
-  };
-}
-
+// ========= HELPERS =========
 const fmt = n => n>=10000 ? (n/1000).toFixed(1)+'K' : n.toLocaleString();
 const pct = (n,d=1) => (n*100).toFixed(d)+'%';
-
+const segColor = s => ({
+  "Dominant Hub":"var(--seg-dominant)","Star Branch":"var(--seg-star)","Cash Cow":"var(--seg-cashcow)",
+  "Growth Engine":"var(--seg-growth)","High Potential":"var(--seg-high)","Mature Performer":"var(--seg-mature)",
+  "Stable Regional":"var(--seg-stable)","Underperformer":"var(--seg-under)","Critical Underperformer":"var(--seg-critical)",
+  "Structural Outlier":"var(--seg-outlier)","Nascent Entry":"var(--seg-nascent)"
+}[s]||"#999");
+const segBadge = s => {
+  const cls = {"Dominant Hub":"dominant","Star Branch":"star","Cash Cow":"cashcow","Growth Engine":"growth",
+    "High Potential":"high","Mature Performer":"mature","Stable Regional":"stable","Underperformer":"under",
+    "Critical Underperformer":"critical","Structural Outlier":"outlier","Nascent Entry":"nascent"}[s]||"growth";
+  return `<span class="badge badge-${cls}">${s}</span>`;
+};
+const segColorHex = s => ({
+  "Dominant Hub":"#1F4E79","Star Branch":"#F1C40F","Cash Cow":"#27AE60","Growth Engine":"#2E75B6",
+  "High Potential":"#8E44AD","Mature Performer":"#16A085","Stable Regional":"#7F8C8D","Underperformer":"#E74C3C",
+  "Critical Underperformer":"#C0392B","Structural Outlier":"#E67E22","Nascent Entry":"#3498DB"
+}[s]||"#999");
 function tl(val, greenThresh, amberThresh, higher=true) {
-  if (higher) return val>=greenThresh?'tl-green':val>=amberThresh?'tl-amber':'tl-red';
+  if(higher) return val>=greenThresh?'tl-green':val>=amberThresh?'tl-amber':'tl-red';
   return val<=greenThresh?'tl-green':val<=amberThresh?'tl-amber':'tl-red';
 }
 
-const segColorHex = s => ({
-  "Dominant Hub":"#002B49","Star Branch":"#0072BC","Cash Cow":"#27AE60","Growth Engine":"#2E75B6",
-  "High Potential":"#7B1FA2","Mature Performer":"#00695C","Stable Regional":"#546E7A","Underperformer":"#E65100",
-  "Critical Underperformer":"#C62828","Structural Outlier":"#BF360C","Nascent Entry":"#00838F"
-}[s]||"#999");
-
-// ================================================================
-// A. EXECUTIVE STORYLINE
-// ================================================================
-function renderStoryline() {
-  const medPiPen = median(coreBranches.map(b=>b.piPen));
-  const medBizPen = median(coreBranches.map(b=>b.bizPen));
-  const prizren = branches.find(b=>b.city==='PRIZREN');
-  const gjakove = branches.find(b=>b.city==='GJAKOVE');
-  const totalMbank = branches.reduce((s,b)=>s+b.mbank,0);
-  const totalPI = branches.reduce((s,b)=>s+b.piClients,0);
-  const unservedPop = unserved.reduce((s,u)=>s+u.pop,0);
-
-  const insights = [
-    { label:'Strategic Gap', cls:'alert',
-      metric: pct(prizren.piPen),
-      text: `Prizren (147K pop, Kosovo's 2nd city) has only ${pct(prizren.piPen)} PI penetration vs network median of ${pct(medPiPen)}. Closing to median = ~${Math.round(prizren.pop15*medPiPen - prizren.piClients).toLocaleString()} new clients.` },
-    { label:'Emergency', cls:'alert',
-      metric: gjakove.bizGrowth+'%',
-      text: `Gjakove lost 14% of business clients YoY (${Math.abs(Math.round(gjakove.bizClients*0.14))} clients). Growth has stalled at ${gjakove.piGrowth}% PI. Requires immediate turnaround plan.` },
-    { label:'Business Banking Opportunity', cls:'',
-      metric: pct(medBizPen),
-      text: `Only ${pct(NET.bizClients/NET.biz)} of 77,712 registered businesses are banked. Median city-level business penetration is ${pct(medBizPen)}. Over 64,000 businesses remain unbanked.` },
-    { label:'Digital Divide', cls:'',
-      metric: pct(totalMbank/totalPI),
-      text: `Network M-Banking adoption is ${pct(totalMbank/totalPI)} but ranges from ${pct(Math.min(...coreBranches.map(b=>b.mbank/b.piClients)))} to ${pct(Math.max(...coreBranches.map(b=>b.mbank/b.piClients)))} across city locations. Standardization could unlock significant cost savings.` },
-    { label:'Whitespace', cls:'success',
-      metric: unservedPop.toLocaleString(),
-      text: `9 municipalities with ${unservedPop.toLocaleString()} combined population have no NLB presence. Dragash (29K) and Shtime (24K) are priority targets.` },
-    { label:'Star Model', cls:'success',
-      metric: '34-53%',
-      text: `Decan (34.0%), Kacanik (28.0%), and Hani i Elezit (53.1%) achieve 1.5-2.8x network median penetration. Their operating model should be codified and replicated.` },
-  ];
-
-  document.getElementById('storylineGrid').innerHTML = insights.map(i => `
-    <div class="insight-card ${i.cls}">
-      <div class="insight-label">${i.label}</div>
-      <div class="insight-metric">${i.metric}</div>
-      <div class="insight-text">${i.text}</div>
-    </div>`).join('');
-}
-
-// ================================================================
-// B. KPI CARDS
-// ================================================================
+// ========= A. KPI CARDS =========
 function renderKPIs() {
   const totalPI = branches.reduce((s,b)=>s+b.piClients,0);
   const totalBiz = branches.reduce((s,b)=>s+b.bizClients,0);
   const netPiPen = totalPI / NET.pop15;
   const netBizPen = totalBiz / NET.biz;
-
-  const medPiGrowth = median(coreBranches.map(b=>b.piGrowth));
-  const tmPiGrowth = trimmedMean(coreBranches.map(b=>b.piGrowth));
-  const medBizGrowth = median(coreBranches.map(b=>b.bizGrowth));
-  const medPiPen = median(coreBranches.map(b=>b.piPen));
-  const medBizPen = median(coreBranches.map(b=>b.bizPen));
-  const totalMbank = branches.reduce((s,b)=>s+b.mbank,0);
-
+  const avgGrowth = branches.reduce((s,b)=>s+b.piGrowth,0)/branches.length;
+  const avgBizGrowth = branches.reduce((s,b)=>s+b.bizGrowth,0)/branches.length;
   const kpis = [
-    { label:'Total PI Clients', value:totalPI.toLocaleString(),
-      sub:`<span class="up">&#9650; ${medPiGrowth.toFixed(1)}% median growth</span>`,
-      method:`Median of ${coreBranches.length} core city locations (excl. structural outliers, nascent)` },
-    { label:'Total Biz Clients', value:totalBiz.toLocaleString(),
-      sub:`<span class="${medBizGrowth>=0?'up':'down'}">${medBizGrowth>=0?'&#9650;':'&#9660;'} ${medBizGrowth.toFixed(1)}% median growth</span>`,
-      method:`Median growth across core city locations` },
-    { label:'Network PI Penetration', value:pct(netPiPen),
-      sub:`Median city: ${pct(medPiPen)}`,
-      method:`Network = total PI clients / pop 15+ (1.25M). City median excludes outliers.` },
-    { label:'Business Penetration', value:pct(netBizPen),
-      sub:`Median city: ${pct(medBizPen)}`,
-      method:`Active biz clients / registered businesses per municipality` },
-    { label:'M-Banking Adoption', value:pct(totalMbank/totalPI),
-      sub:`${totalMbank.toLocaleString()} users`,
-      method:`M-Banking users / PI clients. Network-level aggregate.` },
-    { label:'City Locations', value:'29',
-      sub:`${Object.keys(PEER_COLORS).filter(p=>coreBranches.some(b=>b.peer===p)).length} peer groups`,
-      method:`City-level aggregated view. Some cities contain multiple branches.` },
+    {label:'Total PI Clients',value:totalPI.toLocaleString(),sub:`<span class="up">&#9650; ${avgGrowth.toFixed(1)}% avg growth</span>`},
+    {label:'Total Biz Clients',value:totalBiz.toLocaleString(),sub:`<span class="${avgBizGrowth>=0?'up':'down'}">${avgBizGrowth>=0?'&#9650;':'&#9660;'} ${avgBizGrowth.toFixed(1)}% avg growth</span>`},
+    {label:'Network PI Penetration',value:pct(netPiPen),sub:'vs pop 15+ (1.25M)'},
+    {label:'Network Biz Penetration',value:pct(netBizPen),sub:'vs registered businesses'},
+    {label:'Total Branches',value:'29',sub:'across Kosovo'},
+    {label:'Avg PI Growth',value:avgGrowth.toFixed(1)+'%',sub:`<span class="up">&#9650; YoY client growth</span>`},
   ];
-
-  document.getElementById('kpiGrid').innerHTML = kpis.map(k=>`
+  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
     <div class="kpi-card">
       <div class="kpi-label">${k.label}</div>
       <div class="kpi-value">${k.value}</div>
-      <div class="kpi-sub">${k.sub}<span class="method">${k.method}</span></div>
+      <div class="kpi-sub">${k.sub}</div>
     </div>`).join('');
-
-  document.getElementById('kpiMethodNote').innerHTML = `
-    <strong>Methodology:</strong> Data is aggregated at <strong>city level</strong> — some cities contain multiple branches.
-    All central tendency measures use <strong>median</strong> (not mean) to avoid distortion from structural outliers.
-    Growth rates use trimmed mean (10% trim) where noted.
-    Mit. Veriore (PI pen 135.5%), Leposaviq (+101.6% growth), and Zubin Potok (+371.8% growth)
-    are excluded from all aggregate calculations as structural exceptions.`;
 }
 
-// ================================================================
-// C. BRANCH TABLE
-// ================================================================
+// ========= B. BRANCH TABLE =========
 let sortCol = 'piPen', sortDir = -1;
 const columns = [
-  {key:'city', label:'City', fmt:v=>v},
-  {key:'peer', label:'Peer', fmt:v=>peerBadge(v)},
-  {key:'piPen', label:'PI Pen', fmt:(v,b)=>{
-    const flag = isException(b) ? '<span class="outlier-flag" title="Structural exception">&#9888;</span>' : '';
-    return `<span class="tl ${tl(v,0.20,0.15)}"></span>${pct(v)}${flag}`;
-  }, num:true},
-  {key:'bizPen', label:'Biz Pen', fmt:(v,b)=>{
-    const flag = isException(b) ? '<span class="outlier-flag" title="Structural exception">&#9888;</span>' : '';
-    return `<span class="tl ${tl(v,0.18,0.12)}"></span>${pct(v)}${flag}`;
-  }, num:true},
-  {key:'piGrowth', label:'PI Grw%', fmt:(v,b)=>{
-    const flag = (v>50) ? '<span class="outlier-flag" title="Off tiny base">&#9888;</span>' : '';
-    return `<span class="tl ${tl(v,4,2)}"></span>${v.toFixed(1)}%${flag}`;
-  }, num:true},
-  {key:'bizGrowth', label:'Biz Grw%', fmt:(v,b)=>`<span class="tl ${tl(v,2,0)}"></span>${v.toFixed(1)}%`, num:true},
-  {key:'piClients', label:'PI Clients', fmt:v=>v.toLocaleString(), num:true},
-  {key:'bizClients', label:'Biz', fmt:v=>v.toLocaleString(), num:true},
-  {key:'pos', label:'POS', fmt:v=>v.toLocaleString(), num:true},
-  {key:'_mrate', label:'M-Bank%', fmt:(v,b)=>{
-    const r=b.mbank/b.piClients;
-    return `<span class="tl ${tl(r,0.05,0.03)}"></span>${(r*100).toFixed(1)}%`;
-  }, num:true, sortVal:b=>b.mbank/b.piClients},
-  {key:'_product', label:'Product/Client', fmt:(v,b)=>{
-    const r=(b.mortgage+b.consumer+b.cc)/b.piClients;
-    return r.toFixed(3);
-  }, num:true, sortVal:b=>(b.mortgage+b.consumer+b.cc)/b.piClients},
+  {key:'city',label:'City',fmt:v=>v},
+  {key:'segment',label:'Segment',fmt:v=>segBadge(v)},
+  {key:'piPen',label:'PI Pen%',fmt:(v,b)=>`<span class="tl ${tl(v,0.20,0.15)}"></span>${pct(v)}`,num:true},
+  {key:'bizPen',label:'Biz Pen%',fmt:(v,b)=>`<span class="tl ${tl(v,0.18,0.12)}"></span>${pct(v)}`,num:true},
+  {key:'piGrowth',label:'PI Growth%',fmt:(v,b)=>`<span class="tl ${tl(v,4,2)}"></span>${v.toFixed(1)}%`,num:true},
+  {key:'bizGrowth',label:'Biz Growth%',fmt:(v,b)=>`<span class="tl ${tl(v,2,0)}"></span>${v.toFixed(1)}%`,num:true},
+  {key:'piClients',label:'PI Clients',fmt:v=>v.toLocaleString(),num:true},
+  {key:'bizClients',label:'Biz Clients',fmt:v=>v.toLocaleString(),num:true},
+  {key:'pos',label:'POS',fmt:v=>v.toLocaleString(),num:true},
+  {key:'_mrate',label:'M-Bank%',fmt:(v,b)=>{const r=b.mbank/b.piClients;return `<span class="tl ${tl(r,0.05,0.03)}"></span>${(r*100).toFixed(1)}%`;},num:true,
+    sortVal:b=>b.mbank/b.piClients},
+  {key:'_lending',label:'Lending/Client',fmt:(v,b)=>{const l=(b.mortgage+b.consumer)/b.piClients;return l.toFixed(3);},num:true,
+    sortVal:b=>(b.mortgage+b.consumer)/b.piClients},
 ];
 
-function populateFilters() {
-  const peers = [...new Set(branches.map(b=>b.peer))].sort();
+function populateSegmentFilter() {
   const segs = [...new Set(branches.map(b=>b.segment))].sort();
-  const pSel = document.getElementById('filterPeer');
-  peers.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;pSel.appendChild(o);});
-  const sSel = document.getElementById('filterSegment');
-  segs.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sSel.appendChild(o);});
+  const sel = document.getElementById('filterSegment');
+  segs.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
 }
 
 function getFiltered() {
   const search = document.getElementById('searchCity').value.toUpperCase();
-  const peer = document.getElementById('filterPeer').value;
   const seg = document.getElementById('filterSegment').value;
   let data = branches.filter(b=>{
     if(search && !b.city.includes(search)) return false;
-    if(peer && b.peer!==peer) return false;
     if(seg && b.segment!==seg) return false;
     return true;
   });
@@ -1055,24 +439,27 @@ function getFiltered() {
     const col = columns.find(c=>c.key===sortCol);
     let va,vb;
     if(col && col.sortVal) { va=col.sortVal(a); vb=col.sortVal(b); }
+    else if(sortCol==='_mrate') { va=a.mbank/a.piClients; vb=b.mbank/b.piClients; }
+    else if(sortCol==='_lending') { va=(a.mortgage+a.consumer)/a.piClients; vb=(b.mortgage+b.consumer)/b.piClients; }
     else { va=a[sortCol]; vb=b[sortCol]; }
     if(typeof va==='string') return sortDir * va.localeCompare(vb);
-    return sortDir * ((va||0)-(vb||0));
+    return sortDir * (va-vb);
   });
   return data;
 }
 
 function renderTable() {
+  // thead
   document.getElementById('branchThead').innerHTML = '<tr>'+columns.map(c=>
     `<th class="${sortCol===c.key?'sorted':''}" onclick="sortTable('${c.key}')">
-      ${c.label}<span class="arrow">${sortCol===c.key?(sortDir===1?'&#9650;':'&#9660;'):'&#8597;'}</span>
+      ${c.label}<span class="sort-arrow">${sortCol===c.key?(sortDir===1?'&#9650;':'&#9660;'):'&#9650;'}</span>
     </th>`).join('')+'</tr>';
   const data = getFiltered();
   document.getElementById('branchTbody').innerHTML = data.map(b=>'<tr>'+columns.map(c=>{
     const val = c.key.startsWith('_') ? null : b[c.key];
     return `<td>${c.fmt(val,b)}</td>`;
   }).join('')+'</tr>').join('');
-  document.getElementById('tableCount').textContent = `${data.length} of ${branches.length} city locations`;
+  document.getElementById('tableCount').textContent = `Showing ${data.length} of ${branches.length} branches`;
 }
 
 function sortTable(key) {
@@ -1081,362 +468,228 @@ function sortTable(key) {
   renderTable();
 }
 
-// ================================================================
-// D. CHARTS
-// ================================================================
+// ========= C. CHARTS =========
 let chartInstances = {};
 function destroyChart(id) { if(chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; } }
 
 function renderCharts() {
-  const main = coreBranches;
-  const medPiPen = median(main.map(b=>b.piPen))*100;
+  // Exclude structural outliers for cleaner viz (except where noted)
+  const mainBranches = branches.filter(b=>b.segment!=='Structural Outlier'&&b.segment!=='Nascent Entry');
 
-  // 1. PI Penetration horizontal bar
-  const sorted = [...main].sort((a,b)=>b.piPen-a.piPen);
+  // 1. PI Penetration bar (sorted)
+  const sorted = [...mainBranches].sort((a,b)=>b.piPen-a.piPen);
   destroyChart('chartPiPen');
-  const ctx1 = document.getElementById('chartPiPen');
-  ctx1.parentElement.style.height = (sorted.length*28+80)+'px';
-  chartInstances['chartPiPen'] = new Chart(ctx1, {
+  chartInstances['chartPiPen'] = new Chart(document.getElementById('chartPiPen'),{
     type:'bar',
     data:{
       labels:sorted.map(b=>b.city),
       datasets:[{
         data:sorted.map(b=>b.piPen*100),
-        backgroundColor:sorted.map(b=>segColorHex(b.segment)+'CC'),
+        backgroundColor:sorted.map(b=>segColorHex(b.segment)),
         borderRadius:3
       }]
     },
     options:{
-      indexAxis:'y', responsive:true, maintainAspectRatio:false,
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:ctx=>`${ctx.raw.toFixed(1)}% (Peer: ${sorted[ctx.dataIndex].peer})`}},
-        annotation: undefined
-      },
-      scales:{
-        x:{title:{display:true,text:'PI Penetration (%)',font:{size:12}},grid:{color:'#f0f0f0'}},
-        y:{ticks:{font:{size:11}}}
-      }
-    },
-    plugins:[{
-      id:'medianLine',
-      afterDraw(chart) {
-        const xScale = chart.scales.x;
-        const x = xScale.getPixelForValue(medPiPen);
-        const ctx = chart.ctx;
-        ctx.save();
-        ctx.strokeStyle = '#C62828';
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([6,4]);
-        ctx.beginPath();
-        ctx.moveTo(x, chart.chartArea.top);
-        ctx.lineTo(x, chart.chartArea.bottom);
-        ctx.stroke();
-        ctx.fillStyle = '#C62828';
-        ctx.font = '11px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(`Median: ${medPiPen.toFixed(1)}%`, x, chart.chartArea.top - 6);
-        ctx.restore();
-      }
-    }]
+      indexAxis:'y',
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw.toFixed(1)+'%'}}},
+      scales:{x:{title:{display:true,text:'PI Penetration (%)'},grid:{display:false}},y:{ticks:{font:{size:11}}}},
+    }
   });
+  document.getElementById('chartPiPen').parentElement.style.height = (sorted.length*26+60)+'px';
 
-  // 2. Scatter/Bubble
+  // 2. Scatter (bubble)
   destroyChart('chartScatter');
-  chartInstances['chartScatter'] = new Chart(document.getElementById('chartScatter'), {
+  chartInstances['chartScatter'] = new Chart(document.getElementById('chartScatter'),{
     type:'bubble',
     data:{
-      datasets:main.map(b=>({
+      datasets:mainBranches.map(b=>({
         label:b.city,
-        data:[{x:b.piPen*100, y:b.bizPen*100, r:Math.sqrt(b.pop)/90+3}],
-        backgroundColor:segColorHex(b.segment)+'99',
-        borderColor:segColorHex(b.segment),
-        borderWidth:1
+        data:[{x:b.piPen*100,y:b.bizPen*100,r:Math.sqrt(b.pop)/80+3}],
+        backgroundColor:segColorHex(b.segment)+'BB'
       }))
     },
     options:{
       responsive:true,
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{
-          label:ctx=>{const b=main[ctx.datasetIndex];return `${b.city} (${b.peer}): PI ${pct(b.piPen)}, Biz ${pct(b.bizPen)}, Pop ${b.pop.toLocaleString()}`;}
-        }}
-      },
+      plugins:{legend:{display:false},tooltip:{callbacks:{
+        label:ctx=>{const b=mainBranches[ctx.datasetIndex];return `${b.city}: PI ${(b.piPen*100).toFixed(1)}%, Biz ${(b.bizPen*100).toFixed(1)}%, Pop ${b.pop.toLocaleString()}`;}
+      }}},
       scales:{
-        x:{title:{display:true,text:'PI Penetration (%)',font:{size:12}},min:10,max:38,grid:{color:'#f0f0f0'}},
-        y:{title:{display:true,text:'Business Penetration (%)',font:{size:12}},min:8,max:40,grid:{color:'#f0f0f0'}}
+        x:{title:{display:true,text:'PI Penetration (%)'},min:5,max:40},
+        y:{title:{display:true,text:'Business Penetration (%)'},min:5,max:40}
       }
     }
   });
 
-  // 3. Doughnut by segment
+  // 3. PI Growth bar
+  const growSorted = [...mainBranches].sort((a,b)=>b.piGrowth-a.piGrowth);
+  destroyChart('chartGrowth');
+  chartInstances['chartGrowth'] = new Chart(document.getElementById('chartGrowth'),{
+    type:'bar',
+    data:{
+      labels:growSorted.map(b=>b.city),
+      datasets:[{
+        data:growSorted.map(b=>b.piGrowth),
+        backgroundColor:growSorted.map(b=>b.piGrowth>=4?'#27AE60':b.piGrowth>=2?'#F39C12':'#E74C3C'),
+        borderRadius:3
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw.toFixed(1)+'%'}}},
+      scales:{x:{ticks:{maxRotation:90,font:{size:10}}},y:{title:{display:true,text:'Growth %'}}}
+    }
+  });
+
+  // 4. Doughnut by segment
   const segGroups = {};
   branches.forEach(b=>{
-    if(!segGroups[b.segment]) segGroups[b.segment]={pi:0,count:0};
+    if(!segGroups[b.segment]) segGroups[b.segment]={pi:0,biz:0,count:0};
     segGroups[b.segment].pi+=b.piClients;
+    segGroups[b.segment].biz+=b.bizClients;
     segGroups[b.segment].count++;
   });
   const segNames = Object.keys(segGroups).sort((a,b)=>segGroups[b].pi-segGroups[a].pi);
   destroyChart('chartDoughnut');
-  chartInstances['chartDoughnut'] = new Chart(document.getElementById('chartDoughnut'), {
+  chartInstances['chartDoughnut'] = new Chart(document.getElementById('chartDoughnut'),{
     type:'doughnut',
     data:{
       labels:segNames,
       datasets:[{
         data:segNames.map(s=>segGroups[s].pi),
-        backgroundColor:segNames.map(s=>segColorHex(s)+'DD'),
+        backgroundColor:segNames.map(s=>segColorHex(s)),
         borderWidth:2,borderColor:'#fff'
       }]
     },
     options:{
       responsive:true,
       plugins:{
-        legend:{position:'right',labels:{font:{size:11},boxWidth:12,padding:8}},
-        tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw.toLocaleString()} (${(ctx.raw/NET.piClients*100).toFixed(1)}%)`}}
+        legend:{position:'right',labels:{font:{size:11},boxWidth:14}},
+        tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw.toLocaleString()} PI clients (${(ctx.raw/NET.piClients*100).toFixed(1)}%)`}}
       }
     }
   });
 
-  // 4. Growth bar (exclude nascent >100%)
-  const growthBranches = branches.filter(b=>b.piGrowth<50 && b.segment!=='Structural Outlier');
-  const growSorted = [...growthBranches].sort((a,b)=>b.piGrowth-a.piGrowth);
-  destroyChart('chartGrowth');
-  chartInstances['chartGrowth'] = new Chart(document.getElementById('chartGrowth'), {
-    type:'bar',
-    data:{
-      labels:growSorted.map(b=>b.city),
-      datasets:[{
-        data:growSorted.map(b=>b.piGrowth),
-        backgroundColor:growSorted.map(b=>b.piGrowth>=4?'#0D8050':b.piGrowth>=2?'#C87619':'#C62828'),
-        borderRadius:3
-      }]
-    },
-    options:{
-      responsive:true,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw.toFixed(1)+'% YoY'}}},
-      scales:{x:{ticks:{maxRotation:90,font:{size:10}}},y:{title:{display:true,text:'PI Growth %',font:{size:12}},grid:{color:'#f0f0f0'}}}
-    }
-  });
-
-  // 5. POS per 1K biz
-  const posSorted = [...main].map(b=>({...b,posRate:b.pos/b.biz*1000})).sort((a,b)=>b.posRate-a.posRate);
+  // 5. POS per 1000 biz
+  const posSorted = [...mainBranches].map(b=>({...b,posRate:b.pos/b.biz*1000})).sort((a,b)=>b.posRate-a.posRate);
   destroyChart('chartPOS');
-  chartInstances['chartPOS'] = new Chart(document.getElementById('chartPOS'), {
+  chartInstances['chartPOS'] = new Chart(document.getElementById('chartPOS'),{
     type:'bar',
     data:{
       labels:posSorted.map(b=>b.city),
       datasets:[{
         data:posSorted.map(b=>b.posRate),
-        backgroundColor:posSorted.map(b=>segColorHex(b.segment)+'BB'),
+        backgroundColor:posSorted.map(b=>segColorHex(b.segment)),
         borderRadius:3
       }]
     },
     options:{
       responsive:true,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw.toFixed(1)+' POS per 1K businesses'}}},
-      scales:{x:{ticks:{maxRotation:90,font:{size:10}}},y:{title:{display:true,text:'POS per 1,000 businesses',font:{size:12}},grid:{color:'#f0f0f0'}}}
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw.toFixed(1)+' POS/1K biz'}}},
+      scales:{x:{ticks:{maxRotation:90,font:{size:10}}},y:{title:{display:true,text:'POS per 1,000 businesses'}}}
     }
   });
 }
 
-// ================================================================
-// E. PEER GROUP BENCHMARKING
-// ================================================================
-function renderPeerGroups() {
-  const peerOrder = ['Metro','Regional','Town','Small/Border'];
-  const html = peerOrder.map(peer => {
-    const stats = peerStats(peer);
-    if (!stats) return '';
-    const c = PEER_COLORS[peer];
-    return `<div class="peer-card" style="border-left-color:${c.border}">
-      <h4>${peerBadge(peer)} <span style="font-weight:400;font-size:12px;color:var(--text-muted)">${stats.count} cities</span></h4>
-      <div class="peer-stat"><span class="label">PI Penetration (median)</span><span class="val">${pct(stats.piPen.median)}</span></div>
-      <div class="peer-stat"><span class="label">Biz Penetration (median)</span><span class="val">${pct(stats.bizPen.median)}</span></div>
-      <div class="peer-stat"><span class="label">PI Growth (median)</span><span class="val">${stats.piGrowth.median.toFixed(1)}%</span></div>
-      <div class="peer-stat"><span class="label">Biz Growth (median)</span><span class="val">${stats.bizGrowth.median.toFixed(1)}%</span></div>
-      <div class="peer-stat"><span class="label">M-Banking Rate (median)</span><span class="val">${pct(stats.mRate.median)}</span></div>
-      <div class="peer-stat"><span class="label">Product Depth (median)</span><span class="val">${stats.productDepth.median.toFixed(3)}</span></div>
-      <div class="peer-stat"><span class="label">POS/1K Biz (median)</span><span class="val">${stats.posRate.median.toFixed(1)}</span></div>
-      <div class="peer-finding"><strong>Cities:</strong> ${stats.branches.map(b=>b.city).join(', ')}</div>
+// ========= D. SEGMENT SUMMARY =========
+function renderSegments() {
+  const segGroups = {};
+  branches.forEach(b=>{
+    if(!segGroups[b.segment]) segGroups[b.segment]={branches:[],pi:0,biz:0};
+    segGroups[b.segment].branches.push(b);
+    segGroups[b.segment].pi+=b.piClients;
+    segGroups[b.segment].biz+=b.bizClients;
+  });
+  const findings = {
+    "Dominant Hub":"Prishtine dominates with 20% of all PI clients. Invest in cross-sell and digital deepening.",
+    "Star Branch":"Exceptionally high penetration relative to size. Replicate their engagement model across network.",
+    "Cash Cow":"Strong penetration with moderate growth. Optimize cost-to-serve, maintain profitability.",
+    "Growth Engine":"Largest segment with high growth headroom. Priority for client acquisition investment.",
+    "High Potential":"Prizren is 2nd largest city but heavily underpenetrated. Major strategic opportunity.",
+    "Mature Performer":"High penetration, slowing growth. Focus on product deepening and retention.",
+    "Stable Regional":"Consistent but unspectacular. Maintain current service levels, selective digital push.",
+    "Underperformer":"Rahovec shows weak business penetration and declining engagement. Needs turnaround plan.",
+    "Critical Underperformer":"Gjakove's growth has stalled despite large catchment. Requires urgent intervention.",
+    "Structural Outlier":"Unique demographics (e.g., cross-border flows in Mit. Veriore). Assess on case-by-case basis.",
+    "Nascent Entry":"Recently opened in Serbian-majority areas. Explosive growth off tiny base. Monitor ramp-up trajectory."
+  };
+  const order = ["Dominant Hub","Star Branch","Cash Cow","Growth Engine","High Potential","Mature Performer","Stable Regional","Underperformer","Critical Underperformer","Structural Outlier","Nascent Entry"];
+  const html = order.filter(s=>segGroups[s]).map(s=>{
+    const g = segGroups[s];
+    const avgPiPen = g.branches.reduce((x,b)=>x+b.piPen,0)/g.branches.length;
+    const avgBizPen = g.branches.reduce((x,b)=>x+b.bizPen,0)/g.branches.length;
+    const avgGrowth = g.branches.reduce((x,b)=>x+b.piGrowth,0)/g.branches.length;
+    return `<div class="seg-card" style="border-left-color:${segColorHex(s)}">
+      <h4>${segBadge(s)}</h4>
+      <div class="stat-row"><span>Branches</span><strong>${g.branches.length}</strong></div>
+      <div class="stat-row"><span>Total PI Clients</span><strong>${g.pi.toLocaleString()}</strong></div>
+      <div class="stat-row"><span>Avg PI Penetration</span><strong>${pct(avgPiPen)}</strong></div>
+      <div class="stat-row"><span>Avg Biz Penetration</span><strong>${pct(avgBizPen)}</strong></div>
+      <div class="stat-row"><span>Avg PI Growth</span><strong>${avgGrowth.toFixed(1)}%</strong></div>
+      <div class="stat-row"><span>Cities</span><strong>${g.branches.map(b=>b.city).join(', ')}</strong></div>
+      <div class="finding">${findings[s]||''}</div>
     </div>`;
   }).join('');
-
-  // Add structural outlier card
-  const outliers = branches.filter(b=>b.segment==='Structural Outlier'||b.segment==='Nascent Entry');
-  const outlierCard = `<div class="peer-card" style="border-left-color:${PEER_COLORS['Structural Outlier'].border}">
-    <h4>${peerBadge('Structural Outlier')} / ${peerBadge('Nascent')} <span style="font-weight:400;font-size:12px;color:var(--text-muted)">${outliers.length} locations</span></h4>
-    <div class="peer-finding" style="margin-top:0;border-top:none;">
-      <strong>Excluded from benchmarks.</strong> These locations serve populations beyond municipal boundaries
-      (Mit. Veriore: cross-border flows, PI pen 135.5%) or are nascent entries off a tiny base
-      (Leposaviq: +101.6%, Zubin Potok: +371.8%). Gra&ccedil;anic&euml; and Shterpc&euml; have unique
-      demographic profiles. Evaluate individually, not comparatively.
-    </div>
-    <div class="peer-stat"><span class="label">Locations</span><span class="val">${outliers.map(b=>b.city).join(', ')}</span></div>
-  </div>`;
-
-  document.getElementById('peerGrid').innerHTML = html + outlierCard;
+  document.getElementById('segGrid').innerHTML = html;
 }
 
-// ================================================================
-// F. OPPORTUNITY HEATMAP (Peer-relative, transparent weights)
-// ================================================================
-const HEATMAP_WEIGHTS = {piGap:0.30, bizGap:0.25, digitalGap:0.25, productGap:0.20};
-
+// ========= E. OPPORTUNITY HEATMAP =========
 function renderHeatmap() {
-  // Weights display
-  document.getElementById('heatmapWeights').innerHTML = Object.entries(HEATMAP_WEIGHTS).map(([k,w]) => {
-    const labels = {piGap:'PI Penetration Gap',bizGap:'Business Pen Gap',digitalGap:'Digital Adoption Gap',productGap:'Product Depth Gap'};
-    return `<span class="weight-item"><strong>${(w*100).toFixed(0)}%</strong> ${labels[k]}</span>`;
-  }).join('<span style="color:var(--border)">&middot;</span>');
+  // Exclude outliers
+  const main = branches.filter(b=>b.segment!=='Structural Outlier'&&b.segment!=='Nascent Entry');
+  const maxPiPen = Math.max(...main.map(b=>b.piPen));
+  const maxBizPen = Math.max(...main.map(b=>b.bizPen));
+  const maxMrate = Math.max(...main.map(b=>b.mbank/b.piClients));
+  const maxProduct = Math.max(...main.map(b=>(b.mortgage+b.consumer+b.cc)/b.piClients));
 
-  // Calculate peer-relative gaps
-  const main = coreBranches;
-  const peerMaxes = {};
-  ['Metro','Regional','Town','Small/Border'].forEach(peer => {
-    const group = main.filter(b=>b.peer===peer);
-    if (group.length === 0) return;
-    peerMaxes[peer] = {
-      piPen: Math.max(...group.map(b=>b.piPen)),
-      bizPen: Math.max(...group.map(b=>b.bizPen)),
-      mRate: Math.max(...group.map(b=>b.mbank/b.piClients)),
-      product: Math.max(...group.map(b=>(b.mortgage+b.consumer+b.cc)/b.piClients))
-    };
-  });
-
-  const rows = main.map(b => {
-    const pm = peerMaxes[b.peer];
-    if (!pm) return null;
-    const piGap = pm.piPen > 0 ? 1 - b.piPen/pm.piPen : 0;
-    const bizGap = pm.bizPen > 0 ? 1 - b.bizPen/pm.bizPen : 0;
-    const mRate = b.mbank/b.piClients;
-    const digitalGap = pm.mRate > 0 ? 1 - mRate/pm.mRate : 0;
-    const product = (b.mortgage+b.consumer+b.cc)/b.piClients;
-    const productGap = pm.product > 0 ? 1 - product/pm.product : 0;
-    const composite = piGap*HEATMAP_WEIGHTS.piGap + bizGap*HEATMAP_WEIGHTS.bizGap +
-                      digitalGap*HEATMAP_WEIGHTS.digitalGap + productGap*HEATMAP_WEIGHTS.productGap;
-    return {b, piGap, bizGap, digitalGap, productGap, composite};
-  }).filter(Boolean).sort((a,b)=>b.composite-a.composite);
-
-  function heatColor(g) {
-    g = Math.min(1,Math.max(0,g));
-    const r = Math.round(232 - g*200);
-    const gv = Math.round(241 - g*165);
-    const bv = Math.round(248 - g*120);
+  function heatColor(gap01) {
+    // 0=no gap (light), 1=max gap (dark navy)
+    const g = Math.min(1,Math.max(0,gap01));
+    const r = Math.round(214 - g*183);
+    const gv = Math.round(228 - g*150);
+    const bv = Math.round(240 - g*119);
     return `rgb(${r},${gv},${bv})`;
   }
-  function textColor(g) { return g > 0.5 ? '#fff' : '#1A1A2E'; }
+  function textColor(gap01) { return gap01 > 0.55 ? '#fff' : '#333'; }
 
-  let html = `<thead><tr>
-    <th>City</th><th>Peer</th>
-    <th>PI Gap</th><th>Biz Gap</th><th>Digital Gap</th><th>Product Gap</th>
-    <th>Score</th><th>Interpretation</th>
-  </tr></thead><tbody>`;
+  const rows = main.map(b=>{
+    const piGap = 1 - b.piPen/maxPiPen;
+    const bizGap = 1 - b.bizPen/maxBizPen;
+    const mrate = b.mbank/b.piClients;
+    const digitalGap = 1 - mrate/maxMrate;
+    const productRate = (b.mortgage+b.consumer+b.cc)/b.piClients;
+    const productGap = 1 - productRate/maxProduct;
+    const composite = (piGap*0.3 + bizGap*0.25 + digitalGap*0.25 + productGap*0.2);
+    return {b, piGap, bizGap, digitalGap, productGap, composite};
+  }).sort((a,b)=>b.composite-a.composite);
 
-  rows.forEach(r => {
-    const score = (r.composite*100).toFixed(0);
-    const interp = r.composite>=0.5 ? 'High opportunity — significant gaps vs peer best' :
-                   r.composite>=0.3 ? 'Moderate opportunity — selective improvement areas' :
-                   'Low gap — performing near peer best';
+  let html = `<thead><tr><th>City</th><th>Segment</th><th>PI Pen Gap</th><th>Biz Pen Gap</th><th>Digital Gap</th><th>Product Gap</th><th>Composite Score</th></tr></thead><tbody>`;
+  rows.forEach(r=>{
     html += `<tr>
-      <td><strong>${r.b.city}</strong></td>
-      <td>${peerBadge(r.b.peer)}</td>
-      <td style="background:${heatColor(r.piGap)};color:${textColor(r.piGap)};text-align:center">${(r.piGap*100).toFixed(0)}%</td>
-      <td style="background:${heatColor(r.bizGap)};color:${textColor(r.bizGap)};text-align:center">${(r.bizGap*100).toFixed(0)}%</td>
-      <td style="background:${heatColor(r.digitalGap)};color:${textColor(r.digitalGap)};text-align:center">${(r.digitalGap*100).toFixed(0)}%</td>
-      <td style="background:${heatColor(r.productGap)};color:${textColor(r.productGap)};text-align:center">${(r.productGap*100).toFixed(0)}%</td>
-      <td style="background:${heatColor(r.composite)};color:${textColor(r.composite)};text-align:center;font-weight:700">${score}</td>
-      <td style="font-size:12px;color:var(--text-secondary)">${interp}</td>
+      <td>${r.b.city}</td>
+      <td>${segBadge(r.b.segment)}</td>
+      <td style="background:${heatColor(r.piGap)};color:${textColor(r.piGap)}">${(r.piGap*100).toFixed(0)}%</td>
+      <td style="background:${heatColor(r.bizGap)};color:${textColor(r.bizGap)}">${(r.bizGap*100).toFixed(0)}%</td>
+      <td style="background:${heatColor(r.digitalGap)};color:${textColor(r.digitalGap)}">${(r.digitalGap*100).toFixed(0)}%</td>
+      <td style="background:${heatColor(r.productGap)};color:${textColor(r.productGap)}">${(r.productGap*100).toFixed(0)}%</td>
+      <td style="background:${heatColor(r.composite)};color:${textColor(r.composite)};font-weight:700">${(r.composite*100).toFixed(0)}</td>
     </tr>`;
   });
   html += '</tbody>';
   document.getElementById('heatmapTable').innerHTML = html;
 }
 
-// ================================================================
-// G. CITY PROFILE — Rule-based recommendations
-// ================================================================
+// ========= F. BRANCH PROFILE =========
 let radarChart = null;
-
 function populateProfileSelect() {
   const sel = document.getElementById('profileSelect');
   branches.forEach(b=>{
     const o = document.createElement('option');
     o.value = b.code;
-    o.textContent = `${b.city} (${b.peer})`;
+    o.textContent = `${b.city} (${b.code})`;
     sel.appendChild(o);
   });
-}
-
-function generateRecommendations(b) {
-  const recs = [];
-  const peerMed = {};
-  if (!isException(b)) {
-    const ps = peerStats(b.peer);
-    if (ps) {
-      peerMed.piPen = ps.piPen.median;
-      peerMed.bizPen = ps.bizPen.median;
-      peerMed.piGrowth = ps.piGrowth.median;
-      peerMed.mRate = ps.mRate.median;
-      peerMed.productDepth = ps.productDepth.median;
-      peerMed.posRate = ps.posRate.median;
-    }
-  }
-
-  const mRate = b.mbank/b.piClients;
-  const product = (b.mortgage+b.consumer+b.cc)/b.piClients;
-  const posRate = b.pos/b.biz*1000;
-
-  // Rule 1: PI penetration below peer median
-  if (peerMed.piPen && b.piPen < peerMed.piPen * 0.85) {
-    const gap = Math.round(b.pop15 * peerMed.piPen - b.piClients);
-    recs.push({priority:'high', text:`PI penetration (${pct(b.piPen)}) is ${((1-b.piPen/peerMed.piPen)*100).toFixed(0)}% below ${b.peer} peer median (${pct(peerMed.piPen)}). Gap = ~${gap.toLocaleString()} clients. Launch targeted client acquisition campaign.`});
-  }
-
-  // Rule 2: Business client decline
-  if (b.bizGrowth < -3) {
-    recs.push({priority:'high', text:`Business clients declining at ${b.bizGrowth}% YoY. Audit relationship management, competitive landscape, and service quality. Assign dedicated business banker if not present.`});
-  } else if (b.bizGrowth < 0) {
-    recs.push({priority:'med', text:`Business clients declining (${b.bizGrowth}%). Monitor trend and review business banking proposition.`});
-  }
-
-  // Rule 3: Business penetration below peer
-  if (peerMed.bizPen && b.bizPen < peerMed.bizPen * 0.8) {
-    recs.push({priority:'med', text:`Business penetration (${pct(b.bizPen)}) below ${b.peer} peer median (${pct(peerMed.bizPen)}). Target SME acquisition through POS bundling and business loan campaigns.`});
-  }
-
-  // Rule 4: Digital adoption
-  if (peerMed.mRate && mRate < peerMed.mRate * 0.7) {
-    recs.push({priority:'med', text:`M-Banking adoption (${pct(mRate)}) significantly below peer median (${pct(peerMed.mRate)}). Drive digital onboarding at service points. Set staff KPIs for digital migration.`});
-  } else if (peerMed.mRate && mRate < peerMed.mRate) {
-    recs.push({priority:'low', text:`M-Banking adoption (${pct(mRate)}) below peer median (${pct(peerMed.mRate)}). Incremental digital push through local campaigns.`});
-  }
-
-  // Rule 5: Product depth
-  if (peerMed.productDepth && product < peerMed.productDepth * 0.7) {
-    recs.push({priority:'med', text:`Product depth (${product.toFixed(3)} products/client) below peer median (${peerMed.productDepth.toFixed(3)}). Focus on credit card and consumer loan cross-sell.`});
-  }
-
-  // Rule 6: POS deployment
-  if (peerMed.posRate && posRate < peerMed.posRate * 0.5) {
-    recs.push({priority:'med', text:`POS density (${posRate.toFixed(1)}/1K biz) less than half of peer median (${peerMed.posRate.toFixed(1)}). Accelerate merchant acquisition through POS-for-account bundles.`});
-  }
-
-  // Rule 7: Growth stall
-  if (!isException(b) && b.piGrowth < 1 && b.piPen < 0.25) {
-    recs.push({priority:'high', text:`Growth has stalled (${b.piGrowth}%) with penetration still low (${pct(b.piPen)}). This city footprint requires a strategic review and potential operational restructuring.`});
-  }
-
-  // Rule 8: High performer retention
-  if (b.piPen > 0.25 && b.piGrowth >= 3) {
-    recs.push({priority:'low', text:`Strong performer (${pct(b.piPen)} pen, ${b.piGrowth}% growth). Focus on retention, premium product upsell, and client satisfaction measurement.`});
-  }
-
-  // Rule 9: Structural exception
-  if (isException(b)) {
-    recs.push({priority:'low', text:`Structural exception — do not benchmark against standard peers. Evaluate based on absolute performance trends and local market dynamics. ${b.piPen > 1 ? 'PI penetration >100% reflects cross-border/regional catchment, not data error.' : ''}`});
-  }
-
-  return recs.length > 0 ? recs : [{priority:'low', text:'No specific actions identified. Continue monitoring standard KPIs.'}];
 }
 
 function renderProfile() {
@@ -1444,356 +697,286 @@ function renderProfile() {
   const b = branches.find(x=>x.code===code);
   if(!b) return;
 
-  const mRate = (b.mbank/b.piClients*100).toFixed(1);
-  const eRate = (b.ebank/b.piClients*100).toFixed(1);
-  const product = ((b.mortgage+b.consumer+b.cc)/b.piClients).toFixed(3);
+  const mrate = (b.mbank/b.piClients*100).toFixed(1);
+  const erate = (b.ebank/b.piClients*100).toFixed(1);
+  const lendingRate = ((b.mortgage+b.consumer)/b.piClients).toFixed(3);
   const posRate = (b.pos/b.biz*1000).toFixed(1);
+  const ccRate = (b.cc/b.piClients*100).toFixed(2);
+
+  // Strengths / Weaknesses logic
+  const strengths = [], weaknesses = [];
+  if(b.piPen>=0.20) strengths.push('Strong PI penetration ('+pct(b.piPen)+')');
+  else weaknesses.push('Below-average PI penetration ('+pct(b.piPen)+')');
+  if(b.bizPen>=0.17) strengths.push('Solid business penetration ('+pct(b.bizPen)+')');
+  else weaknesses.push('Low business penetration ('+pct(b.bizPen)+')');
+  if(b.piGrowth>=4) strengths.push('Healthy PI growth ('+b.piGrowth+'%)');
+  else if(b.piGrowth<2) weaknesses.push('Sluggish PI growth ('+b.piGrowth+'%)');
+  if(b.mbank/b.piClients>=0.05) strengths.push('Good M-Banking adoption ('+mrate+'%)');
+  else weaknesses.push('Low M-Banking adoption ('+mrate+'%)');
+  if(b.pos/b.biz>=0.05) strengths.push('Decent POS deployment ('+posRate+'/1K biz)');
+  else weaknesses.push('Weak POS deployment ('+posRate+'/1K biz)');
+  if(b.bizGrowth>=3) strengths.push('Growing business client base ('+b.bizGrowth+'%)');
+  else if(b.bizGrowth<0) weaknesses.push('Declining business clients ('+b.bizGrowth+'%)');
+
+  const recs = {
+    "Dominant Hub":"Deepen cross-sell, push premium products, leverage as innovation pilot hub.",
+    "Star Branch":"Study success factors and replicate. Consider as model branch for training.",
+    "Cash Cow":"Optimize operations, reduce cost-to-serve, protect existing client base.",
+    "Growth Engine":"Invest in client acquisition campaigns, increase sales force, push digital onboarding.",
+    "High Potential":"Major strategic priority. Launch targeted acquisition campaign, consider additional resources.",
+    "Mature Performer":"Focus on product deepening, retention programs, and digital migration.",
+    "Stable Regional":"Maintain service quality, selectively push M-Banking and credit cards.",
+    "Underperformer":"Review branch economics, identify root causes, consider restructuring.",
+    "Critical Underperformer":"Urgent intervention needed. Audit operations, assess competitive landscape, rebuild strategy.",
+    "Structural Outlier":"Assess unique dynamics. Tailor strategy to specific local conditions.",
+    "Nascent Entry":"Monitor ramp-up metrics closely. Ensure adequate resources for client acquisition phase."
+  };
 
   document.getElementById('profileLeft').innerHTML = `
-    <h4>${b.city} <span style="font-weight:400;font-size:12px;margin-left:6px;">${peerBadge(b.peer)}</span>
-      ${isException(b)?'<span class="outlier-flag" style="font-size:12px;margin-left:6px;">&#9888; Structural Exception</span>':''}
-    </h4>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px;">
-      <div class="profile-stat"><span class="label">Population</span><span class="val">${b.pop.toLocaleString()}</span></div>
-      <div class="profile-stat"><span class="label">Pop 15+</span><span class="val">${b.pop15.toLocaleString()}</span></div>
-      <div class="profile-stat"><span class="label">Businesses</span><span class="val">${b.biz.toLocaleString()}</span></div>
-      <div class="profile-stat"><span class="label">PI Clients</span><span class="val">${b.piClients.toLocaleString()}</span></div>
-      <div class="profile-stat"><span class="label">Biz Clients</span><span class="val">${b.bizClients.toLocaleString()}</span></div>
-      <div class="profile-stat"><span class="label">PI Penetration</span><span class="val">${pct(b.piPen)}</span></div>
-      <div class="profile-stat"><span class="label">Biz Penetration</span><span class="val">${pct(b.bizPen)}</span></div>
-      <div class="profile-stat"><span class="label">PI Growth</span><span class="val">${b.piGrowth}%</span></div>
-      <div class="profile-stat"><span class="label">Biz Growth</span><span class="val">${b.bizGrowth}%</span></div>
-      <div class="profile-stat"><span class="label">Mortgages</span><span class="val">${b.mortgage.toLocaleString()}</span></div>
-      <div class="profile-stat"><span class="label">Consumer Loans</span><span class="val">${b.consumer.toLocaleString()}</span></div>
-      <div class="profile-stat"><span class="label">Credit Cards</span><span class="val">${b.cc}</span></div>
-      <div class="profile-stat"><span class="label">Overdrafts</span><span class="val">${b.ovd}</span></div>
-      <div class="profile-stat"><span class="label">POS Terminals</span><span class="val">${b.pos}</span></div>
-      <div class="profile-stat"><span class="label">M-Banking</span><span class="val">${b.mbank} (${mRate}%)</span></div>
-      <div class="profile-stat"><span class="label">E-Banking</span><span class="val">${b.ebank} (${eRate}%)</span></div>
-      <div class="profile-stat"><span class="label">Products/Client</span><span class="val">${product}</span></div>
-      <div class="profile-stat"><span class="label">POS/1K Biz</span><span class="val">${posRate}</span></div>
-    </div>`;
+    <h4>${b.city} &mdash; ${segBadge(b.segment)}</h4>
+    <div class="profile-stat"><span class="label">Branch Code</span><span class="val">${b.code}</span></div>
+    <div class="profile-stat"><span class="label">Population</span><span class="val">${b.pop.toLocaleString()}</span></div>
+    <div class="profile-stat"><span class="label">Pop 15+</span><span class="val">${b.pop15.toLocaleString()}</span></div>
+    <div class="profile-stat"><span class="label">Registered Businesses</span><span class="val">${b.biz.toLocaleString()}</span></div>
+    <div class="profile-stat"><span class="label">PI Clients</span><span class="val">${b.piClients.toLocaleString()}</span></div>
+    <div class="profile-stat"><span class="label">Biz Clients</span><span class="val">${b.bizClients.toLocaleString()}</span></div>
+    <div class="profile-stat"><span class="label">PI Penetration</span><span class="val">${pct(b.piPen)}</span></div>
+    <div class="profile-stat"><span class="label">Biz Penetration</span><span class="val">${pct(b.bizPen)}</span></div>
+    <div class="profile-stat"><span class="label">PI Growth</span><span class="val">${b.piGrowth}%</span></div>
+    <div class="profile-stat"><span class="label">Biz Growth</span><span class="val">${b.bizGrowth}%</span></div>
+    <div class="profile-stat"><span class="label">Mortgages</span><span class="val">${b.mortgage.toLocaleString()}</span></div>
+    <div class="profile-stat"><span class="label">Consumer Loans</span><span class="val">${b.consumer.toLocaleString()}</span></div>
+    <div class="profile-stat"><span class="label">Credit Cards</span><span class="val">${b.cc}</span></div>
+    <div class="profile-stat"><span class="label">Overdrafts</span><span class="val">${b.ovd}</span></div>
+    <div class="profile-stat"><span class="label">POS Terminals</span><span class="val">${b.pos}</span></div>
+    <div class="profile-stat"><span class="label">M-Banking Users</span><span class="val">${b.mbank} (${mrate}%)</span></div>
+    <div class="profile-stat"><span class="label">E-Banking Users</span><span class="val">${b.ebank} (${erate}%)</span></div>
+    <div class="profile-stat"><span class="label">Biz Long-Term Loans</span><span class="val">${b.bizLT}</span></div>
+    <div class="profile-stat"><span class="label">POS per 1K Biz</span><span class="val">${posRate}</span></div>
+    <div class="profile-stat"><span class="label">CC per Client</span><span class="val">${ccRate}%</span></div>
+    <div class="profile-stat"><span class="label">Lending Intensity</span><span class="val">${lendingRate}</span></div>
+    <h4 style="margin-top:16px;">Strengths</h4>
+    <ul style="font-size:13px;padding-left:18px;color:var(--green)">${strengths.length?strengths.map(s=>'<li>'+s+'</li>').join(''):'<li style="color:var(--text-light)">None identified</li>'}</ul>
+    <h4 style="margin-top:10px;">Weaknesses</h4>
+    <ul style="font-size:13px;padding-left:18px;color:var(--red)">${weaknesses.length?weaknesses.map(s=>'<li>'+s+'</li>').join(''):'<li style="color:var(--text-light)">None identified</li>'}</ul>
+    <div class="profile-rec"><strong>Recommendation:</strong> ${recs[b.segment]||'Review branch strategy.'}</div>
+  `;
 
-  // Radar — compare to peer group median
-  const peerGroup = b.peer;
-  const ps = (!isException(b)) ? peerStats(peerGroup) : peerStats('Town'); // fallback
-  const maxPiPen = ps ? Math.max(ps.piPen.median * 1.5, b.piPen) : b.piPen;
-  const maxBizPen = ps ? Math.max(ps.bizPen.median * 1.5, b.bizPen) : b.bizPen;
-  const maxGrowth = ps ? Math.max(ps.piGrowth.median * 1.5, Math.max(b.piGrowth, 1)) : Math.max(b.piGrowth, 1);
-  const maxMRate = ps ? Math.max(ps.mRate.median * 1.5, b.mbank/b.piClients) : b.mbank/b.piClients;
-  const maxProduct = ps ? Math.max(ps.productDepth.median * 1.5, (b.mortgage+b.consumer+b.cc)/b.piClients) : (b.mortgage+b.consumer+b.cc)/b.piClients;
+  // Radar chart
+  // Normalize dimensions 0-100 (exclude outliers for max)
+  const main = branches.filter(x=>x.segment!=='Structural Outlier'&&x.segment!=='Nascent Entry');
+  const maxPi = Math.max(...main.map(x=>x.piPen));
+  const maxBiz = Math.max(...main.map(x=>x.bizPen));
+  const maxGr = Math.max(...main.map(x=>x.piGrowth));
+  const maxDig = Math.max(...main.map(x=>x.mbank/x.piClients));
+  const maxProd = Math.max(...main.map(x=>(x.mortgage+x.consumer+x.cc)/x.piClients));
 
-  const normalize = (val, max) => Math.min(100, Math.max(0, val/max*100));
-  const branchData = [
-    normalize(b.piPen, maxPiPen),
-    normalize(b.bizPen, maxBizPen),
-    normalize(Math.max(0,b.piGrowth), maxGrowth),
-    normalize(b.mbank/b.piClients, maxMRate),
-    normalize((b.mortgage+b.consumer+b.cc)/b.piClients, maxProduct)
+  const dims = [
+    Math.min(100, b.piPen/maxPi*100),
+    Math.min(100, b.bizPen/maxBiz*100),
+    Math.min(100, b.piGrowth/maxGr*100),
+    Math.min(100, (b.mbank/b.piClients)/maxDig*100),
+    Math.min(100, ((b.mortgage+b.consumer+b.cc)/b.piClients)/maxProd*100)
   ];
-  const peerData = ps ? [
-    normalize(ps.piPen.median, maxPiPen),
-    normalize(ps.bizPen.median, maxBizPen),
-    normalize(Math.max(0,ps.piGrowth.median), maxGrowth),
-    normalize(ps.mRate.median, maxMRate),
-    normalize(ps.productDepth.median, maxProduct)
-  ] : [50,50,50,50,50];
 
   if(radarChart) radarChart.destroy();
-  radarChart = new Chart(document.getElementById('chartRadar'), {
+  radarChart = new Chart(document.getElementById('chartRadar'),{
     type:'radar',
     data:{
-      labels:['PI Penetration','Biz Penetration','Growth','Digital','Product Depth'],
-      datasets:[
-        {
-          label:b.city,
-          data:branchData,
-          backgroundColor:segColorHex(b.segment)+'33',
-          borderColor:segColorHex(b.segment),
-          borderWidth:2,
-          pointBackgroundColor:segColorHex(b.segment)
-        },
-        {
-          label:`${peerGroup} Median`,
-          data:peerData,
-          backgroundColor:'rgba(0,0,0,0.03)',
-          borderColor:'#999',
-          borderWidth:1.5,
-          borderDash:[5,3],
-          pointBackgroundColor:'#999',
-          pointRadius:3
-        }
-      ]
+      labels:['PI Penetration','Biz Penetration','Growth','Digital Adoption','Product Depth'],
+      datasets:[{
+        label:b.city,
+        data:dims,
+        backgroundColor:segColorHex(b.segment)+'33',
+        borderColor:segColorHex(b.segment),
+        borderWidth:2,
+        pointBackgroundColor:segColorHex(b.segment)
+      }]
     },
     options:{
       responsive:true,
-      scales:{r:{beginAtZero:true,max:100,ticks:{stepSize:25,font:{size:9},display:false},
-        pointLabels:{font:{size:11,weight:'500'}},grid:{color:'#e8e8e8'}}},
-      plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}}
+      scales:{r:{beginAtZero:true,max:100,ticks:{stepSize:20,font:{size:10}},pointLabels:{font:{size:12}}}},
+      plugins:{legend:{display:false}}
     }
   });
-
-  // Rule-based recommendations
-  const recs = generateRecommendations(b);
-  document.getElementById('profileRecs').innerHTML = `
-    <h4 style="font-size:14px;color:var(--nlb-navy);margin-bottom:8px;">Diagnostic Recommendations</h4>
-    <ul class="rec-list">${recs.map(r => `
-      <li class="rec-${r.priority}">
-        <span class="rec-tag">${r.priority==='high'?'High Priority':r.priority==='med'?'Medium Priority':'Monitor'}</span>
-        ${r.text}
-      </li>`).join('')}
-    </ul>`;
 }
 
-// ================================================================
-// H. EXPANSION
-// ================================================================
+// ========= G. EXPANSION =========
 function renderExpansion() {
+  // Score by pop15 * 0.5 + biz * 0.5 (normalized)
   const maxPop = Math.max(...unserved.map(u=>u.pop15));
   const maxBiz = Math.max(...unserved.map(u=>u.biz));
-  const scored = unserved.map(u=>{
-    const popScore = u.pop15/maxPop;
-    const bizScore = u.biz/maxBiz;
-    const bizDensity = u.biz/u.pop*1000;
-    return {...u, score: popScore*45 + bizScore*35 + (bizDensity/50)*20, popScore, bizScore};
-  }).sort((a,b)=>b.score-a.score);
+  const scored = unserved.map(u=>({
+    ...u,
+    score: (u.pop15/maxPop*50 + u.biz/maxBiz*50)
+  })).sort((a,b)=>b.score-a.score);
 
   const maxScore = scored[0].score;
-  const formats = {
-    'DRAGASH': 'Full-service branch',
-    'SHTIME': 'Full-service or sub-branch',
-    'MAMUSH': 'Sub-branch or agent banking',
-    'NOVOBERDE': 'Agent banking or mobile branch',
-    'JUNIK': 'Digital-only with periodic mobile presence',
-    'KLLOKOT': 'Serve via nearest branch + digital',
-    'PARTESH': 'Digital outreach',
-    'ZVECAN': 'Monitor as nascent territories expand',
-    'RANILLUG': 'Digital channels only'
+  const recs = {
+    "DRAGASH":"High priority: largest unserved pop with meaningful business base. Open full-service branch.",
+    "SHTIME":"Strong case: good pop + highest biz count among unserved. Full-service or sub-branch.",
+    "MAMUSH":"Small but viable. Consider sub-branch or agent banking model.",
+    "NOVOBERDE":"Limited population. Agent banking or mobile branch sufficient.",
+    "JUNIK":"Very small municipality. Digital-only or periodic mobile presence.",
+    "KLLOKOT":"Minimal market. Serve via nearest branch (Gjilan) + digital channels.",
+    "PARTESH":"Small, Serbian-majority area. Digital outreach recommended.",
+    "ZVECAN":"Small pop but notable biz density. Monitor as Nascent Entry territories expand.",
+    "RANILLUG":"Smallest unserved market. Digital channels only."
   };
 
-  let html = `<thead><tr><th>#</th><th>Municipality</th><th>Population</th><th>Pop 15+</th><th>Businesses</th><th>Biz/1K pop</th><th>Score</th><th>Recommended Format</th></tr></thead><tbody>`;
-  scored.forEach((u,i) => {
-    const barW = u.score/maxScore*100;
+  let html = `<thead><tr><th>#</th><th>Municipality</th><th>Population</th><th>Pop 15+</th><th>Businesses</th><th>Attractiveness</th><th>Recommendation</th></tr></thead><tbody>`;
+  scored.forEach((u,i)=>{
+    const barW = (u.score/maxScore*100);
     html += `<tr>
       <td><strong>${i+1}</strong></td>
       <td><strong>${u.city}</strong></td>
       <td>${u.pop.toLocaleString()}</td>
       <td>${u.pop15.toLocaleString()}</td>
       <td>${u.biz.toLocaleString()}</td>
-      <td>${(u.biz/u.pop*1000).toFixed(1)}</td>
       <td><div class="rank-bar" style="width:${barW}%">&nbsp;</div> ${u.score.toFixed(0)}</td>
-      <td style="font-size:12px;">${formats[u.city]||''}</td>
+      <td style="white-space:normal;max-width:300px;font-size:12px;">${recs[u.city]||''}</td>
     </tr>`;
   });
   html += '</tbody>';
   document.getElementById('expansionTable').innerHTML = html;
 }
 
-// ================================================================
-// I. SCENARIOS — Transparent assumptions
-// ================================================================
+// ========= H. SCENARIOS =========
 function renderScenarios() {
   const prizren = branches.find(b=>b.city==='PRIZREN');
-  const gjakove = branches.find(b=>b.city==='GJAKOVE');
-  const medPiPen = median(coreBranches.map(b=>b.piPen));
+  const prishtine = branches.find(b=>b.city==='PRISHTINE');
+
+  // Scenario 1: Close Prizren penetration gap
+  const avgPen = branches.filter(b=>b.segment!=='Structural Outlier'&&b.segment!=='Nascent Entry').reduce((s,b)=>s+b.piPen,0) /
+    branches.filter(b=>b.segment!=='Structural Outlier'&&b.segment!=='Nascent Entry').length;
+
+  // Scenario 2: 50% M-Banking
   const totalMbank = branches.reduce((s,b)=>s+b.mbank,0);
   const totalPI = branches.reduce((s,b)=>s+b.piClients,0);
   const currentMrate = totalMbank/totalPI;
 
+  // Scenario 3: New branches
+  const dragash = unserved.find(u=>u.city==='DRAGASH');
+  const shtime = unserved.find(u=>u.city==='SHTIME');
+
   document.getElementById('scenarioGrid').innerHTML = `
-    <!-- Scenario 1: Prizren -->
+    <!-- Scenario 1 -->
     <div class="scenario-card">
-      <h4>1. Close Prizren Penetration Gap</h4>
-      <div class="scenario-desc">Prizren (pop 147K) has ${pct(prizren.piPen)} PI penetration vs Metro peer median ${pct(medPiPen)}.</div>
-      <div class="assumptions">
-        <strong>Assumptions:</strong> Revenue/client = EUR 85 annual fee income (NLB average).
-        Acquisition cost = EUR 35/client (local marketing). Timeline: 18-24 months.
-        Does not account for competitive response or market saturation effects.
-      </div>
-      <label>Target PI Penetration: <strong id="s1val">${(medPiPen*100).toFixed(1)}%</strong></label>
-      <input type="range" class="scenario-slider" id="s1slider" min="${(prizren.piPen*100).toFixed(0)}" max="30" step="0.5" value="${(medPiPen*100).toFixed(0)}" oninput="updateS1()">
+      <h4>Scenario 1: Close Prizren's Penetration Gap</h4>
+      <p>Prizren (pop 147K) has only ${pct(prizren.piPen)} PI penetration vs network average ${pct(avgPen)}. What if we close this gap?</p>
+      <label style="font-size:13px;">Target PI Penetration: <strong id="s1val">${(avgPen*100).toFixed(1)}%</strong></label>
+      <input type="range" class="scenario-slider" id="s1slider" min="${(prizren.piPen*100).toFixed(0)}" max="30" step="0.5" value="${(avgPen*100).toFixed(0)}" oninput="updateS1()">
       <div class="scenario-result" id="s1result"></div>
     </div>
-
-    <!-- Scenario 2: Gjakove Turnaround -->
+    <!-- Scenario 2 -->
     <div class="scenario-card">
-      <h4>2. Gjakove Business Client Recovery</h4>
-      <div class="scenario-desc">Gjakove lost 14% of business clients (-70 clients) in one year. PI growth stalled at 0.1%.</div>
-      <div class="assumptions">
-        <strong>Assumptions:</strong> Revenue/biz client = EUR 420 annual (NLB average).
-        Recovery requires dedicated relationship manager + competitive rate matching.
-        Base case assumes 50% of lost clients are recoverable.
-      </div>
-      <label>Recovery target (% of lost clients): <strong id="s2val">50%</strong></label>
-      <input type="range" class="scenario-slider" id="s2slider" min="0" max="100" step="5" value="50" oninput="updateS2()">
+      <h4>Scenario 2: Raise M-Banking Adoption to Target</h4>
+      <p>Current network M-Banking rate: ${(currentMrate*100).toFixed(1)}%. What if we push adoption higher across all branches?</p>
+      <label style="font-size:13px;">Target M-Banking rate: <strong id="s2val">50%</strong></label>
+      <input type="range" class="scenario-slider" id="s2slider" min="${(currentMrate*100).toFixed(0)}" max="80" step="1" value="50" oninput="updateS2()">
       <div class="scenario-result" id="s2result"></div>
     </div>
-
-    <!-- Scenario 3: Digital Migration -->
+    <!-- Scenario 3 -->
     <div class="scenario-card">
-      <h4>3. Network M-Banking Adoption Target</h4>
-      <div class="scenario-desc">Current network M-Banking rate: ${pct(currentMrate)}. Range: ${pct(Math.min(...coreBranches.map(b=>b.mbank/b.piClients)))} to ${pct(Math.max(...coreBranches.map(b=>b.mbank/b.piClients)))}.</div>
-      <div class="assumptions">
-        <strong>Assumptions:</strong> Channel migration savings = EUR 12/user/year (industry benchmark).
-        Adoption requires onboarding at service points + staff KPIs. Excludes app development costs.
-      </div>
-      <label>Target M-Banking rate: <strong id="s3val">10%</strong></label>
-      <input type="range" class="scenario-slider" id="s3slider" min="${(currentMrate*100).toFixed(0)}" max="30" step="1" value="10" oninput="updateS3()">
+      <h4>Scenario 3: Open Branches in Dragash + Shtime</h4>
+      <p>Two largest unserved municipalities with combined pop of ${(dragash.pop+shtime.pop).toLocaleString()} and ${(dragash.biz+shtime.biz).toLocaleString()} businesses.</p>
+      <label style="font-size:13px;">Assumed PI Penetration: <strong id="s3val">15.0%</strong></label>
+      <input type="range" class="scenario-slider" id="s3slider" min="5" max="30" step="0.5" value="15" oninput="updateS3()">
       <div class="scenario-result" id="s3result"></div>
     </div>
-
-    <!-- Scenario 4: Expansion -->
-    <div class="scenario-card">
-      <h4>4. Expand into Dragash + Shtime</h4>
-      <div class="scenario-desc">Two largest unserved municipalities: combined pop ${(unserved[0].pop+unserved[1].pop).toLocaleString()}, ${(unserved[0].biz+unserved[1].biz).toLocaleString()} businesses.</div>
-      <div class="assumptions">
-        <strong>Assumptions:</strong> New location setup cost = EUR 250-350K.
-        Break-even at ~2,500 PI clients + 150 biz clients (estimated 24-36 months).
-        Penetration target based on comparable small-town locations.
-      </div>
-      <label>Assumed PI Penetration: <strong id="s4val">15.0%</strong></label>
-      <input type="range" class="scenario-slider" id="s4slider" min="5" max="30" step="0.5" value="15" oninput="updateS4()">
-      <div class="scenario-result" id="s4result"></div>
-    </div>
   `;
-  updateS1(); updateS2(); updateS3(); updateS4();
+  updateS1(); updateS2(); updateS3();
 }
 
 function updateS1() {
   const prizren = branches.find(b=>b.city==='PRIZREN');
   const targetPen = parseFloat(document.getElementById('s1slider').value)/100;
   document.getElementById('s1val').textContent = (targetPen*100).toFixed(1)+'%';
+  const currentClients = prizren.piClients;
   const targetClients = Math.round(prizren.pop15 * targetPen);
-  const newClients = Math.max(0, targetClients - prizren.piClients);
+  const newClients = targetClients - currentClients;
   const totalPI = branches.reduce((s,b)=>s+b.piClients,0);
-  const newNetPen = ((totalPI+newClients)/NET.pop15*100).toFixed(2);
-  const revenue = newClients * 85;
-  const cost = newClients * 35;
+  const networkImpact = ((totalPI+newClients)/NET.pop15*100 - totalPI/NET.pop15*100).toFixed(2);
   document.getElementById('s1result').innerHTML = `
-    <strong>Impact:</strong> +${newClients.toLocaleString()} new PI clients in Prizren<br>
-    Current: ${prizren.piClients.toLocaleString()} &rarr; Target: ${targetClients.toLocaleString()}<br>
-    Network PI penetration: ${pct(totalPI/NET.pop15)} &rarr; <strong>${newNetPen}%</strong> (+${((totalPI+newClients)/NET.pop15*100 - totalPI/NET.pop15*100).toFixed(2)} pp)<br>
-    <strong>Revenue range:</strong> EUR ${(revenue*0.8).toLocaleString()} &ndash; ${(revenue*1.2).toLocaleString()}/yr<br>
-    <strong>Acquisition cost:</strong> EUR ${cost.toLocaleString()} (one-time)
-    <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Range reflects &plusmn;20% sensitivity on EUR 85/client revenue assumption</div>`;
+    <strong>Impact:</strong> +${Math.max(0,newClients).toLocaleString()} new PI clients in Prizren<br>
+    Target clients: ${targetClients.toLocaleString()} (from ${currentClients.toLocaleString()})<br>
+    Network PI penetration would increase by <strong>${networkImpact} pp</strong> to <strong>${((totalPI+Math.max(0,newClients))/NET.pop15*100).toFixed(1)}%</strong><br>
+    <em>Estimated revenue uplift: EUR ${(Math.max(0,newClients)*85).toLocaleString()} annual fee income (at EUR 85/client)</em>
+  `;
 }
 
 function updateS2() {
-  const gjakove = branches.find(b=>b.city==='GJAKOVE');
-  const recoveryPct = parseFloat(document.getElementById('s2slider').value)/100;
-  document.getElementById('s2val').textContent = (recoveryPct*100).toFixed(0)+'%';
-  const lostClients = 70;
-  const recovered = Math.round(lostClients * recoveryPct);
-  const revenueRecovered = recovered * 420;
-  const newBizGrowth = ((gjakove.bizClients + recovered) / (gjakove.bizClients + lostClients) - 1) * 100;
+  const target = parseFloat(document.getElementById('s2slider').value)/100;
+  document.getElementById('s2val').textContent = (target*100).toFixed(0)+'%';
+  let totalNew = 0;
+  let branchesAffected = 0;
+  branches.forEach(b=>{
+    const currentRate = b.mbank/b.piClients;
+    if(currentRate < target) {
+      totalNew += Math.round(b.piClients*target) - b.mbank;
+      branchesAffected++;
+    }
+  });
   document.getElementById('s2result').innerHTML = `
-    <strong>Impact:</strong> Recover ~${recovered} of ${lostClients} lost business clients<br>
-    Biz clients: ${gjakove.bizClients} &rarr; ${gjakove.bizClients + recovered}<br>
-    Implied biz growth: ${gjakove.bizGrowth}% &rarr; <strong>${newBizGrowth.toFixed(1)}%</strong><br>
-    <strong>Revenue recovery:</strong> EUR ${(revenueRecovered*0.7).toLocaleString()} &ndash; ${(revenueRecovered*1.3).toLocaleString()}/yr<br>
-    <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Revenue range reflects &plusmn;30% around EUR 420/biz client average</div>`;
+    <strong>Impact:</strong> +${totalNew.toLocaleString()} new M-Banking users needed<br>
+    ${branchesAffected} branches currently below target<br>
+    <em>Cost savings potential: EUR ${(totalNew*12).toLocaleString()}/year (at EUR 12/user channel migration savings)</em>
+  `;
 }
 
 function updateS3() {
-  const target = parseFloat(document.getElementById('s3slider').value)/100;
-  document.getElementById('s3val').textContent = (target*100).toFixed(0)+'%';
-  let totalNew = 0, affected = 0;
-  branches.forEach(b=>{
-    const r = b.mbank/b.piClients;
-    if(r < target) { totalNew += Math.round(b.piClients*target) - b.mbank; affected++; }
-  });
-  const savings = totalNew * 12;
-  document.getElementById('s3result').innerHTML = `
-    <strong>Impact:</strong> +${totalNew.toLocaleString()} new M-Banking users needed<br>
-    ${affected} of 29 city locations currently below target<br>
-    <strong>Cost savings:</strong> EUR ${(savings*0.7).toLocaleString()} &ndash; ${(savings*1.3).toLocaleString()}/yr<br>
-    <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Savings at EUR 12/user/yr channel migration (industry benchmark, &plusmn;30%)</div>`;
-}
-
-function updateS4() {
-  const pen = parseFloat(document.getElementById('s4slider').value)/100;
-  document.getElementById('s4val').textContent = (pen*100).toFixed(1)+'%';
-  const dragash = unserved[0], shtime = unserved[1];
-  const piD = Math.round(dragash.pop15*pen), piS = Math.round(shtime.pop15*pen);
-  const totalNew = piD + piS;
+  const pen = parseFloat(document.getElementById('s3slider').value)/100;
+  document.getElementById('s3val').textContent = (pen*100).toFixed(1)+'%';
+  const dragash = unserved.find(u=>u.city==='DRAGASH');
+  const shtime = unserved.find(u=>u.city==='SHTIME');
+  const piDragash = Math.round(dragash.pop15 * pen);
+  const piShtime = Math.round(shtime.pop15 * pen);
+  const totalNew = piDragash + piShtime;
   const totalPI = branches.reduce((s,b)=>s+b.piClients,0);
-  const newPop15 = NET.pop15 + dragash.pop15 + shtime.pop15;
-  const revenue = totalNew * 85;
-  const setupCost = 600000;
-  document.getElementById('s4result').innerHTML = `
+  const newNetPen = ((totalPI+totalNew)/(NET.pop15+dragash.pop15+shtime.pop15)*100).toFixed(1);
+  document.getElementById('s3result').innerHTML = `
     <strong>Impact:</strong><br>
-    Dragash: ~${piD.toLocaleString()} PI clients &middot; Shtime: ~${piS.toLocaleString()} PI clients<br>
-    Total new: <strong>${totalNew.toLocaleString()}</strong> &middot; Network: 31 city locations<br>
-    Network penetration: ${pct(totalPI/NET.pop15)} &rarr; <strong>${((totalPI+totalNew)/newPop15*100).toFixed(1)}%</strong><br>
-    <strong>Revenue:</strong> EUR ${(revenue*0.8).toLocaleString()} &ndash; ${(revenue*1.2).toLocaleString()}/yr<br>
-    <strong>Setup cost:</strong> EUR 500K &ndash; 700K (two locations)<br>
-    <strong>Break-even:</strong> ~24&ndash;36 months at target penetration
-    <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Biz opportunity: ~${Math.round((dragash.biz+shtime.biz)*pen)} potential biz clients at same penetration rate</div>`;
+    Dragash: ~${piDragash.toLocaleString()} PI clients (pop15: ${dragash.pop15.toLocaleString()})<br>
+    Shtime: ~${piShtime.toLocaleString()} PI clients (pop15: ${shtime.pop15.toLocaleString()})<br>
+    Total new clients: <strong>${totalNew.toLocaleString()}</strong><br>
+    Network reach would expand to <strong>31 branches</strong>, penetration: <strong>${newNetPen}%</strong><br>
+    <em>Business opportunity: ~${Math.round((dragash.biz+shtime.biz)*0.15)} potential biz clients (at 15% biz penetration)</em>
+  `;
 }
 
-// ================================================================
-// J. METRIC DICTIONARY
-// ================================================================
-function renderDictionary() {
-  const metrics = [
-    {name:'PI Penetration', formula:'Active PI Clients / Population aged 15+', desc:'Measures retail banking reach. Population 15+ from Kosovo Agency of Statistics (2024 estimates). Structural outliers (>100%) indicate cross-border service catchment.'},
-    {name:'Business Penetration', formula:'Active Business Clients / Registered Businesses', desc:'Measures commercial banking reach. Business count from Kosovo Business Registration Agency (KBRA). Includes all active legal entities.'},
-    {name:'PI Growth (YoY)', formula:'(PI Clients_t - PI Clients_t-1) / PI Clients_t-1', desc:'Year-over-year change in personal banking clients. Nascent entries (Leposaviq, Zubin Potok) show >100% growth off tiny bases — not comparable to established city locations.'},
-    {name:'Business Growth (YoY)', formula:'(Biz Clients_t - Biz Clients_t-1) / Biz Clients_t-1', desc:'Year-over-year change in business clients. Negative values indicate client attrition. Gjakove (-14%) is the most severe decline in the network.'},
-    {name:'M-Banking Adoption', formula:'M-Banking Users / PI Clients', desc:'Share of retail clients using mobile banking. Proxy for digital maturity and channel migration potential.'},
-    {name:'E-Banking Adoption', formula:'E-Banking Users / PI Clients', desc:'Share of retail clients using internet banking platform.'},
-    {name:'Product Depth', formula:'(Mortgages + Consumer Loans + Credit Cards) / PI Clients', desc:'Average number of lending products per retail client. Higher values indicate successful cross-selling. Excludes overdrafts.'},
-    {name:'POS Density', formula:'POS Terminals / Registered Businesses × 1,000', desc:'Point-of-sale terminal deployment intensity. Proxy for merchant acquisition effort and card acceptance infrastructure.'},
-    {name:'Lending Intensity', formula:'(Mortgages + Consumer Loans) / PI Clients', desc:'Share of clients with at least one lending product (mortgage or consumer loan).'},
-    {name:'Opportunity Score', formula:'Weighted composite of peer-relative gaps', desc:`Weights: PI Gap ${HEATMAP_WEIGHTS.piGap*100}%, Biz Gap ${HEATMAP_WEIGHTS.bizGap*100}%, Digital Gap ${HEATMAP_WEIGHTS.digitalGap*100}%, Product Gap ${HEATMAP_WEIGHTS.productGap*100}%. Each gap = 1 - (city value / peer group best). Score 0-100: higher = more opportunity.`},
-    {name:'Peer Group', formula:'Population-based classification', desc:'Metro (>100K): Prishtine, Prizren, Ferizaj. Regional (50-100K): 7 cities. Town (20-50K): 10 cities. Small/Border (<20K): 4 cities. Structural Outlier/Nascent: excluded from benchmarks.'},
-    {name:'Network Median', formula:'Middle value of sorted core city locations', desc:'All central tendency measures use median rather than mean to prevent distortion from structural outliers. Core locations = 24 (excludes 5 structural outliers and nascent entries). Data is aggregated at city level; some cities contain multiple branches.'},
-  ];
-
-  document.getElementById('dictGrid').innerHTML = metrics.map(m => `
-    <div class="dict-item">
-      <div class="dict-name">${m.name}</div>
-      <div class="dict-formula">${m.formula}</div>
-      <div class="dict-desc">${m.desc}</div>
-    </div>`).join('');
-}
-
-// ================================================================
-// NAV SCROLL HIGHLIGHT
-// ================================================================
+// ========= NAV SCROLL =========
 function scrollToSec(id) {
   document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.remove('active'));
+  event.target.classList.add('active');
 }
-const sectionIds = ['sec-story','sec-kpi','sec-table','sec-charts','sec-peers','sec-heatmap','sec-profile','sec-expansion','sec-scenarios','sec-dictionary'];
-window.addEventListener('scroll', () => {
+// Highlight nav on scroll
+const sections = ['sec-kpi','sec-table','sec-charts','sec-segments','sec-heatmap','sec-profile','sec-expansion','sec-scenarios'];
+window.addEventListener('scroll', ()=>{
   const scrollY = window.scrollY + 140;
-  let current = sectionIds[0];
-  sectionIds.forEach(id => {
+  let current = sections[0];
+  sections.forEach(id=>{
     const el = document.getElementById(id);
     if(el && el.offsetTop <= scrollY) current = id;
   });
-  const idx = sectionIds.indexOf(current);
-  document.querySelectorAll('.nav a').forEach((a,i) => {
+  const idx = sections.indexOf(current);
+  document.querySelectorAll('.nav a').forEach((a,i)=>{
     a.classList.toggle('active', i===idx);
   });
 });
 
-// ================================================================
-// INIT
-// ================================================================
-document.addEventListener('DOMContentLoaded', () => {
-  renderStoryline();
+// ========= INIT =========
+document.addEventListener('DOMContentLoaded', ()=>{
   renderKPIs();
-  populateFilters();
+  populateSegmentFilter();
   renderTable();
   renderCharts();
-  renderPeerGroups();
+  renderSegments();
   renderHeatmap();
   populateProfileSelect();
   renderProfile();
   renderExpansion();
   renderScenarios();
-  renderDictionary();
 });
 </script>
 </body>
