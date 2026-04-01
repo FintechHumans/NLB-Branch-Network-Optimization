@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLB Prishtina — Module 1: Market Share Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+/* ============================================================
+   DESIGN SYSTEM — McKinsey Executive Style
+   ============================================================ */
+:root {
+  --navy: #002B49;
+  --navy-light: #003d66;
+  --steel: #4A6FA5;
+  --charcoal: #1A1A2E;
+  --white: #FFFFFF;
+  --bg: #F7F8FA;
+  --bg-card: #FFFFFF;
+  --border: #E2E8F0;
+  --text: #1A1A2E;
+  --text-secondary: #64748B;
+  --green: #059669;
+  --green-bg: #ECFDF5;
+  --amber: #D97706;
+  --amber-bg: #FFFBEB;
+  --red: #DC2626;
+  --red-bg: #FEF2F2;
+  --blue-bg: #EFF6FF;
+  --font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+  --radius: 8px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- HEADER ---- */
+.header {
+  background: var(--navy);
+  color: white;
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.header-left { display: flex; align-items: center; gap: 20px; }
+.logo {
+  background: white;
+  color: var(--navy);
+  font-weight: 800;
+  font-size: 18px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+.header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+.header-sub { font-size: 12px; opacity: 0.7; margin-top: 2px; }
+.header-right { display: flex; gap: 10px; }
+.badge {
+  background: rgba(255,255,255,0.12);
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ---- CONTAINER ---- */
+.container { max-width: 1440px; margin: 0 auto; padding: 32px 40px; }
+
+/* ---- SECTION TITLES ---- */
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 40px 0 8px 0;
+  letter-spacing: -0.5px;
+}
+.section-title:first-of-type { margin-top: 0; }
+.section-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  max-width: 800px;
+  line-height: 1.7;
+}
+
+/* ---- KPI CARDS ---- */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s;
+}
+.kpi-card:hover { box-shadow: var(--shadow-lg); }
+.kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.kpi-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -1px;
+}
+.kpi-context {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.kpi-card.green { border-left: 4px solid var(--green); }
+.kpi-card.amber { border-left: 4px solid var(--amber); }
+.kpi-card.red { border-left: 4px solid var(--red); }
+.kpi-card.navy { border-left: 4px solid var(--navy); }
+
+/* ---- EXECUTIVE MESSAGE ---- */
+.exec-msg {
+  background: var(--navy);
+  color: white;
+  padding: 20px 28px;
+  border-radius: var(--radius);
+  margin-bottom: 32px;
+  font-size: 15px;
+  line-height: 1.7;
+  font-weight: 400;
+}
+.exec-msg strong { font-weight: 700; }
+
+/* ---- CHART PANELS ---- */
+.chart-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+}
+.chart-panel h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.chart-panel .chart-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+.chart-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 12px;
+  font-style: italic;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.chart-container { position: relative; width: 100%; }
+
+/* ---- TWO-COLUMN LAYOUT ---- */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+@media (max-width: 1024px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ---- ACTION GROUPS ---- */
+.group-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 900px) { .group-cards { grid-template-columns: 1fr; } }
+.group-card {
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+}
+.group-card.defend { background: var(--green-bg); border-color: #A7F3D0; }
+.group-card.accel { background: var(--amber-bg); border-color: #FDE68A; }
+.group-card.recovery { background: var(--red-bg); border-color: #FECACA; }
+.group-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.group-card.defend h4 { color: var(--green); }
+.group-card.accel h4 { color: var(--amber); }
+.group-card.recovery h4 { color: var(--red); }
+.group-count {
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.group-card.defend .group-count { color: var(--green); }
+.group-card.accel .group-count { color: var(--amber); }
+.group-card.recovery .group-count { color: var(--red); }
+.group-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ---- CALLOUT BOX ---- */
+.callout {
+  background: var(--blue-bg);
+  border: 1px solid #BFDBFE;
+  border-left: 4px solid var(--steel);
+  border-radius: var(--radius);
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--charcoal);
+}
+.callout strong { color: var(--navy); }
+.callout-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--steel);
+  margin-bottom: 6px;
+}
+
+/* ---- METHODOLOGY ---- */
+.methodology {
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+.methodology h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+.methodology p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+.methodology ul {
+  list-style: none;
+  padding: 0;
+}
+.methodology li {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  padding-left: 16px;
+  position: relative;
+}
+.methodology li::before {
+  content: '\2022';
+  color: var(--steel);
+  font-weight: 700;
+  position: absolute;
+  left: 0;
+}
+
+/* ---- DATA TABLE ---- */
+.table-container {
+  overflow-x: auto;
+  margin-bottom: 24px;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.data-table th {
+  background: var(--navy);
+  color: white;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  position: sticky;
+  top: 0;
+}
+.data-table th:hover { background: var(--navy-light); }
+.data-table th .sort-arrow { font-size: 10px; margin-left: 4px; opacity: 0.5; }
+.data-table th.sorted .sort-arrow { opacity: 1; }
+.data-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.data-table tr:hover { background: #F1F5F9; }
+.data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.tag.defend { background: #D1FAE5; color: #065F46; }
+.tag.accel { background: #FEF3C7; color: #92400E; }
+.tag.recovery { background: #FEE2E2; color: #991B1B; }
+.tag.ghost { background: #F3F4F6; color: #6B7280; }
+.tag.sporteli { background: #EDE9FE; color: #5B21B6; }
+.tag.outlier { background: #FFEDD5; color: #C2410C; }
+
+/* ---- FILTER ROW ---- */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font);
+  color: var(--text);
+}
+.filter-btn:hover { border-color: var(--navy); color: var(--navy); }
+.filter-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+/* ---- FOOTER ---- */
+.footer {
+  text-align: center;
+  padding: 24px 40px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">NLB</div>
+    <div>
+      <h1>Module 1 — Market Share Intelligence</h1>
+      <div class="header-sub">NLB Prishtina &middot; Branch Network Transformation &middot; March 2026</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge">35 Outlets</span>
+    <span class="badge">265 FTE</span>
+    <span class="badge">31 Benchmarked</span>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ============================================================
+     EXECUTIVE MESSAGE
+     ============================================================ -->
+<div class="exec-msg">
+  <strong>Executive Summary:</strong> NLB Prishtina captures <strong>15.7%</strong> of Kosovo's addressable population
+  (239,351 active PI clients across 1.52M unique population). Only one main Filiali exceeds the 18% target individually:
+  <strong>Filiali Peje at 18.2%.</strong> All other major Filiali remain below target. Nearly half the benchmarked network
+  (15 of 31 branches) falls below the 13.1% median. The inactive pool of <strong>84,765 PI clients</strong> represents
+  the fastest path to penetration improvement.
+</div>
+
+<!-- ============================================================
+     KPI CARDS
+     ============================================================ -->
+<div class="kpi-row">
+  <div class="kpi-card navy">
+    <div class="kpi-label">Network PI Penetration</div>
+    <div class="kpi-value">15.7%</div>
+    <div class="kpi-context">239,351 active / 1.52M unique population</div>
+  </div>
+  <div class="kpi-card amber">
+    <div class="kpi-label">Network Business Penetration</div>
+    <div class="kpi-value">~8.5%</div>
+    <div class="kpi-context">~12,600 active / ~148,700 registered businesses</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-label">Inactive PI Client Pool</div>
+    <div class="kpi-value">84,765</div>
+    <div class="kpi-context">26.2% of total PI base sitting dormant</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">Branches Above 18% Target</div>
+    <div class="kpi-value">7 of 31</div>
+    <div class="kpi-context">Only Filiali Peje among main branches</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PRISHTINA CITY-LEVEL CALLOUT
+     ============================================================ -->
+<div class="callout">
+  <div class="callout-title">Prishtina City-Level Context</div>
+  <strong>At city level, Prishtina stands at 21.4% PI penetration</strong> (48,619 active clients across 227,466 population).
+  This means the city is not underpenetrated overall; the issue is <strong>internal branch allocation and outlet role clarity</strong>,
+  not market weakness. Four active outlets and one ghost branch (100101, 7 FTE, zero output) share this market.
+  Individual branch pen% in Prishtina, Prizren (10.9%), and Mitrovice (18.5%) should be read as internal allocation indicators,
+  not as standalone market-share measures.
+</div>
+
+<!-- ============================================================
+     ACTION GROUPS
+     ============================================================ -->
+<h2 class="section-title">Branch Action Groups — PI Retail Penetration</h2>
+<p class="section-sub">Branches classified by position relative to network median (13.1%) and strategic target (18.0%).</p>
+
+<div class="group-cards">
+  <div class="group-card defend">
+    <h4>Defend / Deepen</h4>
+    <div class="group-count">7</div>
+    <div class="group-desc">
+      At or above 18% target. Protect base, focus on cross-sell and deposit deepening.
+      Includes Peje (18.2%) — the only main Filiali in this group.
+    </div>
+  </div>
+  <div class="group-card accel">
+    <h4>Acceleration</h4>
+    <div class="group-count">9</div>
+    <div class="group-desc">
+      Between 13.1% and 18%. Highest-ROI group. Combined gap: +15,262 clients to reach 18%.
+      Priority: Gjilan, Mitrovice, Besiane.
+    </div>
+  </div>
+  <div class="group-card recovery">
+    <h4>Recovery</h4>
+    <div class="group-count">15</div>
+    <div class="group-desc">
+      Below 13.1% median. Includes core Filiali: Prishtine (7.3%), Prizren (7.9%), Ferizaj (12.4%),
+      Gjakove (11.2%). Inactive pool: 40,543 clients.
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PI PENETRATION BAR CHART
+     ============================================================ -->
+<div class="chart-panel">
+  <h3>PI Retail Penetration by Branch</h3>
+  <div class="chart-sub">34 branches shown (Mitrovice Veriore excluded — structural outlier at 116%, active clients exceed population). Sorted descending.</div>
+  <div class="chart-container">
+    <canvas id="piPenChart"></canvas>
+  </div>
+  <div class="chart-note">
+    Vertical reference lines: Network Median at 13.1% (navy dashed) and Strategic Target at 18.0% (green dashed).
+    Multi-branch cities (Prishtina, Prizren, Mitrovice): individual branch pen% computed against full city population —
+    read as internal allocation, not standalone market share.
+  </div>
+</div>
+
+<!-- ============================================================
+     BUSINESS PENETRATION BAR CHART
+     ============================================================ -->
+<div class="chart-panel">
+  <h3>Business Penetration by Branch</h3>
+  <div class="chart-sub">Active business accounts estimated from penetration ratio. Median: 15.2%. Target: 18.0%. Business banking is the largest structural white space.</div>
+  <div class="chart-container">
+    <canvas id="bizPenChart"></canvas>
+  </div>
+  <div class="chart-note">
+    Business penetration = estimated active business accounts / total registered businesses.
+    Active counts are derived (biz_penetration × business_count), not directly counted.
+    Inactive business accounts estimated from business active ratio — treat as directional.
+  </div>
+</div>
+
+<!-- ============================================================
+     ACTIVE vs INACTIVE + WHITE SPACE (Two-column)
+     ============================================================ -->
+<h2 class="section-title">Client Base Structure</h2>
+<p class="section-sub">Active vs inactive split reveals reactivation potential. The top 7 branches by inactive count hold 35,137 dormant clients — 41.5% of the total inactive pool.</p>
+
+<div class="two-col">
+  <div class="chart-panel">
+    <h3>Active vs Inactive PI Clients</h3>
+    <div class="chart-sub">Sorted by inactive count descending. Top 10 branches shown.</div>
+    <div class="chart-container">
+      <canvas id="activeInactiveChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-panel">
+    <h3>White-Space Opportunity</h3>
+    <div class="chart-sub">City-level view. Bubble size = inactive pool. Bottom-left = biggest opportunity.</div>
+    <div class="chart-container">
+      <canvas id="whiteSpaceChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     BRANCH ACTION TABLE
+     ============================================================ -->
+<h2 class="section-title">Branch Action Matrix</h2>
+<p class="section-sub">All 35 outlets. Sortable by any column. Filter by action group.</p>
+
+<div class="filter-row">
+  <button class="filter-btn active" data-filter="all">All (35)</button>
+  <button class="filter-btn" data-filter="defend">Defend (7)</button>
+  <button class="filter-btn" data-filter="accel">Acceleration (9)</button>
+  <button class="filter-btn" data-filter="recovery">Recovery (15)</button>
+  <button class="filter-btn" data-filter="special">Ghost / Sporteli / Outlier (4)</button>
+</div>
+
+<div class="chart-panel" style="padding: 0; overflow: hidden;">
+  <div class="table-container" style="max-height: 600px; overflow-y: auto;">
+    <table class="data-table" id="branchTable">
+      <thead>
+        <tr>
+          <th data-col="ou">OU <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="name">Branch <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="city">City <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="emp" class="num">FTE <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="pi_pen_pct" class="num">PI Pen% <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="biz_pen_pct" class="num">Biz Pen% <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="active_pi" class="num">Active PI <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="inactive_pi" class="num">Inactive PI <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="active_ratio" class="num">Act Ratio <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="gap">Gap <span class="sort-arrow">&#9650;</span></th>
+          <th data-col="group">Group <span class="sort-arrow">&#9650;</span></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================
+     CITY-LEVEL SUMMARY
+     ============================================================ -->
+<h2 class="section-title">City-Level Market Position</h2>
+<p class="section-sub">Aggregated by unique city population. Multi-branch cities show combined penetration.</p>
+
+<div class="chart-panel" style="padding: 0; overflow: hidden;">
+  <div class="table-container">
+    <table class="data-table" id="cityTable">
+      <thead>
+        <tr>
+          <th>City</th>
+          <th class="num">Population</th>
+          <th class="num">Outlets</th>
+          <th class="num">FTE</th>
+          <th class="num">Active PI</th>
+          <th class="num">Inactive PI</th>
+          <th class="num">PI Pen%</th>
+          <th class="num">Biz Pen%</th>
+        </tr>
+      </thead>
+      <tbody id="cityBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============================================================
+     METHODOLOGY
+     ============================================================ -->
+<div class="methodology">
+  <h4>Methodology — Population Penetration in Multi-Branch Cities</h4>
+  <p>Three cities operate with multiple NLB Prishtina outlets sharing the same municipal population base:
+    <strong>Prishtina</strong> (5 outlets, pop. 227,466), <strong>Prizren</strong> (2 outlets, pop. 147,246),
+    and <strong>Mitrovice</strong> (2 outlets, pop. 64,742).</p>
+  <p>In these cities, individual branch PI penetration is calculated as <em>branch active clients &divide; full city population</em>.
+    This structurally deflates branch-level pen% and makes these branches appear weaker than they are.</p>
+  <ul>
+    <li><strong>City-level penetration</strong> is the correct measure for cross-market comparison
+      (e.g., &ldquo;Is Prizren underpenetrated vs Peje?&rdquo;)</li>
+    <li><strong>Branch-level penetration</strong> within multi-branch cities is used only for internal allocation decisions
+      (e.g., &ldquo;Is 0001 Prishtine carrying its fair share of the city&rsquo;s client base?&rdquo;)</li>
+  </ul>
+  <p style="margin-top: 8px;"><strong>City-level PI penetrations:</strong> Prishtina 21.4%, Mitrovice 18.5%, Prizren 10.9%.
+    At city level, Prishtina and Mitrovice are at or above target. Prizren remains the most underpenetrated major city.</p>
+  <p><strong>Structural outlier:</strong> Mitrovice Veriore (100703) shows 116% penetration — active clients exceed registered population
+    due to cross-municipality client registration. Excluded from all benchmark charts and scoring.</p>
+  <p><strong>Business accounts:</strong> Active business account counts are estimated (penetration ratio &times; registered businesses).
+    Inactive business counts are derived from business active ratio. Treat as directional, not exact.</p>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<div class="footer">
+  NLB Prishtina &middot; Branch Network Transformation Program &middot; Module 1: Market Share Intelligence &middot; March 2026<br>
+  Confidential &mdash; For Internal Management Use Only
+</div>
+
+</div><!-- /container -->
+
+<!-- ============================================================
+     DATA + LOGIC
+     ============================================================ -->
+<script>
+// ---- RAW DATA (all 35 branches) ----
+const DATA = [
+  {ou:"100301",name:"Ekspozitura Hani i Elezit",city:"Hani i Elezit",emp:4,pop:8533,active_pi:3384,inactive_pi:777,pi_pen_pct:39.66,biz_pen_pct:67.73,businesses:282,biz_active_est:191,active_ratio:81.3,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100303",name:"Ekspozitura Shterpce",city:"Shterpce",emp:4,pop:10771,active_pi:2958,inactive_pi:858,pi_pen_pct:27.46,biz_pen_pct:35.71,businesses:266,biz_active_est:95,active_ratio:77.5,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100604",name:"Ekspozitura Decan",city:"Decan",emp:6,pop:27775,active_pi:7528,inactive_pi:2510,pi_pen_pct:27.10,biz_pen_pct:36.56,businesses:796,biz_active_est:291,active_ratio:75.0,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100302",name:"Ekspozitura Kacanik",city:"Kacanik",emp:6,pop:27716,active_pi:5936,inactive_pi:1457,pi_pen_pct:21.42,biz_pen_pct:34.89,businesses:940,biz_active_est:328,active_ratio:80.3,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100108",name:"Ekspozitura Gracanice",city:"Gracanice",emp:4,pop:18486,active_pi:3695,inactive_pi:1232,pi_pen_pct:19.99,biz_pen_pct:10.49,businesses:944,biz_active_est:99,active_ratio:75.0,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"1006",name:"Filiali Peje",city:"Peje",emp:17,pop:82745,active_pi:15022,inactive_pi:5465,pi_pen_pct:18.15,biz_pen_pct:16.44,businesses:4172,biz_active_est:686,active_ratio:73.3,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100105",name:"Ekspozitura Obiliq",city:"Obiliq",emp:4,pop:22815,active_pi:4129,inactive_pi:1069,pi_pen_pct:18.10,biz_pen_pct:17.72,businesses:683,biz_active_est:121,active_ratio:79.4,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"000103",name:"Ekspozitura Drenas",city:"Drenas",emp:8,pop:48079,active_pi:7639,inactive_pi:2347,pi_pen_pct:15.89,biz_pen_pct:21.08,businesses:1566,biz_active_est:330,active_ratio:76.5,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100603",name:"Ekspozitura Istog",city:"Istog",emp:6,pop:33008,active_pi:5112,inactive_pi:1430,pi_pen_pct:15.49,biz_pen_pct:22.01,businesses:1213,biz_active_est:267,active_ratio:78.1,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100701",name:"Ekspozitura Skenderaj",city:"Skenderaj",emp:5,pop:40664,active_pi:6061,inactive_pi:2118,pi_pen_pct:14.91,biz_pen_pct:23.37,businesses:1087,biz_active_est:254,active_ratio:74.1,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"1009",name:"Filiali Besiane",city:"Podujeve",emp:9,pop:70975,active_pi:10497,inactive_pi:2902,pi_pen_pct:14.79,biz_pen_pct:14.28,businesses:2381,biz_active_est:340,active_ratio:78.3,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100201",name:"Ekspozitura Viti",city:"Viti",emp:5,pop:35566,active_pi:5141,inactive_pi:1720,pi_pen_pct:14.45,biz_pen_pct:16.67,businesses:1410,biz_active_est:235,active_ratio:74.9,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100602",name:"Ekspozitura Kline",city:"Kline",emp:6,pop:30503,active_pi:4309,inactive_pi:2574,pi_pen_pct:14.13,biz_pen_pct:26.43,businesses:1048,biz_active_est:277,active_ratio:62.6,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100202",name:"Ekspozitura Kamenice",city:"Kamenice",emp:4,pop:22868,active_pi:3227,inactive_pi:885,pi_pen_pct:14.11,biz_pen_pct:13.59,businesses:949,biz_active_est:129,active_ratio:78.5,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"1002",name:"Filiali Gjilan",city:"Gjilan",emp:12,pop:82980,active_pi:11544,inactive_pi:4037,pi_pen_pct:13.91,biz_pen_pct:10.63,businesses:4317,biz_active_est:459,active_ratio:74.1,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"1007",name:"Filiali Mitrovice",city:"Mitrovice",emp:9,pop:64742,active_pi:8497,inactive_pi:3136,pi_pen_pct:13.12,biz_pen_pct:15.22,businesses:2529,biz_active_est:385,active_ratio:73.0,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100501",name:"Ekspozitura Rahovec",city:"Rahovec",emp:6,pop:41799,active_pi:5483,inactive_pi:1907,pi_pen_pct:13.12,biz_pen_pct:11.51,businesses:1659,biz_active_est:191,active_ratio:74.2,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100502",name:"Ekspozitura Suhareke",city:"Suhareke",emp:7,pop:45749,active_pi:5839,inactive_pi:1730,pi_pen_pct:12.76,biz_pen_pct:16.07,businesses:2085,biz_active_est:335,active_ratio:77.1,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"1003",name:"Filiali Ferizaj",city:"Ferizaj",emp:19,pop:109255,active_pi:13557,inactive_pi:4386,pi_pen_pct:12.41,biz_pen_pct:11.40,businesses:6371,biz_active_est:726,active_ratio:75.6,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"1004",name:"Filiali Gjakove",city:"Gjakove",emp:10,pop:78699,active_pi:8793,inactive_pi:3850,pi_pen_pct:11.17,biz_pen_pct:10.91,businesses:4005,biz_active_est:437,active_ratio:69.5,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100106",name:"Ekspozitura Lipjan",city:"Lipjan",emp:6,pop:55044,active_pi:5918,inactive_pi:1660,pi_pen_pct:10.75,biz_pen_pct:18.73,businesses:1874,biz_active_est:351,active_ratio:78.1,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100702",name:"Ekspozitura Vushtrri",city:"Vushtrri",emp:7,pop:61528,active_pi:6512,inactive_pi:1978,pi_pen_pct:10.58,biz_pen_pct:10.86,businesses:1868,biz_active_est:203,active_ratio:76.7,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"1001",name:"Filiali 1001 Prishtine",city:"Prishtine",emp:18,pop:227466,active_pi:23530,inactive_pi:6976,pi_pen_pct:10.34,biz_pen_pct:6.66,businesses:21396,biz_active_est:1425,active_ratio:77.1,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100503",name:"Ekspozitura Malisheve",city:"Malisheve",emp:6,pop:43888,active_pi:4380,inactive_pi:1532,pi_pen_pct:9.98,biz_pen_pct:21.51,businesses:1167,biz_active_est:251,active_ratio:74.1,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100104",name:"Ekspozitura Fushe Kosove",city:"Fushe Kosove",emp:8,pop:63949,active_pi:6308,inactive_pi:2262,pi_pen_pct:9.86,biz_pen_pct:19.29,businesses:2711,biz_active_est:523,active_ratio:73.6,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"1005",name:"Filiali Prizren",city:"Prizren",emp:10,pop:147246,active_pi:11562,inactive_pi:4514,pi_pen_pct:7.85,biz_pen_pct:9.07,businesses:7119,biz_active_est:646,active_ratio:71.9,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"0001",name:"Filiali Prishtine",city:"Prishtine",emp:19,pop:227466,active_pi:16704,inactive_pi:5899,pi_pen_pct:7.34,biz_pen_pct:10.48,businesses:21396,biz_active_est:2243,active_ratio:73.9,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100704",name:"Ekspozitura Mitrovice 2",city:"Mitrovice",emp:5,pop:64742,active_pi:3451,inactive_pi:744,pi_pen_pct:5.33,biz_pen_pct:1.58,businesses:2529,biz_active_est:40,active_ratio:82.3,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"100504",name:"Ekspozitura Prizren 2",city:"Prizren",emp:6,pop:147246,active_pi:4529,inactive_pi:1242,pi_pen_pct:3.08,biz_pen_pct:3.52,businesses:7119,biz_active_est:251,active_ratio:78.5,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"000102",name:"Ekspozitura Prishtine-Llapit",city:"Prishtine",emp:6,pop:227466,active_pi:5949,inactive_pi:1246,pi_pen_pct:2.62,biz_pen_pct:1.12,businesses:21396,biz_active_est:240,active_ratio:82.7,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  {ou:"000110",name:"Ekspozitura Bregu i Diellit",city:"Prishtine",emp:4,pop:227466,active_pi:2436,inactive_pi:617,pi_pen_pct:1.07,biz_pen_pct:1.21,businesses:21396,biz_active_est:259,active_ratio:79.8,is_benchmarked:true,is_ghost:false,is_sporteli:false,is_outlier:false},
+  // Structural outlier
+  {ou:"100703",name:"Ekspozitura Mitrovice Veriore",city:"Mitrovice Veriore",emp:12,pop:7920,active_pi:9194,inactive_pi:9604,pi_pen_pct:116.09,biz_pen_pct:95.83,businesses:312,biz_active_est:299,active_ratio:48.9,is_benchmarked:false,is_ghost:false,is_sporteli:false,is_outlier:true},
+  // Sporteli
+  {ou:"100705",name:"Sporteli Leposaviq",city:"Leposaviq",emp:0,pop:9485,active_pi:366,inactive_pi:67,pi_pen_pct:3.86,biz_pen_pct:null,businesses:0,biz_active_est:0,active_ratio:84.5,is_benchmarked:false,is_ghost:false,is_sporteli:true,is_outlier:false},
+  {ou:"100706",name:"Sporteli Zubin Potok",city:"Zubin Potok",emp:0,pop:3385,active_pi:161,inactive_pi:34,pi_pen_pct:4.76,biz_pen_pct:null,businesses:0,biz_active_est:0,active_ratio:82.6,is_benchmarked:false,is_ghost:false,is_sporteli:true,is_outlier:false},
+  // Ghost
+  {ou:"100101",name:"Ekspozitura 101 Prishtine",city:"Prishtine",emp:7,pop:227466,active_pi:0,inactive_pi:0,pi_pen_pct:null,biz_pen_pct:null,businesses:21396,biz_active_est:0,active_ratio:null,is_benchmarked:false,is_ghost:true,is_sporteli:false,is_outlier:false}
+];
+
+const CITY_DATA = [
+  {city:"Prishtine",pop:227466,outlets:5,emp:54,active:48619,inactive:14738,pi_pen:21.4,biz_pen:10.5},
+  {city:"Mitrovice",pop:64742,outlets:2,emp:14,active:11948,inactive:3880,pi_pen:18.5,biz_pen:15.2},
+  {city:"Peje",pop:82745,outlets:1,emp:17,active:15022,inactive:5465,pi_pen:18.2,biz_pen:16.4},
+  {city:"Prizren",pop:147246,outlets:2,emp:16,active:16091,inactive:5756,pi_pen:10.9,biz_pen:9.1},
+  {city:"Hani i Elezit",pop:8533,outlets:1,emp:4,active:3384,inactive:777,pi_pen:39.7,biz_pen:67.7},
+  {city:"Shterpce",pop:10771,outlets:1,emp:4,active:2958,inactive:858,pi_pen:27.5,biz_pen:35.7},
+  {city:"Decan",pop:27775,outlets:1,emp:6,active:7528,inactive:2510,pi_pen:27.1,biz_pen:36.6},
+  {city:"Kacanik",pop:27716,outlets:1,emp:6,active:5936,inactive:1457,pi_pen:21.4,biz_pen:34.9},
+  {city:"Gracanice",pop:18486,outlets:1,emp:4,active:3695,inactive:1232,pi_pen:20.0,biz_pen:10.5},
+  {city:"Obiliq",pop:22815,outlets:1,emp:4,active:4129,inactive:1069,pi_pen:18.1,biz_pen:17.7},
+  {city:"Drenas",pop:48079,outlets:1,emp:8,active:7639,inactive:2347,pi_pen:15.9,biz_pen:21.1},
+  {city:"Istog",pop:33008,outlets:1,emp:6,active:5112,inactive:1430,pi_pen:15.5,biz_pen:22.0},
+  {city:"Skenderaj",pop:40664,outlets:1,emp:5,active:6061,inactive:2118,pi_pen:14.9,biz_pen:23.4},
+  {city:"Podujeve",pop:70975,outlets:1,emp:9,active:10497,inactive:2902,pi_pen:14.8,biz_pen:14.3},
+  {city:"Viti",pop:35566,outlets:1,emp:5,active:5141,inactive:1720,pi_pen:14.5,biz_pen:16.7},
+  {city:"Kline",pop:30503,outlets:1,emp:6,active:4309,inactive:2574,pi_pen:14.1,biz_pen:26.4},
+  {city:"Kamenice",pop:22868,outlets:1,emp:4,active:3227,inactive:885,pi_pen:14.1,biz_pen:13.6},
+  {city:"Gjilan",pop:82980,outlets:1,emp:12,active:11544,inactive:4037,pi_pen:13.9,biz_pen:10.6},
+  {city:"Rahovec",pop:41799,outlets:1,emp:6,active:5483,inactive:1907,pi_pen:13.1,biz_pen:11.5},
+  {city:"Suhareke",pop:45749,outlets:1,emp:7,active:5839,inactive:1730,pi_pen:12.8,biz_pen:16.1},
+  {city:"Ferizaj",pop:109255,outlets:1,emp:19,active:13557,inactive:4386,pi_pen:12.4,biz_pen:11.4},
+  {city:"Gjakove",pop:78699,outlets:1,emp:10,active:8793,inactive:3850,pi_pen:11.2,biz_pen:10.9},
+  {city:"Lipjan",pop:55044,outlets:1,emp:6,active:5918,inactive:1660,pi_pen:10.8,biz_pen:18.7},
+  {city:"Vushtrri",pop:61528,outlets:1,emp:7,active:6512,inactive:1978,pi_pen:10.6,biz_pen:10.9},
+  {city:"Malisheve",pop:43888,outlets:1,emp:6,active:4380,inactive:1532,pi_pen:10.0,biz_pen:21.5},
+  {city:"Fushe Kosove",pop:63949,outlets:1,emp:8,active:6308,inactive:2262,pi_pen:9.9,biz_pen:19.3},
+  {city:"Leposaviq",pop:9485,outlets:1,emp:0,active:366,inactive:67,pi_pen:3.9,biz_pen:0},
+  {city:"Zubin Potok",pop:3385,outlets:1,emp:0,active:161,inactive:34,pi_pen:4.8,biz_pen:0},
+  {city:"Mitrovice Veriore",pop:7920,outlets:1,emp:12,active:9194,inactive:9604,pi_pen:116.1,biz_pen:95.8}
+];
+
+const PI_MEDIAN = 13.1;
+const PI_TARGET = 18.0;
+const BIZ_MEDIAN = 15.2;
+const BIZ_TARGET = 18.0;
+
+// ---- HELPERS ----
+function fmt(n) { return n == null ? 'N/A' : n.toLocaleString('en-US'); }
+function fmtPct(n) { return n == null ? 'N/A' : n.toFixed(1) + '%'; }
+
+function getGroup(b) {
+  if (b.is_ghost) return 'ghost';
+  if (b.is_sporteli) return 'sporteli';
+  if (b.is_outlier) return 'outlier';
+  if (!b.is_benchmarked || b.pi_pen_pct == null) return 'special';
+  if (b.pi_pen_pct >= PI_TARGET) return 'defend';
+  if (b.pi_pen_pct >= PI_MEDIAN) return 'accel';
+  return 'recovery';
+}
+
+function getGroupLabel(g) {
+  const labels = {defend:'Defend',accel:'Acceleration',recovery:'Recovery',ghost:'Ghost',sporteli:'Sporteli',outlier:'Outlier',special:'Special'};
+  return labels[g] || g;
+}
+
+function getColor(g) {
+  const c = {defend:'#059669',accel:'#D97706',recovery:'#DC2626',ghost:'#6B7280',sporteli:'#7C3AED',outlier:'#EA580C'};
+  return c[g] || '#6B7280';
+}
+
+function getGap(b) {
+  const g = getGroup(b);
+  if (g === 'recovery' && b.pop) return Math.round(b.pop * PI_MEDIAN / 100 - b.active_pi);
+  if (g === 'accel' && b.pop) return Math.round(b.pop * PI_TARGET / 100 - b.active_pi);
+  return null;
+}
+
+// Assign group to each
+DATA.forEach(b => { b._group = getGroup(b); b._gap = getGap(b); });
+
+// ============================================================
+// CHART 1 — PI PENETRATION BAR
+// ============================================================
+const piChartData = DATA.filter(b => !b.is_outlier && b.pi_pen_pct != null).sort((a,b) => a.pi_pen_pct - b.pi_pen_pct);
+
+new Chart(document.getElementById('piPenChart'), {
+  type: 'bar',
+  data: {
+    labels: piChartData.map(b => b.name),
+    datasets: [{
+      data: piChartData.map(b => b.pi_pen_pct),
+      backgroundColor: piChartData.map(b => {
+        if (b.pi_pen_pct >= PI_TARGET) return '#059669';
+        if (b.pi_pen_pct >= PI_MEDIAN) return '#D97706';
+        return '#DC2626';
+      }),
+      borderRadius: 2,
+      barThickness: 16,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { right: 40 } },
+    scales: {
+      x: {
+        beginAtZero: true,
+        max: 45,
+        grid: { color: '#F1F5F9' },
+        ticks: { font: { size: 11, family: 'Inter' }, callback: v => v + '%' }
+      },
+      y: {
+        grid: { display: false },
+        ticks: {
+          font: { size: 10, family: 'Inter' },
+          autoSkip: false,
+          callback: function(value, index) {
+            const label = this.getLabelForValue(value);
+            return label.length > 28 ? label.substring(0,28) + '...' : label;
+          }
+        }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: (items) => piChartData[items[0].dataIndex].name,
+          label: (item) => {
+            const b = piChartData[item.dataIndex];
+            return [
+              `PI Penetration: ${b.pi_pen_pct.toFixed(1)}%`,
+              `City: ${b.city}`,
+              `Active: ${fmt(b.active_pi)} | Inactive: ${fmt(b.inactive_pi)}`,
+              `FTE: ${b.emp} | Pop: ${fmt(b.pop)}`
+            ];
+          }
+        }
+      },
+      annotation: {
+        annotations: {
+          medianLine: {
+            type: 'line', xMin: PI_MEDIAN, xMax: PI_MEDIAN,
+            borderColor: '#002B49', borderWidth: 2, borderDash: [6,4],
+            label: { display: true, content: 'Median 13.1%', position: 'start',
+              backgroundColor: '#002B49', color: '#fff', font: { size: 10, family: 'Inter', weight: '600' },
+              padding: 4, borderRadius: 3 }
+          },
+          targetLine: {
+            type: 'line', xMin: PI_TARGET, xMax: PI_TARGET,
+            borderColor: '#059669', borderWidth: 2, borderDash: [6,4],
+            label: { display: true, content: 'Target 18.0%', position: 'start',
+              backgroundColor: '#059669', color: '#fff', font: { size: 10, family: 'Inter', weight: '600' },
+              padding: 4, borderRadius: 3 }
+          }
+        }
+      }
+    }
+  }
+});
+document.getElementById('piPenChart').parentElement.style.height = (piChartData.length * 26 + 60) + 'px';
+
+// ============================================================
+// CHART 2 — BUSINESS PENETRATION BAR
+// ============================================================
+const bizChartData = DATA.filter(b => !b.is_outlier && !b.is_ghost && !b.is_sporteli && b.biz_pen_pct != null).sort((a,b) => a.biz_pen_pct - b.biz_pen_pct);
+
+new Chart(document.getElementById('bizPenChart'), {
+  type: 'bar',
+  data: {
+    labels: bizChartData.map(b => b.name),
+    datasets: [{
+      data: bizChartData.map(b => b.biz_pen_pct),
+      backgroundColor: bizChartData.map(b => {
+        if (b.biz_pen_pct >= BIZ_TARGET) return '#059669';
+        if (b.biz_pen_pct >= BIZ_MEDIAN) return '#D97706';
+        return '#DC2626';
+      }),
+      borderRadius: 2,
+      barThickness: 16,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { right: 40 } },
+    scales: {
+      x: {
+        beginAtZero: true,
+        max: 75,
+        grid: { color: '#F1F5F9' },
+        ticks: { font: { size: 11, family: 'Inter' }, callback: v => v + '%' }
+      },
+      y: {
+        grid: { display: false },
+        ticks: {
+          font: { size: 10, family: 'Inter' },
+          autoSkip: false,
+          callback: function(value, index) {
+            const label = this.getLabelForValue(value);
+            return label.length > 28 ? label.substring(0,28) + '...' : label;
+          }
+        }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: (items) => bizChartData[items[0].dataIndex].name,
+          label: (item) => {
+            const b = bizChartData[item.dataIndex];
+            return [
+              `Biz Penetration: ${b.biz_pen_pct.toFixed(1)}%`,
+              `City: ${b.city}`,
+              `Businesses: ${fmt(b.businesses)}`,
+              `Est. Active: ~${fmt(b.biz_active_est)}`
+            ];
+          }
+        }
+      },
+      annotation: {
+        annotations: {
+          medianLine: {
+            type: 'line', xMin: BIZ_MEDIAN, xMax: BIZ_MEDIAN,
+            borderColor: '#002B49', borderWidth: 2, borderDash: [6,4],
+            label: { display: true, content: 'Median 15.2%', position: 'start',
+              backgroundColor: '#002B49', color: '#fff', font: { size: 10, family: 'Inter', weight: '600' },
+              padding: 4, borderRadius: 3 }
+          },
+          targetLine: {
+            type: 'line', xMin: BIZ_TARGET, xMax: BIZ_TARGET,
+            borderColor: '#059669', borderWidth: 2, borderDash: [6,4],
+            label: { display: true, content: 'Target 18.0%', position: 'start',
+              backgroundColor: '#059669', color: '#fff', font: { size: 10, family: 'Inter', weight: '600' },
+              padding: 4, borderRadius: 3 }
+          }
+        }
+      }
+    }
+  }
+});
+document.getElementById('bizPenChart').parentElement.style.height = (bizChartData.length * 26 + 60) + 'px';
+
+// ============================================================
+// CHART 3 — ACTIVE vs INACTIVE (Top 12 by inactive count)
+// ============================================================
+const actData = DATA.filter(b => b.is_benchmarked && b.active_pi > 0)
+  .sort((a,b) => b.inactive_pi - a.inactive_pi).slice(0, 12).reverse();
+
+new Chart(document.getElementById('activeInactiveChart'), {
+  type: 'bar',
+  data: {
+    labels: actData.map(b => b.name.replace('Ekspozitura ','Eksp. ').replace('Filiali ','')),
+    datasets: [
+      { label: 'Active', data: actData.map(b => b.active_pi), backgroundColor: '#059669', borderRadius: 2, barThickness: 18 },
+      { label: 'Inactive', data: actData.map(b => b.inactive_pi), backgroundColor: '#94A3B8', borderRadius: 2, barThickness: 18 }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { stacked: true, grid: { color: '#F1F5F9' }, ticks: { font: { size: 10 }, callback: v => (v/1000)+'K' } },
+      y: { stacked: true, grid: { display: false }, ticks: { font: { size: 10, family: 'Inter' } } }
+    },
+    plugins: {
+      legend: { position: 'top', labels: { font: { size: 11, family: 'Inter' }, boxWidth: 12 } },
+      tooltip: {
+        callbacks: {
+          label: (item) => `${item.dataset.label}: ${fmt(item.raw)}`
+        }
+      }
+    }
+  }
+});
+document.getElementById('activeInactiveChart').parentElement.style.height = '380px';
+
+// ============================================================
+// CHART 4 — WHITE SPACE BUBBLE (City-Level)
+// ============================================================
+const cityBubble = CITY_DATA.filter(c => c.pi_pen < 100 && c.pop > 5000);
+
+new Chart(document.getElementById('whiteSpaceChart'), {
+  type: 'bubble',
+  data: {
+    datasets: [{
+      data: cityBubble.map(c => ({
+        x: c.pi_pen,
+        y: c.pop / 1000,
+        r: Math.max(4, Math.sqrt(c.inactive) / 3),
+        city: c.city,
+        inactive: c.inactive,
+        outlets: c.outlets
+      })),
+      backgroundColor: cityBubble.map(c => {
+        if (c.pi_pen >= 18) return 'rgba(5,150,105,0.5)';
+        if (c.pi_pen >= 13.1) return 'rgba(217,119,6,0.5)';
+        return 'rgba(220,38,38,0.5)';
+      }),
+      borderColor: cityBubble.map(c => {
+        if (c.pi_pen >= 18) return '#059669';
+        if (c.pi_pen >= 13.1) return '#D97706';
+        return '#DC2626';
+      }),
+      borderWidth: 1.5,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        title: { display: true, text: 'PI Penetration %', font: { size: 11, family: 'Inter', weight: '600' } },
+        grid: { color: '#F1F5F9' },
+        ticks: { font: { size: 10 }, callback: v => v + '%' }
+      },
+      y: {
+        title: { display: true, text: 'Population (thousands)', font: { size: 11, family: 'Inter', weight: '600' } },
+        grid: { color: '#F1F5F9' },
+        ticks: { font: { size: 10 }, callback: v => v + 'K' }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (item) => {
+            const d = item.raw;
+            return [
+              d.city,
+              `PI Penetration: ${d.x.toFixed(1)}%`,
+              `Population: ${fmt(d.y * 1000)}`,
+              `Inactive pool: ${fmt(d.inactive)}`,
+              `Outlets: ${d.outlets}`
+            ];
+          }
+        }
+      },
+      annotation: {
+        annotations: {
+          medianLine: {
+            type: 'line', xMin: PI_MEDIAN, xMax: PI_MEDIAN,
+            borderColor: '#002B49', borderWidth: 1.5, borderDash: [4,3],
+            label: { display: true, content: '13.1%', position: 'end',
+              backgroundColor: '#002B49', color: '#fff', font: { size: 9 }, padding: 3, borderRadius: 2 }
+          },
+          targetLine: {
+            type: 'line', xMin: PI_TARGET, xMax: PI_TARGET,
+            borderColor: '#059669', borderWidth: 1.5, borderDash: [4,3],
+            label: { display: true, content: '18%', position: 'end',
+              backgroundColor: '#059669', color: '#fff', font: { size: 9 }, padding: 3, borderRadius: 2 }
+          }
+        }
+      }
+    }
+  }
+});
+document.getElementById('whiteSpaceChart').parentElement.style.height = '380px';
+
+// ============================================================
+// BRANCH ACTION TABLE
+// ============================================================
+let currentFilter = 'all';
+let sortCol = 'pi_pen_pct';
+let sortDir = -1;
+
+function renderTable() {
+  let filtered = DATA.slice();
+  if (currentFilter === 'defend') filtered = filtered.filter(b => b._group === 'defend');
+  else if (currentFilter === 'accel') filtered = filtered.filter(b => b._group === 'accel');
+  else if (currentFilter === 'recovery') filtered = filtered.filter(b => b._group === 'recovery');
+  else if (currentFilter === 'special') filtered = filtered.filter(b => ['ghost','sporteli','outlier'].includes(b._group));
+
+  filtered.sort((a,b) => {
+    let va = a[sortCol], vb = b[sortCol];
+    if (sortCol === 'gap') { va = a._gap; vb = b._gap; }
+    if (sortCol === 'group') { va = a._group; vb = b._group; }
+    if (va == null) return 1;
+    if (vb == null) return -1;
+    if (typeof va === 'string') return va.localeCompare(vb) * sortDir;
+    return (va - vb) * sortDir;
+  });
+
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = filtered.map(b => {
+    const g = b._group;
+    const tagClass = g;
+    const gap = b._gap;
+    const gapStr = gap != null ? (gap > 0 ? '+' + fmt(gap) : fmt(gap)) : '\u2014';
+    return `<tr>
+      <td style="font-weight:600;color:#002B49">${b.ou}</td>
+      <td>${b.name}</td>
+      <td>${b.city}</td>
+      <td class="num">${b.emp}</td>
+      <td class="num" style="font-weight:600;color:${getColor(g)}">${b.pi_pen_pct != null ? b.pi_pen_pct.toFixed(1) + '%' : 'N/A'}</td>
+      <td class="num">${b.biz_pen_pct != null ? b.biz_pen_pct.toFixed(1) + '%' : 'N/A'}</td>
+      <td class="num">${fmt(b.active_pi)}</td>
+      <td class="num">${fmt(b.inactive_pi)}</td>
+      <td class="num">${b.active_ratio != null ? b.active_ratio.toFixed(1) + '%' : 'N/A'}</td>
+      <td class="num">${gapStr}</td>
+      <td><span class="tag ${tagClass}">${getGroupLabel(g)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderTable();
+  });
+});
+
+// Sort headers
+document.querySelectorAll('#branchTable th').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (!col) return;
+    if (sortCol === col) sortDir *= -1;
+    else { sortCol = col; sortDir = -1; }
+    document.querySelectorAll('#branchTable th').forEach(h => h.classList.remove('sorted'));
+    th.classList.add('sorted');
+    renderTable();
+  });
+});
+
+renderTable();
+
+// ============================================================
+// CITY TABLE
+// ============================================================
+const cityFiltered = CITY_DATA.filter(c => c.pi_pen < 100).sort((a,b) => b.pi_pen - a.pi_pen);
+document.getElementById('cityBody').innerHTML = cityFiltered.map(c => {
+  const color = c.pi_pen >= 18 ? '#059669' : c.pi_pen >= 13.1 ? '#D97706' : '#DC2626';
+  return `<tr>
+    <td style="font-weight:600">${c.city}</td>
+    <td class="num">${fmt(c.pop)}</td>
+    <td class="num">${c.outlets}</td>
+    <td class="num">${c.emp}</td>
+    <td class="num">${fmt(c.active)}</td>
+    <td class="num">${fmt(c.inactive)}</td>
+    <td class="num" style="font-weight:700;color:${color}">${c.pi_pen.toFixed(1)}%</td>
+    <td class="num">${c.biz_pen > 0 ? c.biz_pen.toFixed(1) + '%' : 'N/A'}</td>
+  </tr>`;
+}).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLB Prishtina — Module 3: Staff Efficiency & Productivity</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+:root {
+  --navy:#002B49;--navy-light:#003d66;--steel:#4A6FA5;--charcoal:#1A1A2E;
+  --white:#FFF;--bg:#F7F8FA;--bg-card:#FFF;--border:#E2E8F0;
+  --text:#1A1A2E;--text-sec:#64748B;
+  --green:#059669;--green-bg:#ECFDF5;--amber:#D97706;--amber-bg:#FFFBEB;
+  --red:#DC2626;--red-bg:#FEF2F2;--blue-bg:#EFF6FF;--teal:#0D9488;--teal-bg:#F0FDFA;
+  --font:'Inter','Segoe UI',system-ui,sans-serif;
+  --shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 4px 16px rgba(0,0,0,.10);--radius:8px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+.header{background:var(--navy);color:#fff;padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.header-left{display:flex;align-items:center;gap:20px}
+.logo{background:#fff;color:var(--navy);font-weight:800;font-size:18px;padding:6px 14px;border-radius:4px;letter-spacing:1px}
+.header h1{font-size:18px;font-weight:600;letter-spacing:-.3px}
+.header-sub{font-size:12px;opacity:.7;margin-top:2px}
+.badge{background:rgba(255,255,255,.12);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:500}
+.container{max-width:1520px;margin:0 auto;padding:32px 40px}
+.section-title{font-size:22px;font-weight:700;color:var(--navy);margin:40px 0 8px;letter-spacing:-.5px}
+.section-title:first-of-type{margin-top:0}
+.section-sub{font-size:14px;color:var(--text-sec);margin-bottom:24px;max-width:900px;line-height:1.7}
+.part-banner{background:var(--navy);color:#fff;padding:18px 28px;border-radius:var(--radius);margin:48px 0 24px;font-size:16px;font-weight:700;letter-spacing:-.3px;display:flex;align-items:center;gap:12px}
+.part-banner .num{background:rgba(255,255,255,.2);padding:4px 12px;border-radius:4px;font-size:13px;font-weight:600}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+.kpi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow);transition:box-shadow .2s}
+.kpi-card:hover{box-shadow:var(--shadow-lg)}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text-sec);margin-bottom:8px}
+.kpi-value{font-size:28px;font-weight:800;color:var(--navy);letter-spacing:-1px}
+.kpi-context{font-size:12px;color:var(--text-sec);margin-top:4px}
+.kpi-card.green{border-left:4px solid var(--green)}
+.kpi-card.amber{border-left:4px solid var(--amber)}
+.kpi-card.red{border-left:4px solid var(--red)}
+.kpi-card.navy{border-left:4px solid var(--navy)}
+.chart-container{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:32px;box-shadow:var(--shadow)}
+.chart-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.chart-sub{font-size:12px;color:var(--text-sec);margin-bottom:16px}
+.two-charts{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:1100px){.two-charts{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:64px;z-index:10}
+td{padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+tr:hover{background:var(--blue-bg)}
+.tbl-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;max-height:700px;box-shadow:var(--shadow);margin-bottom:32px}
+.cell-g{background:#ECFDF5;color:#059669;font-weight:600;text-align:center;border-radius:3px}
+.cell-a{background:#FFFBEB;color:#D97706;font-weight:600;text-align:center;border-radius:3px}
+.cell-r{background:#FEF2F2;color:#DC2626;font-weight:600;text-align:center;border-radius:3px}
+.cell-n{text-align:center;color:var(--text-sec)}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.tag-green{background:#ECFDF5;color:#059669}.tag-amber{background:#FFFBEB;color:#D97706}.tag-red{background:#FEF2F2;color:#DC2626}.tag-navy{background:#EFF6FF;color:#002B49}.tag-teal{background:#F0FDFA;color:#0D9488}
+.callout{border-radius:var(--radius);padding:20px 24px;margin-bottom:24px;border-left:4px solid}
+.callout-red{background:var(--red-bg);border-color:var(--red)}.callout-amber{background:var(--amber-bg);border-color:var(--amber)}.callout-green{background:var(--green-bg);border-color:var(--green)}.callout-navy{background:var(--blue-bg);border-color:var(--navy)}
+.callout h4{font-size:14px;font-weight:700;margin-bottom:6px}
+.callout p{font-size:13px;color:var(--text-sec);line-height:1.6}
+.filter-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.filter-btn{padding:6px 16px;border:1px solid var(--border);background:var(--bg-card);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;font-family:var(--font)}
+.filter-btn:hover,.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.method-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-top:40px;box-shadow:var(--shadow)}
+.method-box h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.method-box p,.method-box li{font-size:13px;color:var(--text-sec);line-height:1.7}
+.method-box ul{padding-left:20px;margin-top:8px}
+.link-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600;margin:2px}
+.link-m1{background:#EFF6FF;color:#002B49}.link-m2{background:#F0FDFA;color:#0D9488}
+canvas{max-height:420px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="logo">NLB</div>
+    <div><h1>Module 3 — Staff Efficiency & Productivity</h1><div class="header-sub">Branch Intelligence Dashboard | NLB Prishtina | 31 Benchmarked Branches</div></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <span class="link-badge link-m1">Linked: M1 Market Share</span>
+    <span class="link-badge link-m2">Linked: M2 Product Mix</span>
+    <span class="badge">265 FTE | 35 Outlets</span>
+  </div>
+</div>
+<div class="container">
+
+<!-- EXECUTIVE KPIs -->
+<div class="section-title">Executive Summary — Staff Productivity</div>
+<div class="section-sub">Two-part diagnostic: Part 1 measures what staff are actually producing today. Part 2 defines what they should be producing to close market-share gaps and support product-mix priorities from Modules 1 & 2. All segment "per employee" metrics use total branch FTE as denominator — no role-level headcount breakdown exists in source data.</div>
+
+<div class="kpi-row">
+  <div class="kpi-card navy"><div class="kpi-label">Network FTE</div><div class="kpi-value">265</div><div class="kpi-context">35 outlets | 31 benchmarked</div></div>
+  <div class="kpi-card green"><div class="kpi-label">PI Clients / FTE</div><div class="kpi-value" id="kpi_pi_fte">914</div><div class="kpi-context">Median across 31 branches</div></div>
+  <div class="kpi-card amber"><div class="kpi-label">Cash Transaction Share</div><div class="kpi-value" id="kpi_cash">73%</div><div class="kpi-context">Median | Teller burden proxy</div></div>
+  <div class="kpi-card red"><div class="kpi-label">Daily Services / FTE</div><div class="kpi-value" id="kpi_daily">22.2</div><div class="kpi-context">Median (28 branches w/ data)</div></div>
+  <div class="kpi-card navy"><div class="kpi-label">OnBalance / FTE</div><div class="kpi-value" id="kpi_ob_fte">&euro;3.1M</div><div class="kpi-context">Median stock depth</div></div>
+</div>
+
+<div class="callout callout-red">
+  <h4>Critical Finding: 73% of branch transactions are cash-based</h4>
+  <p>The dominant share of branch staff time is consumed by low-value manual cash handling. 12 branches exceed 75% cash ratio, with 4 above 80%. This is the single largest drag on staff productivity — releasing this capacity through digital/cashless migration would free FTE time for advisory, consumer lending, and client activation. The target is not more manual transactions, but fewer.</p>
+</div>
+
+<!-- ================================================ -->
+<!-- PART 1: ACTUAL PRODUCTIVITY -->
+<!-- ================================================ -->
+<div class="part-banner"><span class="num">PART 1</span> Actual Productivity — What Staff Are Doing Today</div>
+
+<!-- SECTION 1: STAFF PRODUCTIVITY HEATMAP -->
+<div class="section-title">1. Staff Productivity Heatmap</div>
+<div class="section-sub">Branch-by-branch comparison across 10 productivity dimensions. Color coding: <span class="tag tag-green">Above Median</span> <span class="tag tag-amber">Near Median (80-100%)</span> <span class="tag tag-red">Below 80% of Median</span>. All metrics use total branch FTE as denominator. Branches sorted by composite productivity score.</div>
+
+<div class="filter-bar" id="heatmapFilters">
+  <button class="filter-btn active" onclick="filterHeatmap('all')">All 31</button>
+  <button class="filter-btn" onclick="filterHeatmap('main')">Main Branches</button>
+  <button class="filter-btn" onclick="filterHeatmap('large')">Large Ekspoziture</button>
+  <button class="filter-btn" onclick="filterHeatmap('standard')">Standard Ekspoziture</button>
+  <button class="filter-btn" onclick="filterHeatmap('small')">Small Ekspoziture</button>
+  <button class="filter-btn" onclick="filterHeatmap('cash_heavy')">Cash Heavy (>75%)</button>
+  <button class="filter-btn" onclick="filterHeatmap('underperform')">Below Median</button>
+</div>
+
+<div class="tbl-wrap" id="heatmapTable"></div>
+
+<!-- SECTION 2: WORKLOAD vs FTE SCATTER -->
+<div class="section-title">2. Workload vs FTE — Who Is Overloaded, Who Is Underutilized</div>
+<div class="section-sub">Bubble size = OnBalance under management. X-axis = total transactions per FTE (flow intensity). Y-axis = PI clients per FTE (stock coverage). Top-right = high-output branches. Bottom-left = potential underutilization.</div>
+<div class="two-charts">
+  <div class="chart-container">
+    <div class="chart-title">Flow vs Stock per FTE</div>
+    <div class="chart-sub">X: Transactions/FTE | Y: PI Clients/FTE | Bubble: OnBalance</div>
+    <canvas id="chartScatter" height="380"></canvas>
+  </div>
+  <div class="chart-container">
+    <div class="chart-title">Daily Services Completed per FTE</div>
+    <div class="chart-sub">Ranked bar — 28 branches with data | Median: 22.2</div>
+    <canvas id="chartDailySvc" height="380"></canvas>
+  </div>
+</div>
+
+<!-- SECTION 3: CASH BURDEN -->
+<div class="section-title">3. Cash Transaction Burden</div>
+<div class="section-sub">Cash share of total branch transactions. Branches above 75% are consuming most staff time on low-value manual work. The management target is to reduce this, not sustain it.</div>
+<div class="chart-container">
+  <div class="chart-title">Cash Transaction Share by Branch</div>
+  <div class="chart-sub">Sorted descending | Red line: 75% threshold | 12 branches exceed threshold</div>
+  <canvas id="chartCashRatio" height="350"></canvas>
+</div>
+
+<!-- SECTION 4: SEGMENT PRODUCTIVITY -->
+<div class="section-title">4. Segment Productivity per FTE</div>
+<div class="section-sub">How each branch performs in PI, Micro, and CIB segments relative to total headcount. Note: segment "per employee" uses total FTE — not dedicated segment staff.</div>
+<div class="two-charts">
+  <div class="chart-container">
+    <div class="chart-title">Consumer Loans per FTE (2025 Flow)</div>
+    <div class="chart-sub">Ranked bar | Median: 48.2 loans/FTE</div>
+    <canvas id="chartConsPerFTE" height="380"></canvas>
+  </div>
+  <div class="chart-container">
+    <div class="chart-title">Micro Portfolio per FTE (Stock)</div>
+    <div class="chart-sub">Ranked bar | Median: EUR 426K/FTE</div>
+    <canvas id="chartMicroPerFTE" height="380"></canvas>
+  </div>
+</div>
+
+<!-- SECTION 5: FLOW vs STOCK MATRIX -->
+<div class="section-title">5. Flow vs Stock Matrix</div>
+<div class="section-sub">Classifies branches into four quadrants: strong flow + strong stock (top-right), weak flow + weak stock (bottom-left), and mismatches. Flow = loans per FTE (2025 production). Stock = OnBalance per FTE. Median lines define quadrant boundaries.</div>
+<div class="chart-container">
+  <div class="chart-title">Flow Productivity vs Stock Depth per FTE</div>
+  <div class="chart-sub">X: Loans/FTE (flow) | Y: OnBalance/FTE EUR M (stock) | Color by branch type</div>
+  <canvas id="chartFlowStock" height="400"></canvas>
+</div>
+
+<!-- ================================================ -->
+<!-- PART 2: TARGET PRODUCTIVITY -->
+<!-- ================================================ -->
+<div class="part-banner"><span class="num">PART 2</span> Target Productivity — What Staff Should Be Producing Next</div>
+
+<div class="callout callout-navy">
+  <h4>Target Logic: Linked to Module 1 (Market Share) & Module 2 (Product Mix)</h4>
+  <p>Targets are NOT derived solely from current output. They reflect: (1) market-share gap from M1 — Recovery branches need higher PI acquisition targets; (2) product-mix priorities from M2 — branches weak in consumer lending or POS need commercial push targets; (3) cash-to-digital migration — branches with high cash burden get transaction-reduction targets, not transaction-increase targets; (4) peer-group benchmark — targets anchored to peer median with uplift for high-opportunity branches.</p>
+</div>
+
+<!-- SECTION 6: ACTUAL vs TARGET TABLE -->
+<div class="section-title">6. Actual vs Target Productivity</div>
+<div class="section-sub">For each branch: current performance vs recommended target, with gap indicator and recommended management action. Targets derived from M1 market-share groups, M2 product priorities, and peer-group medians.</div>
+
+<div class="filter-bar" id="targetFilters">
+  <button class="filter-btn active" onclick="filterTarget('all')">All 31</button>
+  <button class="filter-btn" onclick="filterTarget('recovery')">Recovery (M1)</button>
+  <button class="filter-btn" onclick="filterTarget('acceleration')">Acceleration (M1)</button>
+  <button class="filter-btn" onclick="filterTarget('defend')">Defend (M1)</button>
+  <button class="filter-btn" onclick="filterTarget('hire')">Needs Hiring</button>
+  <button class="filter-btn" onclick="filterTarget('redesign')">Role Redesign</button>
+  <button class="filter-btn" onclick="filterTarget('digital')">Digital Migration</button>
+</div>
+
+<div class="tbl-wrap" id="targetTable"></div>
+
+<!-- SECTION 7: ROLE-MIX ASSESSMENT -->
+<div class="section-title">7. Role-Mix Mismatch Assessment</div>
+<div class="section-sub">Identifies branches where the functional workload profile suggests wrong role allocation: teller-heavy, sales-light, or segment-mismatch patterns.</div>
+<div class="tbl-wrap" id="roleMixTable"></div>
+
+<!-- SECTION 8: MANAGEMENT RECOMMENDATIONS -->
+<div class="section-title">8. Branch-Level Recommendations</div>
+<div class="section-sub">Direct management actions by branch, explicitly linked to M1 market-share gaps and M2 product-mix priorities.</div>
+
+<div class="filter-bar" id="recoFilters">
+  <button class="filter-btn active" onclick="filterReco('all')">All</button>
+  <button class="filter-btn" onclick="filterReco('hire')">Hire/Reinforce</button>
+  <button class="filter-btn" onclick="filterReco('redesign')">Role Redesign</button>
+  <button class="filter-btn" onclick="filterReco('digital')">Digital Push</button>
+  <button class="filter-btn" onclick="filterReco('reduce')">Efficiency Review</button>
+</div>
+<div class="tbl-wrap" id="recoTable"></div>
+
+<!-- METHODOLOGY -->
+<div class="method-box">
+  <h3>Methodology & Data Notes</h3>
+  <p><strong>Perimeter:</strong> 35 outlets, 31 benchmarked (excl. 1 ghost, 2 Sporteli, 1 structural outlier Mitrovice Veriore). FTE = total branch employees from Branch Efficiency MERGED source.</p>
+  <ul>
+    <li><strong>No role-level FTE breakdown:</strong> Source data provides only total FTE per branch. All "per employee" metrics (PI, Micro, CIB, transaction) use total branch FTE as denominator. This is consistent across all branches, making relative comparison valid, but absolute per-role productivity cannot be computed.</li>
+    <li><strong>FLOW vs STOCK:</strong> Loans 2025, new accounts, transactions = FLOW. OnBalance, deposits, active clients = STOCK. Never divide stock by flow counts.</li>
+    <li><strong>Cash ratio:</strong> (Cash withdrawals + Cash deposits) / Total branch transactions. Proxy for teller burden intensity.</li>
+    <li><strong>Target derivation:</strong> Recovery branches (M1 PI pen < 13.1%) get higher client acquisition and consumer lending targets. Branches with high TDA dependency (M2 > 50%) get deposit diversification targets. Branches with high cash ratio (> 75%) get digital migration targets. All targets anchored to peer-group median with uplift.</li>
+    <li><strong>Missing daily data:</strong> 3 branches (1001, 100504, 1007) show 0.0 for daily metrics — treated as data gap, not zero productivity. Excluded from daily-metric charts.</li>
+    <li><strong>Cross-sell intensity:</strong> (Total loans + New accounts) / Active PI clients. Proxy, not true cross-sell from product-holding data.</li>
+    <li><strong>Module linkage:</strong> M1 groups (Recovery/Acceleration/Defend) based on PI penetration vs 13.1% median and 18% target. M2 flags (Push Consumer, Moderate TDA, Push POS) drive product-specific targets.</li>
+  </ul>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ============================================================
+// DATA — 31 BENCHMARKED BRANCHES
+// ============================================================
+const DATA = [
+  {ou:'0001',name:'Prishtine',city:'Prishtine',type:'Main Branch',fte:19,actPI:16704,inactPI:5899,totalTxn:40160,cashTxn:11032,piLoans:2555,consLoans:1122,microLoans:131,cibLoans:186,piOB:87.4,microOB:11.2,cibOB:170.7,totalOB:269.3,newAcc:2171,deposits:308.1,dailySvc:43.3,dailyTxn:40.2,xsell:0.289,cashR:0.275,piPen:7.3,bizPen:10.5,mclick:62.4},
+  {ou:'000102',name:'Prishtine-Llapit',city:'Prishtine',type:'Standard Ekspoziture',fte:6,actPI:5949,inactPI:2107,totalTxn:4055,cashTxn:3120,piLoans:1117,consLoans:547,microLoans:2,cibLoans:0,piOB:17.4,microOB:0.3,cibOB:1.0,totalOB:18.7,newAcc:1320,deposits:26.1,dailySvc:22.5,dailyTxn:16.2,xsell:0.410,cashR:0.769,piPen:2.6,bizPen:1.1,mclick:0},
+  {ou:'000103',name:'Drenas',city:'Drenas',type:'Large Ekspoziture',fte:8,actPI:7639,inactPI:3065,totalTxn:7600,cashTxn:4667,piLoans:1596,consLoans:577,microLoans:77,cibLoans:11,piOB:18.6,microOB:3.5,cibOB:2.2,totalOB:24.3,newAcc:1283,deposits:27.0,dailySvc:35.2,dailyTxn:30.4,xsell:0.378,cashR:0.614,piPen:15.9,bizPen:21.1,mclick:49.5},
+  {ou:'000110',name:'Bregu i Diellit',city:'Prishtine',type:'Small Ekspoziture',fte:4,actPI:2436,inactPI:1054,totalTxn:2147,cashTxn:1471,piLoans:978,consLoans:407,microLoans:1,cibLoans:1,piOB:12.1,microOB:0.0,cibOB:0.0,totalOB:12.1,newAcc:717,deposits:24.1,dailySvc:14.4,dailyTxn:8.6,xsell:0.696,cashR:0.685,piPen:1.1,bizPen:1.2,mclick:0},
+  {ou:'1001',name:'1001 Prishtine',city:'Prishtine',type:'Main Branch',fte:18,actPI:23530,inactPI:8113,totalTxn:29465,cashTxn:15234,piLoans:3643,consLoans:1549,microLoans:163,cibLoans:96,piOB:99.4,microOB:9.9,cibOB:104.0,totalOB:213.3,newAcc:3591,deposits:203.9,dailySvc:0,dailyTxn:0,xsell:0.310,cashR:0.517,piPen:10.3,bizPen:6.7,mclick:0},
+  {ou:'100104',name:'Fushe Kosove',city:'Fushe Kosove',type:'Large Ekspoziture',fte:8,actPI:6308,inactPI:2263,totalTxn:7632,cashTxn:4451,piLoans:1469,consLoans:618,microLoans:60,cibLoans:25,piOB:21.4,microOB:5.2,cibOB:22.8,totalOB:49.4,newAcc:1164,deposits:44.5,dailySvc:22.7,dailyTxn:15.3,xsell:0.419,cashR:0.583,piPen:9.9,bizPen:19.3,mclick:56.0},
+  {ou:'100105',name:'Obiliq',city:'Obiliq',type:'Small Ekspoziture',fte:4,actPI:4129,inactPI:1254,totalTxn:2928,cashTxn:2470,piLoans:810,consLoans:364,microLoans:6,cibLoans:3,piOB:8.8,microOB:0.6,cibOB:0.6,totalOB:10.0,newAcc:586,deposits:17.0,dailySvc:16.4,dailyTxn:11.7,xsell:0.338,cashR:0.844,piPen:18.1,bizPen:17.7,mclick:45.1},
+  {ou:'100106',name:'Lipjan',city:'Lipjan',type:'Standard Ekspoziture',fte:6,actPI:5918,inactPI:2273,totalTxn:6784,cashTxn:4471,piLoans:768,consLoans:340,microLoans:85,cibLoans:23,piOB:11.2,microOB:4.7,cibOB:17.8,totalOB:33.7,newAcc:708,deposits:23.5,dailySvc:17.9,dailyTxn:13.6,xsell:0.252,cashR:0.659,piPen:10.8,bizPen:18.7,mclick:41.5},
+  {ou:'100108',name:'Gracanice',city:'Gracanice',type:'Small Ekspoziture',fte:4,actPI:3695,inactPI:1036,totalTxn:2752,cashTxn:2012,piLoans:353,consLoans:164,microLoans:0,cibLoans:0,piOB:3.5,microOB:0.1,cibOB:0.1,totalOB:3.6,newAcc:473,deposits:20.9,dailySvc:13.5,dailyTxn:11.0,xsell:0.224,cashR:0.731,piPen:20.0,bizPen:10.5,mclick:28.8},
+  {ou:'1002',name:'Gjilan',city:'Gjilan',type:'Large Ekspoziture',fte:12,actPI:11544,inactPI:4476,totalTxn:15271,cashTxn:11185,piLoans:1574,consLoans:690,microLoans:62,cibLoans:26,piOB:34.8,microOB:3.4,cibOB:9.4,totalOB:47.6,newAcc:1512,deposits:53.4,dailySvc:33.9,dailyTxn:30.5,xsell:0.268,cashR:0.732,piPen:13.9,bizPen:10.6,mclick:48.3},
+  {ou:'100201',name:'Viti',city:'Viti',type:'Standard Ekspoziture',fte:5,actPI:5141,inactPI:1541,totalTxn:4201,cashTxn:2328,piLoans:452,consLoans:182,microLoans:63,cibLoans:22,piOB:7.7,microOB:2.9,cibOB:12.3,totalOB:22.9,newAcc:587,deposits:18.9,dailySvc:20.0,dailyTxn:16.8,xsell:0.204,cashR:0.554,piPen:14.5,bizPen:16.7,mclick:45.4},
+  {ou:'100202',name:'Kamenice',city:'Kamenice',type:'Small Ekspoziture',fte:4,actPI:3227,inactPI:1167,totalTxn:2791,cashTxn:2052,piLoans:388,consLoans:175,microLoans:55,cibLoans:0,piOB:10.1,microOB:2.2,cibOB:0.0,totalOB:12.3,newAcc:494,deposits:13.1,dailySvc:13.9,dailyTxn:11.2,xsell:0.273,cashR:0.735,piPen:14.1,bizPen:13.6,mclick:45.8},
+  {ou:'1003',name:'Ferizaj',city:'Ferizaj',type:'Main Branch',fte:19,actPI:13557,inactPI:4696,totalTxn:13905,cashTxn:9899,piLoans:2081,consLoans:783,microLoans:186,cibLoans:39,piOB:33.9,microOB:10.9,cibOB:39.6,totalOB:84.4,newAcc:1764,deposits:52.6,dailySvc:17.0,dailyTxn:13.9,xsell:0.285,cashR:0.712,piPen:12.4,bizPen:11.4,mclick:46.3},
+  {ou:'100301',name:'Hani i Elezit',city:'Hani i Elezit',type:'Small Ekspoziture',fte:4,actPI:3384,inactPI:1138,totalTxn:2254,cashTxn:1767,piLoans:618,consLoans:341,microLoans:16,cibLoans:1,piOB:6.2,microOB:0.4,cibOB:3.0,totalOB:9.6,newAcc:505,deposits:14.4,dailySvc:12.8,dailyTxn:9.0,xsell:0.332,cashR:0.784,piPen:39.7,bizPen:67.7,mclick:56.2},
+  {ou:'100302',name:'Kacanik',city:'Kacanik',type:'Standard Ekspoziture',fte:6,actPI:5936,inactPI:1898,totalTxn:3153,cashTxn:2294,piLoans:611,consLoans:289,microLoans:108,cibLoans:2,piOB:5.8,microOB:2.7,cibOB:1.1,totalOB:9.6,newAcc:668,deposits:16.3,dailySvc:10.0,dailyTxn:6.3,xsell:0.216,cashR:0.728,piPen:21.4,bizPen:34.9,mclick:49.6},
+  {ou:'100303',name:'Shterpce',city:'Shterpce',type:'Small Ekspoziture',fte:4,actPI:2958,inactPI:740,totalTxn:2588,cashTxn:1974,piLoans:407,consLoans:177,microLoans:25,cibLoans:0,piOB:5.4,microOB:1.4,cibOB:0.0,totalOB:6.8,newAcc:317,deposits:6.3,dailySvc:12.8,dailyTxn:10.4,xsell:0.245,cashR:0.763,piPen:27.5,bizPen:35.7,mclick:27.2},
+  {ou:'1004',name:'Gjakove',city:'Gjakove',type:'Large Ekspoziture',fte:10,actPI:8793,inactPI:2904,totalTxn:10342,cashTxn:8072,piLoans:979,consLoans:463,microLoans:41,cibLoans:13,piOB:24.6,microOB:3.2,cibOB:16.9,totalOB:44.7,newAcc:1336,deposits:43.3,dailySvc:25.7,dailyTxn:20.7,xsell:0.264,cashR:0.781,piPen:11.2,bizPen:10.9,mclick:37.6},
+  {ou:'1005',name:'Prizren',city:'Prizren',type:'Large Ekspoziture',fte:10,actPI:11562,inactPI:4514,totalTxn:8909,cashTxn:6035,piLoans:752,consLoans:368,microLoans:131,cibLoans:27,piOB:12.5,microOB:5.4,cibOB:33.8,totalOB:51.7,newAcc:1347,deposits:32.0,dailySvc:22.0,dailyTxn:17.8,xsell:0.183,cashR:0.677,piPen:7.9,bizPen:9.1,mclick:37.0},
+  {ou:'100501',name:'Rahovec',city:'Rahovec',type:'Standard Ekspoziture',fte:6,actPI:5483,inactPI:1806,totalTxn:5628,cashTxn:3898,piLoans:485,consLoans:245,microLoans:60,cibLoans:2,piOB:9.4,microOB:2.0,cibOB:0.1,totalOB:11.5,newAcc:646,deposits:15.1,dailySvc:25.5,dailyTxn:22.5,xsell:0.206,cashR:0.693,piPen:13.1,bizPen:11.5,mclick:33.8},
+  {ou:'100502',name:'Suhareke',city:'Suhareke',type:'Standard Ekspoziture',fte:7,actPI:5839,inactPI:2154,totalTxn:11129,cashTxn:8853,piLoans:682,consLoans:329,microLoans:37,cibLoans:1,piOB:9.9,microOB:1.3,cibOB:0.6,totalOB:11.8,newAcc:894,deposits:22.4,dailySvc:25.0,dailyTxn:22.3,xsell:0.270,cashR:0.795,piPen:12.8,bizPen:16.1,mclick:38.5},
+  {ou:'100503',name:'Malisheve',city:'Malisheve',type:'Standard Ekspoziture',fte:6,actPI:4380,inactPI:1736,totalTxn:4310,cashTxn:3151,piLoans:449,consLoans:188,microLoans:17,cibLoans:2,piOB:8.6,microOB:2.9,cibOB:2.0,totalOB:13.5,newAcc:684,deposits:12.1,dailySvc:19.9,dailyTxn:17.2,xsell:0.259,cashR:0.731,piPen:10.0,bizPen:21.5,mclick:50.2},
+  {ou:'100504',name:'Prizren 2',city:'Prizren',type:'Standard Ekspoziture',fte:6,actPI:4529,inactPI:2010,totalTxn:4542,cashTxn:3165,piLoans:635,consLoans:289,microLoans:62,cibLoans:1,piOB:11.1,microOB:2.4,cibOB:0.2,totalOB:13.7,newAcc:1249,deposits:32.2,dailySvc:0,dailyTxn:0,xsell:0.416,cashR:0.697,piPen:3.1,bizPen:3.5,mclick:0},
+  {ou:'1006',name:'Peje',city:'Peje',type:'Main Branch',fte:17,actPI:15022,inactPI:5271,totalTxn:18256,cashTxn:11962,piLoans:1917,consLoans:897,microLoans:143,cibLoans:33,piOB:26.8,microOB:7.0,cibOB:41.4,totalOB:75.2,newAcc:1859,deposits:71.8,dailySvc:27.6,dailyTxn:24.3,xsell:0.252,cashR:0.655,piPen:18.2,bizPen:16.4,mclick:43.6},
+  {ou:'100602',name:'Kline',city:'Kline',type:'Standard Ekspoziture',fte:6,actPI:4309,inactPI:1509,totalTxn:6559,cashTxn:2433,piLoans:521,consLoans:196,microLoans:38,cibLoans:19,piOB:6.1,microOB:2.2,cibOB:13.3,totalOB:21.6,newAcc:513,deposits:18.9,dailySvc:29.3,dailyTxn:26.2,xsell:0.243,cashR:0.371,piPen:14.1,bizPen:26.4,mclick:46.5},
+  {ou:'100603',name:'Istog',city:'Istog',type:'Standard Ekspoziture',fte:6,actPI:5112,inactPI:1908,totalTxn:6890,cashTxn:4329,piLoans:691,consLoans:323,microLoans:55,cibLoans:16,piOB:6.1,microOB:3.1,cibOB:5.0,totalOB:14.2,newAcc:723,deposits:29.1,dailySvc:31.6,dailyTxn:27.6,xsell:0.278,cashR:0.628,piPen:15.5,bizPen:22.0,mclick:48.2},
+  {ou:'100604',name:'Decan',city:'Decan',type:'Standard Ekspoziture',fte:6,actPI:7528,inactPI:2078,totalTxn:6643,cashTxn:5298,piLoans:676,consLoans:265,microLoans:39,cibLoans:9,piOB:6.4,microOB:1.6,cibOB:6.5,totalOB:14.5,newAcc:754,deposits:30.8,dailySvc:30.6,dailyTxn:26.6,xsell:0.191,cashR:0.798,piPen:27.1,bizPen:36.6,mclick:51.8},
+  {ou:'1007',name:'Mitrovice',city:'Mitrovice',type:'Large Ekspoziture',fte:9,actPI:8497,inactPI:3040,totalTxn:4853,cashTxn:3940,piLoans:698,consLoans:333,microLoans:58,cibLoans:13,piOB:16.1,microOB:4.6,cibOB:11.6,totalOB:32.3,newAcc:851,deposits:18.6,dailySvc:0,dailyTxn:0,xsell:0.183,cashR:0.812,piPen:13.1,bizPen:15.2,mclick:35.7},
+  {ou:'100701',name:'Skenderaj',city:'Skenderaj',type:'Standard Ekspoziture',fte:5,actPI:6061,inactPI:1756,totalTxn:8408,cashTxn:7017,piLoans:628,consLoans:346,microLoans:122,cibLoans:4,piOB:6.7,microOB:2.5,cibOB:6.7,totalOB:15.9,newAcc:798,deposits:16.5,dailySvc:38.1,dailyTxn:33.6,xsell:0.236,cashR:0.835,piPen:14.9,bizPen:23.4,mclick:34.9},
+  {ou:'100702',name:'Vushtrri',city:'Vushtrri',type:'Standard Ekspoziture',fte:7,actPI:6512,inactPI:2320,totalTxn:4005,cashTxn:2947,piLoans:663,consLoans:340,microLoans:62,cibLoans:4,piOB:8.5,microOB:1.1,cibOB:0.4,totalOB:10.0,newAcc:904,deposits:20.1,dailySvc:18.7,dailyTxn:16.0,xsell:0.241,cashR:0.736,piPen:10.6,bizPen:10.9,mclick:37.6},
+  {ou:'100704',name:'Mitrovice 2',city:'Mitrovice',type:'Standard Ekspoziture',fte:5,actPI:3451,inactPI:951,totalTxn:3496,cashTxn:3255,piLoans:387,consLoans:178,microLoans:0,cibLoans:0,piOB:5.6,microOB:0.0,cibOB:0.0,totalOB:5.6,newAcc:502,deposits:16.5,dailySvc:15.5,dailyTxn:14.0,xsell:0.258,cashR:0.931,piPen:5.3,bizPen:1.6,mclick:0},
+  {ou:'1009',name:'Besiane',city:'Podujeve',type:'Large Ekspoziture',fte:9,actPI:10497,inactPI:4075,totalTxn:9312,cashTxn:5824,piLoans:963,consLoans:380,microLoans:47,cibLoans:25,piOB:13.5,microOB:5.2,cibOB:12.6,totalOB:31.3,newAcc:1602,deposits:40.5,dailySvc:23.9,dailyTxn:18.6,xsell:0.245,cashR:0.625,piPen:14.8,bizPen:14.3,mclick:43.7}
+];
+
+// POS data from Module 2
+const POS = {'0001':1705,'1006':421,'100104':201,'1005':156,'100106':126,'1007':107,
+  '1002':115,'1003':107,'100603':71,'100702':69,'000103':78,
+  '100201':50,'100602':62,'100701':47,'1009':45,'1004':60,'100503':56,
+  '100501':43,'100604':54,'100302':42,'100502':33,'100301':27,'100202':28,
+  '100105':11,'100303':9,'100108':6,'000102':0,'000110':0,'1001':0,'100504':0,'100704':0};
+
+// ============================================================
+// COMPUTE DERIVED METRICS
+// ============================================================
+const MED_PI_PEN = 13.1, TGT_PI_PEN = 18.0;
+
+DATA.forEach(b => {
+  b.piClientsFTE = b.actPI / b.fte;
+  b.txnFTE = b.totalTxn / b.fte;
+  b.cashFTE = b.cashTxn / b.fte;
+  b.consLoansFTE = b.consLoans / b.fte;
+  b.loansFTE = (b.piLoans + b.microLoans + b.cibLoans) / b.fte;
+  b.newAccFTE = b.newAcc / b.fte;
+  b.obFTE = b.totalOB / b.fte;
+  b.piOBfte = b.piOB / b.fte;
+  b.microOBfte = b.microOB / b.fte;
+  b.cibOBfte = b.cibOB / b.fte;
+  b.depFTE = b.deposits / b.fte;
+  b.microLoansFTE = b.microLoans / b.fte;
+  b.pos = POS[b.ou] || 0;
+  b.posFTE = b.pos / b.fte;
+
+  // M1 group
+  if (b.piPen >= TGT_PI_PEN) b.m1group = 'Defend';
+  else if (b.piPen >= MED_PI_PEN) b.m1group = 'Acceleration';
+  else b.m1group = 'Recovery';
+
+  // Cash burden flag
+  b.cashHeavy = b.cashR > 0.75;
+  // Workload index (composite)
+  b.inactPI = b.inactPI || 0;
+  b.reactivationPool = b.inactPI;
+});
+
+// Compute medians
+function median(arr) { const s = arr.filter(x=>x>0).sort((a,b)=>a-b); const m=Math.floor(s.length/2); return s.length%2?s[m]:(s[m-1]+s[m])/2; }
+
+const MEDS = {
+  piClientsFTE: median(DATA.map(b=>b.piClientsFTE)),
+  txnFTE: median(DATA.map(b=>b.txnFTE)),
+  cashFTE: median(DATA.map(b=>b.cashFTE)),
+  consLoansFTE: median(DATA.map(b=>b.consLoansFTE)),
+  loansFTE: median(DATA.map(b=>b.loansFTE)),
+  newAccFTE: median(DATA.map(b=>b.newAccFTE)),
+  obFTE: median(DATA.map(b=>b.obFTE)),
+  piOBfte: median(DATA.map(b=>b.piOBfte)),
+  microOBfte: median(DATA.filter(b=>b.microOB>0).map(b=>b.microOBfte)),
+  cibOBfte: median(DATA.filter(b=>b.cibOB>0).map(b=>b.cibOBfte)),
+  depFTE: median(DATA.map(b=>b.depFTE)),
+  xsell: median(DATA.map(b=>b.xsell)),
+  cashR: median(DATA.map(b=>b.cashR)),
+  dailySvc: median(DATA.filter(b=>b.dailySvc>0).map(b=>b.dailySvc)),
+  microLoansFTE: median(DATA.filter(b=>b.microLoans>0).map(b=>b.microLoansFTE)),
+  posFTE: median(DATA.filter(b=>b.pos>0).map(b=>b.posFTE)),
+};
+
+// ============================================================
+// TARGET COMPUTATION — linked to M1 & M2
+// ============================================================
+DATA.forEach(b => {
+  // PI targets
+  const piGap = b.piClientsFTE < MEDS.piClientsFTE;
+  b.tgtPiClientsFTE = piGap ? Math.round(MEDS.piClientsFTE * 1.05) : Math.round(b.piClientsFTE);
+  if (b.m1group === 'Recovery') b.tgtPiClientsFTE = Math.max(b.tgtPiClientsFTE, Math.round(MEDS.piClientsFTE * 1.10));
+
+  // Consumer loan targets
+  b.tgtConsLoansFTE = b.consLoansFTE < MEDS.consLoansFTE
+    ? Math.round(MEDS.consLoansFTE * 1.05)
+    : Math.round(b.consLoansFTE);
+  if (b.m1group === 'Recovery') b.tgtConsLoansFTE = Math.max(b.tgtConsLoansFTE, Math.round(MEDS.consLoansFTE * 1.15));
+
+  // New accounts targets
+  b.tgtNewAccFTE = b.newAccFTE < MEDS.newAccFTE
+    ? Math.round(MEDS.newAccFTE * 1.05)
+    : Math.round(b.newAccFTE);
+
+  // Cash reduction target (75% → 60% path)
+  b.tgtCashR = b.cashR > 0.75 ? 0.60 : (b.cashR > 0.60 ? b.cashR - 0.10 : b.cashR);
+  b.cashReduction = Math.max(0, b.cashR - b.tgtCashR);
+
+  // Composite target score
+  const piGapPct = b.piClientsFTE < MEDS.piClientsFTE ? ((MEDS.piClientsFTE - b.piClientsFTE) / MEDS.piClientsFTE) : 0;
+  const consGapPct = b.consLoansFTE < MEDS.consLoansFTE ? ((MEDS.consLoansFTE - b.consLoansFTE) / MEDS.consLoansFTE) : 0;
+  b.urgency = piGapPct * 0.4 + consGapPct * 0.3 + b.cashR * 0.3;
+
+  // Action recommendation
+  if (b.cashR > 0.80 && b.piClientsFTE > MEDS.piClientsFTE) {
+    b.action = 'Digital Migration';
+    b.actionTag = 'digital';
+  } else if (b.piClientsFTE > MEDS.piClientsFTE * 1.15 && b.consLoansFTE > MEDS.consLoansFTE * 1.15) {
+    b.action = 'Hire / Reinforce';
+    b.actionTag = 'hire';
+  } else if (b.cashR > 0.75 && b.consLoansFTE < MEDS.consLoansFTE * 0.8) {
+    b.action = 'Role Redesign + Digital';
+    b.actionTag = 'redesign';
+  } else if (b.consLoansFTE < MEDS.consLoansFTE * 0.8 || b.newAccFTE < MEDS.newAccFTE * 0.8) {
+    b.action = 'Sales Discipline';
+    b.actionTag = 'reduce';
+  } else if (b.obFTE > MEDS.obFTE * 1.3) {
+    b.action = 'Defend Stock + Push Flow';
+    b.actionTag = 'hire';
+  } else {
+    b.action = 'Maintain + Optimize';
+    b.actionTag = 'maintain';
+  }
+
+  // Role-mix assessment
+  const cashShare = b.cashR;
+  const salesIntensity = (b.consLoansFTE + b.newAccFTE) / (MEDS.consLoansFTE + MEDS.newAccFTE);
+  if (cashShare > 0.75 && salesIntensity < 0.9) {
+    b.roleMix = 'Teller-Heavy / Sales-Light';
+    b.roleMixColor = 'red';
+  } else if (cashShare > 0.70 && salesIntensity >= 0.9) {
+    b.roleMix = 'Balanced but Cash-Burdened';
+    b.roleMixColor = 'amber';
+  } else if (salesIntensity > 1.2) {
+    b.roleMix = 'Sales-Strong';
+    b.roleMixColor = 'green';
+  } else if (b.microOB === 0 && b.cibOB === 0) {
+    b.roleMix = 'PI-Only / No Business';
+    b.roleMixColor = 'amber';
+  } else {
+    b.roleMix = 'Adequate';
+    b.roleMixColor = 'green';
+  }
+
+  // Composite productivity score for ranking
+  const norm = (v, m) => Math.min(v / m, 2);
+  b.prodScore = (norm(b.piClientsFTE, MEDS.piClientsFTE) * 0.20 +
+                 norm(b.consLoansFTE, MEDS.consLoansFTE) * 0.20 +
+                 norm(b.newAccFTE, MEDS.newAccFTE) * 0.15 +
+                 norm(b.obFTE, MEDS.obFTE) * 0.15 +
+                 norm(b.microLoansFTE || 0.01, MEDS.microLoansFTE || 1) * 0.10 +
+                 (1 - b.cashR) * 0.10 +
+                 norm(b.xsell, MEDS.xsell) * 0.10);
+});
+
+// Sort by prodScore descending
+DATA.sort((a, b) => b.prodScore - a.prodScore);
+
+// ============================================================
+// HEATMAP CELL RENDERER
+// ============================================================
+function hCell(val, med, fmt, inv) {
+  if (val === 0 || val === null || val === undefined) return '<td class="cell-n">—</td>';
+  const ratio = inv ? med / val : val / med;
+  let cls = 'cell-r';
+  if (ratio >= 1.0) cls = 'cell-g';
+  else if (ratio >= 0.8) cls = 'cell-a';
+  const txt = typeof fmt === 'function' ? fmt(val) : (fmt === '%' ? (val*100).toFixed(0)+'%' : val.toFixed(fmt));
+  return `<td class="${cls}">${txt}</td>`;
+}
+
+function tagHtml(text, color) {
+  return `<span class="tag tag-${color}">${text}</span>`;
+}
+
+// ============================================================
+// 1. STAFF PRODUCTIVITY HEATMAP
+// ============================================================
+function renderHeatmap(filter) {
+  let rows = DATA;
+  if (filter === 'main') rows = rows.filter(b => b.type === 'Main Branch');
+  else if (filter === 'large') rows = rows.filter(b => b.type === 'Large Ekspoziture');
+  else if (filter === 'standard') rows = rows.filter(b => b.type === 'Standard Ekspoziture');
+  else if (filter === 'small') rows = rows.filter(b => b.type === 'Small Ekspoziture');
+  else if (filter === 'cash_heavy') rows = rows.filter(b => b.cashR > 0.75);
+  else if (filter === 'underperform') rows = rows.filter(b => b.prodScore < 1.0);
+
+  let html = `<table><thead><tr>
+    <th>Branch</th><th>FTE</th><th>PI Clients<br>/FTE</th><th>Cons Loans<br>/FTE</th>
+    <th>New Acc<br>/FTE</th><th>Total Loans<br>/FTE</th><th>OnBal/FTE<br>EUR M</th>
+    <th>Micro OB<br>/FTE M</th><th>Cash<br>Ratio</th><th>Cross-<br>Sell</th>
+    <th>Daily<br>Svc</th><th>M1<br>Group</th><th>Score</th>
+  </tr></thead><tbody>`;
+
+  rows.forEach(b => {
+    const m1c = b.m1group === 'Defend' ? 'green' : (b.m1group === 'Acceleration' ? 'amber' : 'red');
+    html += `<tr>
+      <td style="font-weight:600;white-space:nowrap">${b.name}</td>
+      <td style="text-align:center">${b.fte}</td>
+      ${hCell(b.piClientsFTE, MEDS.piClientsFTE, 0)}
+      ${hCell(b.consLoansFTE, MEDS.consLoansFTE, 1)}
+      ${hCell(b.newAccFTE, MEDS.newAccFTE, 1)}
+      ${hCell(b.loansFTE, MEDS.loansFTE, 1)}
+      ${hCell(b.obFTE, MEDS.obFTE, v=>(v).toFixed(1))}
+      ${hCell(b.microOBfte, MEDS.microOBfte, v=>(v).toFixed(2))}
+      ${hCell(b.cashR, 0.73, '%', true)}
+      ${hCell(b.xsell, MEDS.xsell, 3)}
+      ${b.dailySvc > 0 ? hCell(b.dailySvc, MEDS.dailySvc, 1) : '<td class="cell-n">—</td>'}
+      <td>${tagHtml(b.m1group, m1c)}</td>
+      <td style="text-align:center;font-weight:700">${b.prodScore.toFixed(2)}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('heatmapTable').innerHTML = html;
+}
+
+function filterHeatmap(f) {
+  document.querySelectorAll('#heatmapFilters .filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderHeatmap(f);
+}
+
+// ============================================================
+// 2. SCATTER: WORKLOAD vs FTE
+// ============================================================
+function renderScatter() {
+  const colors = {'Main Branch':'#002B49','Large Ekspoziture':'#4A6FA5','Standard Ekspoziture':'#0D9488','Small Ekspoziture':'#D97706'};
+  const datasets = {};
+  DATA.forEach(b => {
+    if (!datasets[b.type]) datasets[b.type] = {label:b.type,data:[],backgroundColor:colors[b.type]+'99',borderColor:colors[b.type],borderWidth:1};
+    datasets[b.type].data.push({x:b.txnFTE, y:b.piClientsFTE, r:Math.max(4, Math.sqrt(b.totalOB)*0.8), label:b.name});
+  });
+  new Chart(document.getElementById('chartScatter'), {
+    type:'bubble',
+    data:{datasets:Object.values(datasets)},
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{position:'bottom',labels:{font:{size:11}}},
+        tooltip:{callbacks:{label:ctx=>`${ctx.raw.label}: Txn/FTE=${ctx.raw.x.toFixed(0)}, PI/FTE=${ctx.raw.y.toFixed(0)}`}},
+        annotation:{annotations:{
+          medX:{type:'line',xMin:MEDS.txnFTE,xMax:MEDS.txnFTE,borderColor:'#DC2626',borderWidth:1,borderDash:[4,4],label:{display:true,content:`Median Txn/FTE: ${MEDS.txnFTE.toFixed(0)}`,position:'start',font:{size:10}}},
+          medY:{type:'line',yMin:MEDS.piClientsFTE,yMax:MEDS.piClientsFTE,borderColor:'#059669',borderWidth:1,borderDash:[4,4],label:{display:true,content:`Median PI/FTE: ${MEDS.piClientsFTE.toFixed(0)}`,position:'start',font:{size:10}}}
+        }}
+      },
+      scales:{
+        x:{title:{display:true,text:'Total Transactions / FTE',font:{size:12,weight:'bold'}},grid:{color:'#E2E8F0'}},
+        y:{title:{display:true,text:'PI Active Clients / FTE',font:{size:12,weight:'bold'}},grid:{color:'#E2E8F0'}}
+      }
+    }
+  });
+}
+
+// ============================================================
+// 2b. DAILY SERVICES BAR
+// ============================================================
+function renderDailySvc() {
+  const d = DATA.filter(b => b.dailySvc > 0).sort((a,b) => b.dailySvc - a.dailySvc);
+  new Chart(document.getElementById('chartDailySvc'), {
+    type:'bar',
+    data:{
+      labels:d.map(b=>b.name),
+      datasets:[{data:d.map(b=>b.dailySvc),backgroundColor:d.map(b=>b.dailySvc>=MEDS.dailySvc?'#059669':'#DC2626'),borderRadius:3}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,
+      plugins:{legend:{display:false},
+        annotation:{annotations:{med:{type:'line',xMin:MEDS.dailySvc,xMax:MEDS.dailySvc,borderColor:'#002B49',borderWidth:2,borderDash:[5,3],
+          label:{display:true,content:`Median: ${MEDS.dailySvc.toFixed(1)}`,position:'end',font:{size:10}}}}}
+      },
+      scales:{x:{title:{display:true,text:'Daily Services Completed / FTE'},grid:{color:'#E2E8F0'}},y:{ticks:{font:{size:10}}}}
+    }
+  });
+}
+
+// ============================================================
+// 3. CASH RATIO BAR
+// ============================================================
+function renderCashRatio() {
+  const d = DATA.slice().sort((a,b) => b.cashR - a.cashR);
+  new Chart(document.getElementById('chartCashRatio'), {
+    type:'bar',
+    data:{
+      labels:d.map(b=>b.name),
+      datasets:[{data:d.map(b=>(b.cashR*100).toFixed(1)),backgroundColor:d.map(b=>b.cashR>0.80?'#DC2626':b.cashR>0.75?'#D97706':b.cashR>0.65?'#F59E0B':'#059669'),borderRadius:3}]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false},
+        annotation:{annotations:{
+          thresh:{type:'line',yMin:75,yMax:75,borderColor:'#DC2626',borderWidth:2,borderDash:[5,3],label:{display:true,content:'75% Threshold',position:'start',font:{size:10},color:'#DC2626'}},
+          med:{type:'line',yMin:MEDS.cashR*100,yMax:MEDS.cashR*100,borderColor:'#002B49',borderWidth:1,borderDash:[3,3],label:{display:true,content:`Median: ${(MEDS.cashR*100).toFixed(0)}%`,position:'end',font:{size:10}}}
+        }}
+      },
+      scales:{y:{title:{display:true,text:'Cash Transaction Share %'},max:100,grid:{color:'#E2E8F0'}},x:{ticks:{font:{size:9},maxRotation:45}}}
+    }
+  });
+}
+
+// ============================================================
+// 4a. CONSUMER LOANS per FTE BAR
+// ============================================================
+function renderConsPerFTE() {
+  const d = DATA.slice().sort((a,b) => b.consLoansFTE - a.consLoansFTE);
+  new Chart(document.getElementById('chartConsPerFTE'), {
+    type:'bar',
+    data:{
+      labels:d.map(b=>b.name),
+      datasets:[{data:d.map(b=>b.consLoansFTE.toFixed(1)),backgroundColor:d.map(b=>b.consLoansFTE>=MEDS.consLoansFTE?'#059669':'#DC2626'),borderRadius:3}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,
+      plugins:{legend:{display:false},
+        annotation:{annotations:{med:{type:'line',xMin:MEDS.consLoansFTE,xMax:MEDS.consLoansFTE,borderColor:'#002B49',borderWidth:2,borderDash:[5,3],
+          label:{display:true,content:`Median: ${MEDS.consLoansFTE.toFixed(1)}`,position:'end',font:{size:10}}}}}
+      },
+      scales:{x:{title:{display:true,text:'Consumer Loans / FTE (2025 Flow)'},grid:{color:'#E2E8F0'}},y:{ticks:{font:{size:10}}}}
+    }
+  });
+}
+
+// ============================================================
+// 4b. MICRO PORTFOLIO per FTE BAR
+// ============================================================
+function renderMicroPerFTE() {
+  const d = DATA.filter(b=>b.microOB>0).sort((a,b) => b.microOBfte - a.microOBfte);
+  new Chart(document.getElementById('chartMicroPerFTE'), {
+    type:'bar',
+    data:{
+      labels:d.map(b=>b.name),
+      datasets:[{data:d.map(b=>b.microOBfte.toFixed(2)),backgroundColor:d.map(b=>b.microOBfte>=MEDS.microOBfte?'#0D9488':'#DC2626'),borderRadius:3}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,
+      plugins:{legend:{display:false},
+        annotation:{annotations:{med:{type:'line',xMin:MEDS.microOBfte,xMax:MEDS.microOBfte,borderColor:'#002B49',borderWidth:2,borderDash:[5,3],
+          label:{display:true,content:`Median: ${MEDS.microOBfte.toFixed(2)}M`,position:'end',font:{size:10}}}}}
+      },
+      scales:{x:{title:{display:true,text:'Micro Portfolio / FTE (EUR M)'},grid:{color:'#E2E8F0'}},y:{ticks:{font:{size:10}}}}
+    }
+  });
+}
+
+// ============================================================
+// 5. FLOW vs STOCK MATRIX
+// ============================================================
+function renderFlowStock() {
+  const colors = {'Main Branch':'#002B49','Large Ekspoziture':'#4A6FA5','Standard Ekspoziture':'#0D9488','Small Ekspoziture':'#D97706'};
+  const datasets = {};
+  DATA.forEach(b => {
+    if (!datasets[b.type]) datasets[b.type] = {label:b.type,data:[],backgroundColor:colors[b.type]+'99',borderColor:colors[b.type],borderWidth:1.5,pointStyle:'circle'};
+    datasets[b.type].data.push({x:b.loansFTE, y:b.obFTE, label:b.name});
+  });
+  new Chart(document.getElementById('chartFlowStock'), {
+    type:'scatter',
+    data:{datasets:Object.values(datasets)},
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{position:'bottom',labels:{font:{size:11}}},
+        tooltip:{callbacks:{label:ctx=>`${ctx.raw.label}: Loans/FTE=${ctx.raw.x.toFixed(0)}, OB/FTE=${ctx.raw.y.toFixed(1)}M`}},
+        annotation:{annotations:{
+          medX:{type:'line',xMin:MEDS.loansFTE,xMax:MEDS.loansFTE,borderColor:'#DC2626',borderWidth:1.5,borderDash:[4,4],
+            label:{display:true,content:`Median Flow: ${MEDS.loansFTE.toFixed(0)}`,position:'start',font:{size:10}}},
+          medY:{type:'line',yMin:MEDS.obFTE,yMax:MEDS.obFTE,borderColor:'#059669',borderWidth:1.5,borderDash:[4,4],
+            label:{display:true,content:`Median Stock: ${MEDS.obFTE.toFixed(1)}M`,position:'start',font:{size:10}}},
+          q1:{type:'label',xValue:MEDS.loansFTE*1.5,yValue:MEDS.obFTE*1.5,content:['Strong Flow','Strong Stock'],font:{size:11,weight:'bold'},color:'#059669'},
+          q2:{type:'label',xValue:MEDS.loansFTE*0.5,yValue:MEDS.obFTE*1.5,content:['Weak Flow','Strong Stock'],font:{size:11,weight:'bold'},color:'#D97706'},
+          q3:{type:'label',xValue:MEDS.loansFTE*0.5,yValue:MEDS.obFTE*0.4,content:['Weak Flow','Weak Stock'],font:{size:11,weight:'bold'},color:'#DC2626'},
+          q4:{type:'label',xValue:MEDS.loansFTE*1.5,yValue:MEDS.obFTE*0.4,content:['Strong Flow','Weak Stock'],font:{size:11,weight:'bold'},color:'#4A6FA5'}
+        }}
+      },
+      scales:{
+        x:{title:{display:true,text:'Total Loans / FTE (2025 Flow)',font:{size:12,weight:'bold'}},grid:{color:'#E2E8F0'}},
+        y:{title:{display:true,text:'OnBalance / FTE (EUR M, Stock)',font:{size:12,weight:'bold'}},grid:{color:'#E2E8F0'}}
+      },
+      elements:{point:{radius:7,hoverRadius:10}}
+    }
+  });
+}
+
+// ============================================================
+// 6. ACTUAL vs TARGET TABLE
+// ============================================================
+function renderTargetTable(filter) {
+  let rows = DATA.slice().sort((a,b) => b.urgency - a.urgency);
+  if (filter === 'recovery') rows = rows.filter(b => b.m1group === 'Recovery');
+  else if (filter === 'acceleration') rows = rows.filter(b => b.m1group === 'Acceleration');
+  else if (filter === 'defend') rows = rows.filter(b => b.m1group === 'Defend');
+  else if (filter === 'hire') rows = rows.filter(b => b.actionTag === 'hire');
+  else if (filter === 'redesign') rows = rows.filter(b => b.actionTag === 'redesign' || b.actionTag === 'digital');
+  else if (filter === 'digital') rows = rows.filter(b => b.cashR > 0.75);
+
+  let html = `<table><thead><tr>
+    <th>Branch</th><th>FTE</th><th>M1 Group</th>
+    <th>PI/FTE<br>Actual</th><th>PI/FTE<br>Target</th><th>Gap</th>
+    <th>Cons/FTE<br>Actual</th><th>Cons/FTE<br>Target</th><th>Gap</th>
+    <th>Cash%<br>Actual</th><th>Cash%<br>Target</th><th>Free<br>FTE*</th>
+    <th>Action</th>
+  </tr></thead><tbody>`;
+
+  rows.forEach(b => {
+    const piGap = b.tgtPiClientsFTE - b.piClientsFTE;
+    const consGap = b.tgtConsLoansFTE - b.consLoansFTE;
+    const cashFreeFTE = (b.cashReduction * b.totalTxn / (MEDS.txnFTE || 1)).toFixed(1);
+    const m1c = b.m1group==='Defend'?'green':b.m1group==='Acceleration'?'amber':'red';
+    const actC = b.actionTag==='hire'?'navy':b.actionTag==='redesign'||b.actionTag==='digital'?'red':b.actionTag==='reduce'?'amber':'green';
+
+    html += `<tr>
+      <td style="font-weight:600">${b.name}</td>
+      <td style="text-align:center">${b.fte}</td>
+      <td>${tagHtml(b.m1group, m1c)}</td>
+      <td style="text-align:right">${b.piClientsFTE.toFixed(0)}</td>
+      <td style="text-align:right;font-weight:600">${b.tgtPiClientsFTE}</td>
+      <td style="text-align:right;color:${piGap>0?'#DC2626':'#059669'}">${piGap>0?'+':''}${piGap.toFixed(0)}</td>
+      <td style="text-align:right">${b.consLoansFTE.toFixed(1)}</td>
+      <td style="text-align:right;font-weight:600">${b.tgtConsLoansFTE}</td>
+      <td style="text-align:right;color:${consGap>0?'#DC2626':'#059669'}">${consGap>0?'+':''}${consGap.toFixed(1)}</td>
+      <td style="text-align:right">${(b.cashR*100).toFixed(0)}%</td>
+      <td style="text-align:right;font-weight:600">${(b.tgtCashR*100).toFixed(0)}%</td>
+      <td style="text-align:right;color:#0D9488">${b.cashReduction > 0 ? cashFreeFTE : '—'}</td>
+      <td>${tagHtml(b.action, actC)}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  html += '<div style="font-size:11px;color:var(--text-sec);margin-top:8px;padding:8px 12px">* Free FTE = estimated FTE-equivalent capacity released if cash ratio is reduced to target level. Directional only — assumes released transaction volume / median txn per FTE.</div>';
+  document.getElementById('targetTable').innerHTML = html;
+}
+
+function filterTarget(f) {
+  document.querySelectorAll('#targetFilters .filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTargetTable(f);
+}
+
+// ============================================================
+// 7. ROLE-MIX TABLE
+// ============================================================
+function renderRoleMix() {
+  const rows = DATA.slice().sort((a,b) => {
+    const order = {red:0,amber:1,green:2};
+    return (order[a.roleMixColor]||2) - (order[b.roleMixColor]||2);
+  });
+
+  let html = `<table><thead><tr>
+    <th>Branch</th><th>FTE</th><th>Type</th>
+    <th>Cash<br>Share</th><th>Consumer<br>Loans/FTE</th><th>New Acc<br>/FTE</th>
+    <th>Micro OB<br>/FTE M</th><th>CIB OB<br>/FTE M</th><th>POS<br>/FTE</th>
+    <th>Role-Mix<br>Assessment</th><th>Management Note</th>
+  </tr></thead><tbody>`;
+
+  rows.forEach(b => {
+    let note = '';
+    if (b.roleMixColor === 'red') {
+      if (b.cashR > 0.80) note = 'Teller capacity consuming >80% of branch activity. Redeploy toward consumer lending and client activation.';
+      else note = 'High cash burden with weak sales output. Role redesign needed — shift staff from teller to advisory.';
+    } else if (b.roleMixColor === 'amber') {
+      if (b.microOB === 0 && b.cibOB === 0) note = 'No business segment presence. Consider micro/POS push if business opportunity exists.';
+      else note = 'Adequate sales but constrained by cash workload. Digital migration would release capacity.';
+    } else {
+      note = b.consLoansFTE > MEDS.consLoansFTE * 1.2 ? 'Strong sales performance. Potential model branch for peer coaching.' : 'Balanced role allocation.';
+    }
+
+    html += `<tr>
+      <td style="font-weight:600">${b.name}</td>
+      <td style="text-align:center">${b.fte}</td>
+      <td style="font-size:11px">${b.type}</td>
+      <td style="text-align:center;${b.cashR>0.75?'color:#DC2626;font-weight:600':''}">${(b.cashR*100).toFixed(0)}%</td>
+      ${hCell(b.consLoansFTE, MEDS.consLoansFTE, 1)}
+      ${hCell(b.newAccFTE, MEDS.newAccFTE, 1)}
+      ${b.microOBfte > 0 ? hCell(b.microOBfte, MEDS.microOBfte, 2) : '<td class="cell-n">—</td>'}
+      ${b.cibOBfte > 0 ? hCell(b.cibOBfte, MEDS.cibOBfte, 2) : '<td class="cell-n">—</td>'}
+      <td style="text-align:center">${b.posFTE.toFixed(1)}</td>
+      <td>${tagHtml(b.roleMix, b.roleMixColor)}</td>
+      <td style="font-size:11px;max-width:280px;white-space:normal;line-height:1.4">${note}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('roleMixTable').innerHTML = html;
+}
+
+// ============================================================
+// 8. RECOMMENDATIONS TABLE
+// ============================================================
+function renderReco(filter) {
+  let rows = DATA.slice();
+  if (filter === 'hire') rows = rows.filter(b => b.actionTag === 'hire');
+  else if (filter === 'redesign') rows = rows.filter(b => b.actionTag === 'redesign' || b.actionTag === 'digital');
+  else if (filter === 'digital') rows = rows.filter(b => b.cashR > 0.75);
+  else if (filter === 'reduce') rows = rows.filter(b => b.actionTag === 'reduce');
+
+  rows.sort((a,b) => b.urgency - a.urgency);
+
+  let html = `<table><thead><tr>
+    <th>Branch</th><th>FTE</th><th>M1 Group</th><th>Action</th>
+    <th>PI Priority</th><th>Product Priority</th><th>Transaction Priority</th><th>Detailed Recommendation</th>
+  </tr></thead><tbody>`;
+
+  rows.forEach(b => {
+    // PI priority
+    let piPri = '';
+    if (b.m1group === 'Recovery') piPri = `Acquire +${Math.max(0, b.tgtPiClientsFTE - Math.round(b.piClientsFTE))} clients/FTE to close market-share gap`;
+    else if (b.m1group === 'Acceleration') piPri = 'Push from median toward 18% penetration target';
+    else piPri = 'Defend current base; focus on deepening, not acquisition';
+
+    // Product priority
+    let prodPri = '';
+    if (b.consLoansFTE < MEDS.consLoansFTE) prodPri = `Push consumer lending: gap of ${(MEDS.consLoansFTE - b.consLoansFTE).toFixed(0)} loans/FTE vs median`;
+    else if (b.microOB === 0) prodPri = 'Activate micro/business segment — zero presence currently';
+    else if (b.xsell < MEDS.xsell) prodPri = `Improve cross-sell depth: ${b.xsell.toFixed(2)} vs ${MEDS.xsell.toFixed(2)} median`;
+    else prodPri = 'Product mix adequate — maintain and optimize';
+
+    // Transaction priority
+    let txnPri = '';
+    if (b.cashR > 0.80) txnPri = `Critical: ${(b.cashR*100).toFixed(0)}% cash — mandatory digital migration`;
+    else if (b.cashR > 0.75) txnPri = `High cash burden (${(b.cashR*100).toFixed(0)}%) — accelerate cashless shift`;
+    else if (b.cashR > 0.65) txnPri = 'Moderate cash — continue digital adoption';
+    else txnPri = 'Good digital balance — maintain';
+
+    // Detailed recommendation
+    let detail = '';
+    if (b.actionTag === 'hire') detail = `Strong productivity justifies additional capacity. Current load: ${b.piClientsFTE.toFixed(0)} PI clients/FTE, ${b.loansFTE.toFixed(0)} loans/FTE. Consider +1 FTE focused on ${b.m1group==='Recovery'?'PI acquisition':'commercial deepening'}.`;
+    else if (b.actionTag === 'digital') detail = `${(b.cashR*100).toFixed(0)}% cash ratio is unsustainable. Migrate low-value transactions to digital channels. Released teller capacity should be redirected toward consumer lending and inactive-client activation. The issue is workload composition, not total headcount.`;
+    else if (b.actionTag === 'redesign') detail = `Combination of high cash burden (${(b.cashR*100).toFixed(0)}%) and weak commercial output (${b.consLoansFTE.toFixed(0)} cons loans/FTE). Requires role redesign: fewer teller hours, more advisory/sales time. The issue is role mix, not total headcount.`;
+    else if (b.actionTag === 'reduce') detail = `Below-median sales output (cons ${b.consLoansFTE.toFixed(1)}/FTE, new acc ${b.newAccFTE.toFixed(0)}/FTE). Requires stronger PI sales discipline and clear individual targets. ${b.reactivationPool > 1000 ? `Reactivation pool of ${b.reactivationPool.toLocaleString()} inactive PI clients represents immediate opportunity.` : ''}`;
+    else detail = `Adequate performance. Monitor and optimize. ${b.m1group==='Defend'?'Focus on quality and retention rather than volume growth.':'Continue current trajectory with incremental improvement targets.'}`;
+
+    const m1c = b.m1group==='Defend'?'green':b.m1group==='Acceleration'?'amber':'red';
+    const actC = b.actionTag==='hire'?'navy':b.actionTag==='redesign'||b.actionTag==='digital'?'red':b.actionTag==='reduce'?'amber':'green';
+
+    html += `<tr>
+      <td style="font-weight:600">${b.name}</td>
+      <td style="text-align:center">${b.fte}</td>
+      <td>${tagHtml(b.m1group, m1c)}</td>
+      <td>${tagHtml(b.action, actC)}</td>
+      <td style="font-size:11px;max-width:200px;white-space:normal;line-height:1.4">${piPri}</td>
+      <td style="font-size:11px;max-width:200px;white-space:normal;line-height:1.4">${prodPri}</td>
+      <td style="font-size:11px;max-width:180px;white-space:normal;line-height:1.4">${txnPri}</td>
+      <td style="font-size:11px;max-width:320px;white-space:normal;line-height:1.4">${detail}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('recoTable').innerHTML = html;
+}
+
+function filterReco(f) {
+  document.querySelectorAll('#recoFilters .filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderReco(f);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderHeatmap('all');
+renderScatter();
+renderDailySvc();
+renderCashRatio();
+renderConsPerFTE();
+renderMicroPerFTE();
+renderFlowStock();
+renderTargetTable('all');
+renderRoleMix();
+renderReco('all');
+</script>
+</body>
+</html>

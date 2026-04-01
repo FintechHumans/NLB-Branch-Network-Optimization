@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLB Prishtina — Module 2: Product Mix, Funding & POS Strategy</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+:root {
+  --navy:#002B49;--navy-light:#003d66;--steel:#4A6FA5;--charcoal:#1A1A2E;
+  --white:#FFF;--bg:#F7F8FA;--bg-card:#FFF;--border:#E2E8F0;
+  --text:#1A1A2E;--text-sec:#64748B;
+  --green:#059669;--green-bg:#ECFDF5;--amber:#D97706;--amber-bg:#FFFBEB;
+  --red:#DC2626;--red-bg:#FEF2F2;--blue-bg:#EFF6FF;--teal:#0D9488;--teal-bg:#F0FDFA;
+  --font:'Inter','Segoe UI',system-ui,sans-serif;
+  --shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 4px 16px rgba(0,0,0,.10);--radius:8px;
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+.header{background:var(--navy);color:#fff;padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.header-left{display:flex;align-items:center;gap:20px}
+.logo{background:#fff;color:var(--navy);font-weight:800;font-size:18px;padding:6px 14px;border-radius:4px;letter-spacing:1px}
+.header h1{font-size:18px;font-weight:600;letter-spacing:-.3px}
+.header-sub{font-size:12px;opacity:.7;margin-top:2px}
+.badge{background:rgba(255,255,255,.12);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:500}
+.container{max-width:1440px;margin:0 auto;padding:32px 40px}
+.section-title{font-size:22px;font-weight:700;color:var(--navy);margin:40px 0 8px;letter-spacing:-.5px}
+.section-title:first-of-type{margin-top:0}
+.section-sub{font-size:14px;color:var(--text-sec);margin-bottom:24px;max-width:900px;line-height:1.7}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+.kpi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow);transition:box-shadow .2s}
+.kpi-card:hover{box-shadow:var(--shadow-lg)}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text-sec);margin-bottom:8px}
+.kpi-value{font-size:28px;font-weight:800;color:var(--navy);letter-spacing:-1px}
+.kpi-context{font-size:12px;color:var(--text-sec);margin-top:4px}
+.kpi-card.green{border-left:4px solid var(--green)}
+.kpi-card.amber{border-left:4px solid var(--amber)}
+.kpi-card.red{border-left:4px solid var(--red)}
+.kpi-card.navy{border-left:4px solid var(--navy)}
+.kpi-card.teal{border-left:4px solid var(--teal)}
+.exec-msg{background:var(--navy);color:#fff;padding:20px 28px;border-radius:var(--radius);margin-bottom:32px;font-size:15px;line-height:1.7}
+.exec-msg strong{font-weight:700}
+.chart-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:24px;box-shadow:var(--shadow)}
+.chart-panel h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.chart-panel .chart-sub{font-size:12px;color:var(--text-sec);margin-bottom:20px}
+.chart-note{font-size:11px;color:var(--text-sec);margin-top:12px;font-style:italic;border-top:1px solid var(--border);padding-top:10px}
+.chart-container{position:relative;width:100%}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+@media(max-width:1024px){.two-col{grid-template-columns:1fr}}
+.callout{background:var(--blue-bg);border:1px solid #BFDBFE;border-left:4px solid var(--steel);border-radius:var(--radius);padding:18px 24px;margin-bottom:24px;font-size:13px;line-height:1.7;color:var(--charcoal)}
+.callout strong{color:var(--navy)}
+.callout-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--steel);margin-bottom:6px}
+.callout.warn{background:var(--amber-bg);border-color:#FDE68A;border-left-color:var(--amber)}
+.callout.warn .callout-title{color:var(--amber)}
+/* Heatmap */
+.heatmap-wrap{overflow-x:auto;margin-bottom:24px}
+.heatmap{width:100%;border-collapse:collapse;font-size:11px}
+.heatmap th{background:var(--navy);color:#fff;padding:8px 10px;text-align:center;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;position:sticky;top:0;cursor:pointer}
+.heatmap th:first-child{text-align:left;min-width:200px}
+.heatmap td{padding:6px 10px;text-align:center;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums;white-space:nowrap}
+.heatmap td:first-child{text-align:left;font-weight:600;color:var(--navy)}
+.heatmap tr:hover{background:#F1F5F9}
+.hm-strong{background:#D1FAE5;color:#065F46}
+.hm-good{background:#ECFDF5;color:#047857}
+.hm-mid{background:#FEF3C7;color:#92400E}
+.hm-weak{background:#FEE2E2;color:#991B1B}
+.hm-zero{background:#F9FAFB;color:#9CA3AF}
+/* Table */
+.table-container{overflow-x:auto;margin-bottom:24px}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;white-space:nowrap;user-select:none;position:sticky;top:0}
+.data-table th:hover{background:var(--navy-light)}
+.data-table td{padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+.data-table tr:hover{background:#F1F5F9}
+.data-table .num{text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.tag.push{background:#D1FAE5;color:#065F46}
+.tag.moderate{background:#FEF3C7;color:#92400E}
+.tag.defend{background:#DBEAFE;color:#1E40AF}
+.tag.weak{background:#FEE2E2;color:#991B1B}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-btn{padding:6px 16px;border:1px solid var(--border);background:#fff;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--font);color:var(--text)}
+.filter-btn:hover{border-color:var(--navy);color:var(--navy)}
+.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.methodology{background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-top:32px;margin-bottom:32px}
+.methodology h4{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.methodology p,.methodology li{font-size:12px;color:var(--text-sec);line-height:1.8;margin-bottom:6px}
+.methodology ul{list-style:none;padding:0}
+.methodology li{padding-left:16px;position:relative}
+.methodology li::before{content:'\2022';color:var(--steel);font-weight:700;position:absolute;left:0}
+.footer{text-align:center;padding:24px 40px;font-size:11px;color:var(--text-sec);border-top:1px solid var(--border);margin-top:40px}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo">NLB</div>
+    <div>
+      <h1>Module 2 — Product Mix, Funding & POS Strategy</h1>
+      <div class="header-sub">NLB Prishtina &middot; Branch Network Transformation &middot; April 2026</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge">31 Benchmarked</span>
+    <span class="badge">EUR 1.31B Deposits</span>
+    <span class="badge">EUR 1.20B OnBalance</span>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="exec-msg">
+  <strong>Executive Summary:</strong> NLB Prishtina's product mix reveals three structural imbalances management must address:
+  <strong>(1)</strong> Consumer loan penetration averages only 5.7% of active clients — 11 branches are below median, led by
+  Prizren (3.2%), Besiane (3.6%), and Viti (3.5%).
+  <strong>(2)</strong> Three branches — Gjakove (54.4% TDA), Prizren 2 (56.8%), and Fushe Kosove (50.0%) — are excessively
+  dependent on term deposits, the most expensive PI funding source.
+  <strong>(3)</strong> POS density averages only 3.3 terminals per 100 businesses. Five branches with zero POS —
+  including 1001 Prishtine (21,396 businesses) — represent the single largest merchant-acquiring gap in the network.
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-row">
+  <div class="kpi-card navy">
+    <div class="kpi-label">Consumer Loan Penetration</div>
+    <div class="kpi-value">5.7%</div>
+    <div class="kpi-context">Median of active PI clients with consumer loan</div>
+  </div>
+  <div class="kpi-card amber">
+    <div class="kpi-label">TDA Share of PI Deposits</div>
+    <div class="kpi-value">36.6%</div>
+    <div class="kpi-context">Median. 3 branches above 50% (high-cost risk)</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">Low-Cost Funding (CA%)</div>
+    <div class="kpi-value">59.6%</div>
+    <div class="kpi-context">Median CA share of PI deposits</div>
+  </div>
+  <div class="kpi-card teal">
+    <div class="kpi-label">POS Terminals Network</div>
+    <div class="kpi-value">3,819</div>
+    <div class="kpi-context">Across ~148K businesses = 2.6% density</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-label">Branches with Zero POS</div>
+    <div class="kpi-value">5</div>
+    <div class="kpi-context">Including 1001 Prishtine, Prizren 2, Mitrovice 2</div>
+  </div>
+  <div class="kpi-card navy">
+    <div class="kpi-label">M-Banking PI Adoption</div>
+    <div class="kpi-value">46.5%</div>
+    <div class="kpi-context">Network average. Range: 27%–75%</div>
+  </div>
+</div>
+
+<!-- PRODUCT MIX HEATMAP -->
+<h2 class="section-title">Product Mix Heatmap</h2>
+<p class="section-sub">Rows = branches (sorted by composite product opportunity). Columns = product dimensions. Color: teal/green = strong, amber = moderate, red = weak/underpenetrated. This is the primary comparison tool for management.</p>
+
+<div class="chart-panel" style="padding:16px;overflow:hidden">
+  <div class="heatmap-wrap">
+    <table class="heatmap" id="heatmapTable">
+      <thead>
+        <tr>
+          <th>Branch</th>
+          <th>Consumer<br>Loan Pen</th>
+          <th>Mortgage<br>Activity</th>
+          <th>Credit<br>Cards</th>
+          <th>Overdraft</th>
+          <th>CA %<br>(low-cost)</th>
+          <th>TDA %<br>(high-cost)</th>
+          <th>Savings %</th>
+          <th>POS<br>Density</th>
+          <th>M-Banking<br>Adoption</th>
+          <th>Cross-Sell</th>
+          <th>Breadth</th>
+        </tr>
+      </thead>
+      <tbody id="heatmapBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CONSUMER LOAN OPPORTUNITY -->
+<h2 class="section-title">Consumer Loan Growth Opportunity</h2>
+<p class="section-sub">Consumer loans are the primary commercial lever. This chart shows consumer loan penetration (loans/active clients) by branch vs the 5.7% network median.</p>
+
+<div class="chart-panel">
+  <h3>Consumer Loan Penetration by Branch</h3>
+  <div class="chart-sub">Sorted descending. Median: 5.7%. Branches below median = priority for consumer-loan campaigns.</div>
+  <div class="chart-container"><canvas id="consumerChart"></canvas></div>
+  <div class="chart-note">Consumer loan penetration = consumer loans disbursed in 2025 / active PI clients. This is a flow metric over stock base — it measures sales intensity, not portfolio weight.</div>
+</div>
+
+<!-- FUNDING MIX -->
+<h2 class="section-title">Deposit Funding Structure</h2>
+<p class="section-sub">PI deposit mix by branch: CA (low-cost, green), Savings (medium, blue), TDA (high-cost, amber). Branches with TDA >50% require funding-mix correction.</p>
+
+<div class="two-col">
+  <div class="chart-panel">
+    <h3>PI Deposit Mix — CA vs Savings vs TDA</h3>
+    <div class="chart-sub">Stacked bar. Sorted by TDA share descending (highest-cost first).</div>
+    <div class="chart-container"><canvas id="fundingChart"></canvas></div>
+  </div>
+  <div class="chart-panel">
+    <h3>OnBalance Segment Mix — PI vs Micro vs CIB</h3>
+    <div class="chart-sub">Stacked bar. Shows asset concentration risk. Sorted by CIB share descending.</div>
+    <div class="chart-container"><canvas id="segmentChart"></canvas></div>
+  </div>
+</div>
+
+<!-- TDA WARNING -->
+<div class="callout warn">
+  <div class="callout-title">Term Deposit Dependency Warning</div>
+  <strong>Three branches exceed 50% TDA share of PI deposits:</strong> Prizren 2 (56.8%), Gjakove (54.4%), Fushe Kosove (50.0%).
+  Term deposits are the most expensive PI funding source. These branches should shift commercial emphasis toward
+  CA/salary account acquisition and savings products. Do not set TDA growth targets for these branches —
+  instead, set low-cost deposit acquisition targets. <em>Exception: if branch-level or bank-level liquidity constraints
+  require TDA, maintain but flag the cost impact.</em>
+</div>
+
+<!-- POS OPPORTUNITY -->
+<h2 class="section-title">POS & Merchant Acquiring Opportunity</h2>
+<p class="section-sub">POS density (terminals per 100 businesses) reveals merchant-acquiring gaps. Low-density branches with large business bases represent the highest-value POS deployment opportunities.</p>
+
+<div class="two-col">
+  <div class="chart-panel">
+    <h3>POS Density vs Business Base</h3>
+    <div class="chart-sub">Bubble: branch. X = businesses. Y = POS density (per 100 biz). Size = POS count. Red = underpenetrated.</div>
+    <div class="chart-container"><canvas id="posChart"></canvas></div>
+  </div>
+  <div class="chart-panel">
+    <h3>POS Density Ranked</h3>
+    <div class="chart-sub">Horizontal bar. Branches with 0 POS highlighted in red. Network average: 3.3%.</div>
+    <div class="chart-container"><canvas id="posDensityChart"></canvas></div>
+  </div>
+</div>
+
+<!-- BRANCH ACTION TABLE -->
+<h2 class="section-title">Branch Product Strategy Matrix</h2>
+<p class="section-sub">For each branch: what to push, what to moderate, what to defend. Sorted by product opportunity score.</p>
+
+<div class="filter-row">
+  <button class="filter-btn active" data-filter="all">All Branches</button>
+  <button class="filter-btn" data-filter="push-consumer">Push Consumer Loans</button>
+  <button class="filter-btn" data-filter="reduce-tda">Moderate TDA</button>
+  <button class="filter-btn" data-filter="push-pos">Push POS</button>
+</div>
+
+<div class="chart-panel" style="padding:0;overflow:hidden">
+  <div class="table-container" style="max-height:600px;overflow-y:auto">
+    <table class="data-table" id="actionTable">
+      <thead><tr>
+        <th data-col="name">Branch</th>
+        <th data-col="city">City</th>
+        <th data-col="cl_pen" class="num">CL Pen%</th>
+        <th data-col="ca_pct" class="num">CA%</th>
+        <th data-col="tda_pct" class="num">TDA%</th>
+        <th data-col="pos_density" class="num">POS/100biz</th>
+        <th data-col="mclick" class="num">M-Bank%</th>
+        <th data-col="cross_sell" class="num">X-Sell</th>
+        <th>Consumer Action</th>
+        <th>Funding Action</th>
+        <th>POS Action</th>
+      </tr></thead>
+      <tbody id="actionBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div class="methodology">
+  <h4>Methodology — Module 2: Product Mix, Funding & POS</h4>
+  <p><strong>Consumer loan penetration</strong> = consumer loans disbursed (2025 flow) / active PI clients. This measures sales intensity into the existing base — not portfolio weight.</p>
+  <p><strong>Deposit mix</strong> is PI-level only (CA, TDA, Savings from Summary sheet). Micro and CIB deposit components are from segment sheets and estimated via avg-per-employee * FTE. Total deposits = PI + Micro + CIB.</p>
+  <p><strong>POS data</strong> is from Branch Productivity.xlsx "POS Business" sheet — 2025 terminal counts by branch. Density = POS / registered businesses * 100.</p>
+  <p><strong>M-Banking adoption</strong> is from "Digital Penetration PI" sheet — M-click users / active PI clients.</p>
+  <p><strong>Cross-sell intensity</strong> = (total loans + new accounts) / active PI clients. This is a proxy — not a true product-per-client count.</p>
+  <ul>
+    <li><strong>No pricing/rate data is available</strong> in the source files. All funding-cost logic is directional (TDA > SA > CA cost hierarchy) rather than rate-based.</li>
+    <li><strong>Business active/inactive counts</strong> are estimated from penetration ratios — treat as directional.</li>
+    <li><strong>POS = 0</strong> for 5 branches: 1001 Prishtine, Prizren 2, Prishtine-Llapit, Bregu i Diellit, Mitrovice 2. These may reflect data gaps or genuine absence of merchant acquiring in those outlets.</li>
+  </ul>
+</div>
+
+<div class="footer">
+  NLB Prishtina &middot; Branch Network Transformation Program &middot; Module 2: Product Mix, Funding & POS Strategy &middot; April 2026<br>
+  Confidential &mdash; For Internal Management Use Only
+</div>
+</div>
+
+<script>
+const B = [
+{ou:"000110",n:"Eksp. Bregu i Diellit",c:"Prishtine",emp:4,ca:40.5,tda:44.9,sa:14.6,cl:407,cl_pen:16.71,mort:44,cc:319,ovd:208,micro_l:1,cib_l:1,pos:0,biz:21396,mclick:0,xsell:0.253,pi_ob:12103,micro_ob:35,cib_ob:0,breadth:6,active:2436},
+{ou:"100301",n:"Eksp. Hani i Elezit",c:"Hani i Elezit",emp:4,ca:64.9,tda:30.8,sa:4.4,cl:341,cl_pen:10.08,mort:21,cc:198,ovd:58,micro_l:16,cib_l:1,pos:27,biz:282,mclick:56.2,xsell:0.345,pi_ob:6190,micro_ob:369,cib_ob:2967,breadth:6,active:3384},
+{ou:"100104",n:"Eksp. Fushe Kosove",c:"Fushe Kosove",emp:8,ca:46.4,tda:50.0,sa:3.6,cl:618,cl_pen:9.80,mort:79,cc:480,ovd:292,micro_l:60,cib_l:25,pos:201,biz:2711,mclick:56.0,xsell:0.310,pi_ob:21390,micro_ob:5214,cib_ob:22812,breadth:6,active:6308},
+{ou:"000102",n:"Eksp. Prishtine-Llapit",c:"Prishtine",emp:6,ca:55.1,tda:35.9,sa:8.9,cl:547,cl_pen:9.19,mort:49,cc:386,ovd:135,micro_l:2,cib_l:0,pos:0,biz:21396,mclick:0,xsell:0.270,pi_ob:17441,micro_ob:299,cib_ob:956,breadth:5,active:5949},
+{ou:"100105",n:"Eksp. Obiliq",c:"Obiliq",emp:4,ca:59.9,tda:36.8,sa:3.4,cl:364,cl_pen:8.82,mort:35,cc:266,ovd:145,micro_l:6,cib_l:3,pos:11,biz:683,mclick:45.1,xsell:0.293,pi_ob:8762,micro_ob:622,cib_ob:605,breadth:6,active:4129},
+{ou:"000103",n:"Eksp. Drenas",c:"Drenas",emp:8,ca:54.9,tda:41.6,sa:3.6,cl:578,cl_pen:7.57,mort:54,cc:591,ovd:373,micro_l:77,cib_l:11,pos:78,biz:1566,mclick:49.5,xsell:0.309,pi_ob:18631,micro_ob:3523,cib_ob:2225,breadth:6,active:7639},
+{ou:"0001",n:"Filiali Prishtine",c:"Prishtine",emp:19,ca:59.7,tda:31.6,sa:8.7,cl:1122,cl_pen:6.72,mort:257,cc:956,ovd:220,micro_l:131,cib_l:186,pos:1705,biz:21396,mclick:62.4,xsell:0.259,pi_ob:87405,micro_ob:11202,cib_ob:170670,breadth:6,active:16704},
+{ou:"1001",n:"Filiali 1001 Prishtine",c:"Prishtine",emp:18,ca:51.6,tda:41.7,sa:6.6,cl:1549,cl_pen:6.58,mort:289,cc:1260,ovd:545,micro_l:163,cib_l:96,pos:0,biz:21396,mclick:0,xsell:0.275,pi_ob:99386,micro_ob:9918,cib_ob:104008,breadth:6,active:23530},
+{ou:"100504",n:"Eksp. Prizren 2",c:"Prizren",emp:6,ca:40.6,tda:56.8,sa:2.6,cl:289,cl_pen:6.38,mort:25,cc:198,ovd:123,micro_l:62,cib_l:1,pos:0,biz:7119,mclick:0,xsell:0.249,pi_ob:11062,micro_ob:2352,cib_ob:183,breadth:6,active:4529},
+{ou:"100603",n:"Eksp. Istog",c:"Istog",emp:6,ca:59.6,tda:36.6,sa:3.8,cl:323,cl_pen:6.32,mort:28,cc:207,ovd:133,micro_l:55,cib_l:16,pos:71,biz:1213,mclick:48.2,xsell:0.271,pi_ob:6147,micro_ob:3121,cib_ob:5007,breadth:6,active:5112},
+{ou:"100303",n:"Eksp. Shterpce",c:"Shterpce",emp:4,ca:73.9,tda:24.4,sa:1.7,cl:177,cl_pen:5.98,mort:26,cc:154,ovd:50,micro_l:25,cib_l:0,pos:9,biz:266,mclick:27.2,xsell:0.281,pi_ob:5440,micro_ob:1419,cib_ob:10,breadth:5,active:2958},
+{ou:"1002",n:"Filiali Gjilan",c:"Gjilan",emp:12,ca:56.6,tda:39.7,sa:3.7,cl:690,cl_pen:5.98,mort:146,cc:527,ovd:211,micro_l:62,cib_l:26,pos:115,biz:4317,mclick:48.3,xsell:0.234,pi_ob:34777,micro_ob:3371,cib_ob:9388,breadth:6,active:11544},
+{ou:"1006",n:"Filiali Peje",c:"Peje",emp:17,ca:47.4,tda:48.2,sa:4.4,cl:897,cl_pen:5.97,mort:87,cc:602,ovd:331,micro_l:143,cib_l:33,pos:421,biz:4172,mclick:43.6,xsell:0.252,pi_ob:26760,micro_ob:6982,cib_ob:41366,breadth:6,active:15022},
+{ou:"1003",n:"Filiali Ferizaj",c:"Ferizaj",emp:19,ca:63.8,tda:31.7,sa:4.5,cl:783,cl_pen:5.78,mort:157,cc:709,ovd:432,micro_l:186,cib_l:39,pos:107,biz:6371,mclick:46.3,xsell:0.261,pi_ob:33869,micro_ob:10851,cib_ob:39582,breadth:6,active:13557},
+{ou:"100106",n:"Eksp. Lipjan",c:"Lipjan",emp:6,ca:70.6,tda:27.2,sa:2.2,cl:340,cl_pen:5.75,mort:46,cc:260,ovd:122,micro_l:85,cib_l:23,pos:126,biz:1874,mclick:41.5,xsell:0.231,pi_ob:11208,micro_ob:4662,cib_ob:17789,breadth:6,active:5918},
+{ou:"100701",n:"Eksp. Skenderaj",c:"Skenderaj",emp:5,ca:69.1,tda:27.8,sa:3.1,cl:346,cl_pen:5.71,mort:20,cc:197,ovd:65,micro_l:122,cib_l:4,pos:47,biz:1087,mclick:34.9,xsell:0.259,pi_ob:6684,micro_ob:2500,cib_ob:6683,breadth:6,active:6061},
+{ou:"100502",n:"Eksp. Suhareke",c:"Suhareke",emp:7,ca:62.0,tda:36.2,sa:1.8,cl:329,cl_pen:5.63,mort:34,cc:195,ovd:124,micro_l:37,cib_l:1,pos:33,biz:2085,mclick:38.5,xsell:0.244,pi_ob:9937,micro_ob:1349,cib_ob:578,breadth:6,active:5839},
+{ou:"100202",n:"Eksp. Kamenice",c:"Kamenice",emp:4,ca:61.7,tda:35.3,sa:3.0,cl:175,cl_pen:5.42,mort:57,cc:113,ovd:43,micro_l:55,cib_l:0,pos:28,biz:949,mclick:45.8,xsell:0.239,pi_ob:10079,micro_ob:2185,cib_ob:19,breadth:5,active:3227},
+{ou:"1004",n:"Filiali Gjakove",c:"Gjakove",emp:10,ca:42.8,tda:54.4,sa:2.8,cl:463,cl_pen:5.27,mort:66,cc:319,ovd:131,micro_l:41,cib_l:13,pos:60,biz:4005,mclick:37.6,xsell:0.217,pi_ob:24623,micro_ob:3244,cib_ob:16876,breadth:6,active:8793},
+{ou:"100702",n:"Eksp. Vushtrri",c:"Vushtrri",emp:7,ca:61.2,tda:35.2,sa:3.5,cl:340,cl_pen:5.22,mort:27,cc:188,ovd:108,micro_l:62,cib_l:4,pos:69,biz:1868,mclick:37.6,xsell:0.224,pi_ob:8526,micro_ob:1088,cib_ob:352,breadth:6,active:6512},
+{ou:"100704",n:"Eksp. Mitrovice 2",c:"Mitrovice",emp:5,ca:56.9,tda:39.2,sa:4.0,cl:178,cl_pen:5.16,mort:14,cc:139,ovd:56,micro_l:0,cib_l:0,pos:0,biz:2529,mclick:0,xsell:0.207,pi_ob:5643,micro_ob:0,cib_ob:0,breadth:4,active:3451},
+{ou:"100302",n:"Eksp. Kacanik",c:"Kacanik",emp:6,ca:68.8,tda:23.4,sa:7.8,cl:289,cl_pen:4.87,mort:14,cc:253,ovd:55,micro_l:108,cib_l:2,pos:42,biz:940,mclick:49.6,xsell:0.240,pi_ob:5816,micro_ob:2696,cib_ob:1068,breadth:6,active:5936},
+{ou:"100602",n:"Eksp. Kline",c:"Kline",emp:6,ca:54.4,tda:42.8,sa:2.8,cl:196,cl_pen:4.55,mort:28,cc:176,ovd:121,micro_l:38,cib_l:19,pos:62,biz:1048,mclick:46.5,xsell:0.223,pi_ob:6123,micro_ob:2235,cib_ob:13347,breadth:6,active:4309},
+{ou:"100501",n:"Eksp. Rahovec",c:"Rahovec",emp:6,ca:60.1,tda:37.3,sa:2.7,cl:245,cl_pen:4.47,mort:32,cc:148,ovd:60,micro_l:60,cib_l:2,pos:43,biz:1659,mclick:33.8,xsell:0.208,pi_ob:9418,micro_ob:1954,cib_ob:61,breadth:6,active:5483},
+{ou:"100108",n:"Eksp. Gracanice",c:"Gracanice",emp:4,ca:51.5,tda:45.6,sa:2.8,cl:164,cl_pen:4.44,mort:7,cc:107,ovd:75,micro_l:0,cib_l:0,pos:6,biz:944,mclick:28.8,xsell:0.199,pi_ob:3451,micro_ob:131,cib_ob:58,breadth:4,active:3695},
+{ou:"100503",n:"Eksp. Malisheve",c:"Malisheve",emp:6,ca:64.0,tda:32.9,sa:3.1,cl:188,cl_pen:4.29,mort:33,cc:137,ovd:91,micro_l:17,cib_l:2,pos:56,biz:1167,mclick:50.2,xsell:0.206,pi_ob:8612,micro_ob:2872,cib_ob:1997,breadth:6,active:4380},
+{ou:"1007",n:"Filiali Mitrovice",c:"Mitrovice",emp:9,ca:58.4,tda:36.5,sa:5.1,cl:333,cl_pen:3.92,mort:115,cc:165,ovd:85,micro_l:58,cib_l:13,pos:107,biz:2529,mclick:35.7,xsell:0.193,pi_ob:16103,micro_ob:4623,cib_ob:11632,breadth:6,active:8497},
+{ou:"1009",n:"Filiali Besiane",c:"Podujeve",emp:9,ca:63.6,tda:32.9,sa:3.5,cl:380,cl_pen:3.62,mort:39,cc:375,ovd:169,micro_l:47,cib_l:25,pos:45,biz:2381,mclick:43.7,xsell:0.195,pi_ob:13480,micro_ob:5181,cib_ob:12595,breadth:6,active:10497},
+{ou:"100201",n:"Eksp. Viti",c:"Viti",emp:5,ca:55.7,tda:42.1,sa:2.2,cl:182,cl_pen:3.54,mort:24,cc:172,ovd:74,micro_l:63,cib_l:22,pos:50,biz:1410,mclick:45.4,xsell:0.190,pi_ob:7699,micro_ob:2852,cib_ob:12290,breadth:6,active:5141},
+{ou:"100604",n:"Eksp. Decan",c:"Decan",emp:6,ca:50.4,tda:45.1,sa:4.5,cl:265,cl_pen:3.52,mort:19,cc:248,ovd:144,micro_l:39,cib_l:9,pos:54,biz:796,mclick:51.8,xsell:0.197,pi_ob:6404,micro_ob:1648,cib_ob:6461,breadth:6,active:7528},
+{ou:"1005",n:"Filiali Prizren",c:"Prizren",emp:10,ca:60.9,tda:35.8,sa:3.3,cl:368,cl_pen:3.18,mort:37,cc:272,ovd:75,micro_l:131,cib_l:27,pos:156,biz:7119,mclick:37.0,xsell:0.171,pi_ob:12480,micro_ob:5430,cib_ob:33809,breadth:6,active:11562}
+];
+
+const CL_MEDIAN = 5.71;
+const CA_MEDIAN = 59.6;
+const TDA_MEDIAN = 36.6;
+const POS_AVG = 3.3;
+
+function fmt(n){return n==null?'N/A':typeof n==='number'?n.toLocaleString('en-US'):''+n}
+
+// ---- HEATMAP ----
+function hmClass(val, thresholds) {
+  // thresholds: [weak, mid, good] — ascending
+  if (val === 0 || val === null) return 'hm-zero';
+  if (val < thresholds[0]) return 'hm-weak';
+  if (val < thresholds[1]) return 'hm-mid';
+  if (val < thresholds[2]) return 'hm-good';
+  return 'hm-strong';
+}
+function hmClassInv(val, thresholds) {
+  // Inverted: higher is worse (e.g., TDA%)
+  if (val === 0 || val === null) return 'hm-zero';
+  if (val > thresholds[2]) return 'hm-weak';
+  if (val > thresholds[1]) return 'hm-mid';
+  if (val > thresholds[0]) return 'hm-good';
+  return 'hm-strong';
+}
+
+const heatBody = document.getElementById('heatmapBody');
+B.forEach(b => {
+  const posDen = b.biz > 0 ? (b.pos / b.biz * 100) : 0;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${b.n}</td>
+    <td class="${hmClass(b.cl_pen,[4,5.7,8])}">${b.cl_pen.toFixed(1)}%</td>
+    <td class="${hmClass(b.mort,[15,30,60])}">${b.mort}</td>
+    <td class="${hmClass(b.cc,[100,200,400])}">${b.cc}</td>
+    <td class="${hmClass(b.ovd,[50,100,200])}">${b.ovd}</td>
+    <td class="${hmClass(b.ca,[50,55,65])}">${b.ca.toFixed(0)}%</td>
+    <td class="${hmClassInv(b.tda,[30,40,50])}">${b.tda.toFixed(0)}%</td>
+    <td class="${hmClass(b.sa,[2,4,8])}">${b.sa.toFixed(1)}%</td>
+    <td class="${hmClass(posDen,[1.5,3,6])}">${posDen.toFixed(1)}%</td>
+    <td class="${b.mclick===0?'hm-zero':hmClass(b.mclick,[35,45,55])}">${b.mclick>0?b.mclick.toFixed(0)+'%':'N/A'}</td>
+    <td class="${hmClass(b.xsell,[0.2,0.25,0.30])}">${b.xsell.toFixed(3)}</td>
+    <td class="${hmClass(b.breadth,[4,5,6])}">${b.breadth}/6</td>
+  `;
+  heatBody.appendChild(tr);
+});
+
+// ---- CONSUMER LOAN CHART ----
+const clSorted = B.slice().sort((a,b) => a.cl_pen - b.cl_pen);
+
+new Chart(document.getElementById('consumerChart'), {
+  type:'bar',
+  data:{
+    labels:clSorted.map(b=>b.n),
+    datasets:[{
+      data:clSorted.map(b=>b.cl_pen),
+      backgroundColor:clSorted.map(b=>b.cl_pen>=CL_MEDIAN?'#059669':'#DC2626'),
+      borderRadius:2, barThickness:16
+    }]
+  },
+  options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{right:40}},
+    scales:{
+      x:{beginAtZero:true,max:18,grid:{color:'#F1F5F9'},ticks:{font:{size:11,family:'Inter'},callback:v=>v+'%'}},
+      y:{grid:{display:false},ticks:{font:{size:10,family:'Inter'},autoSkip:false}}
+    },
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{
+        title:items=>clSorted[items[0].dataIndex].n,
+        label:item=>{const b=clSorted[item.dataIndex];return[`Consumer Pen: ${b.cl_pen.toFixed(1)}%`,`Consumer Loans: ${b.cl}`,`Active PI: ${fmt(b.active)}`,`City: ${b.c}`]}
+      }},
+      annotation:{annotations:{
+        medLine:{type:'line',xMin:CL_MEDIAN,xMax:CL_MEDIAN,borderColor:'#002B49',borderWidth:2,borderDash:[6,4],
+          label:{display:true,content:'Median 5.7%',position:'start',backgroundColor:'#002B49',color:'#fff',font:{size:10,family:'Inter',weight:'600'},padding:4,borderRadius:3}}
+      }}
+    }
+  }
+});
+document.getElementById('consumerChart').parentElement.style.height=(clSorted.length*26+60)+'px';
+
+// ---- FUNDING MIX STACKED BAR ----
+const fundSorted = B.slice().sort((a,b) => b.tda - a.tda);
+
+new Chart(document.getElementById('fundingChart'), {
+  type:'bar',
+  data:{
+    labels:fundSorted.map(b=>b.n),
+    datasets:[
+      {label:'TDA (high-cost)',data:fundSorted.map(b=>b.tda),backgroundColor:'#F59E0B',borderRadius:1,barThickness:14},
+      {label:'Savings',data:fundSorted.map(b=>b.sa),backgroundColor:'#60A5FA',borderRadius:1,barThickness:14},
+      {label:'CA (low-cost)',data:fundSorted.map(b=>b.ca),backgroundColor:'#34D399',borderRadius:1,barThickness:14}
+    ]
+  },
+  options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    scales:{
+      x:{stacked:true,max:100,grid:{color:'#F1F5F9'},ticks:{font:{size:10},callback:v=>v+'%'}},
+      y:{stacked:true,grid:{display:false},ticks:{font:{size:9,family:'Inter'},autoSkip:false}}
+    },
+    plugins:{legend:{position:'top',labels:{font:{size:11,family:'Inter'},boxWidth:12}}}
+  }
+});
+document.getElementById('fundingChart').parentElement.style.height=(fundSorted.length*22+80)+'px';
+
+// ---- SEGMENT MIX STACKED BAR ----
+const segSorted = B.slice().sort((a,b) => (b.cib_ob/(b.pi_ob+b.micro_ob+b.cib_ob||1)) - (a.cib_ob/(a.pi_ob+a.micro_ob+a.cib_ob||1)));
+
+new Chart(document.getElementById('segmentChart'), {
+  type:'bar',
+  data:{
+    labels:segSorted.map(b=>b.n),
+    datasets:[
+      {label:'CIB',data:segSorted.map(b=>{const t=b.pi_ob+b.micro_ob+b.cib_ob||1;return b.cib_ob/t*100}),backgroundColor:'#1E40AF',borderRadius:1,barThickness:14},
+      {label:'Micro',data:segSorted.map(b=>{const t=b.pi_ob+b.micro_ob+b.cib_ob||1;return b.micro_ob/t*100}),backgroundColor:'#7C3AED',borderRadius:1,barThickness:14},
+      {label:'PI',data:segSorted.map(b=>{const t=b.pi_ob+b.micro_ob+b.cib_ob||1;return b.pi_ob/t*100}),backgroundColor:'#06B6D4',borderRadius:1,barThickness:14}
+    ]
+  },
+  options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    scales:{
+      x:{stacked:true,max:100,grid:{color:'#F1F5F9'},ticks:{font:{size:10},callback:v=>v+'%'}},
+      y:{stacked:true,grid:{display:false},ticks:{font:{size:9,family:'Inter'},autoSkip:false}}
+    },
+    plugins:{legend:{position:'top',labels:{font:{size:11,family:'Inter'},boxWidth:12}}}
+  }
+});
+document.getElementById('segmentChart').parentElement.style.height=(segSorted.length*22+80)+'px';
+
+// ---- POS BUBBLE CHART ----
+const posData = B.filter(b=>b.biz>0).map(b=>({
+  x:b.biz,y:b.biz>0?b.pos/b.biz*100:0,r:Math.max(4,Math.sqrt(b.pos)/1.5),
+  name:b.n,pos:b.pos,biz:b.biz
+}));
+
+new Chart(document.getElementById('posChart'), {
+  type:'bubble',
+  data:{datasets:[{
+    data:posData,
+    backgroundColor:posData.map(d=>d.y>=5?'rgba(5,150,105,0.5)':d.y>=2?'rgba(217,119,6,0.5)':'rgba(220,38,38,0.5)'),
+    borderColor:posData.map(d=>d.y>=5?'#059669':d.y>=2?'#D97706':'#DC2626'),
+    borderWidth:1.5
+  }]},
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    scales:{
+      x:{type:'logarithmic',title:{display:true,text:'Registered Businesses (log)',font:{size:11,family:'Inter',weight:'600'}},grid:{color:'#F1F5F9'},ticks:{font:{size:10}}},
+      y:{title:{display:true,text:'POS per 100 Businesses',font:{size:11,family:'Inter',weight:'600'}},grid:{color:'#F1F5F9'},ticks:{font:{size:10},callback:v=>v.toFixed(0)+'%'}}
+    },
+    plugins:{
+      legend:{display:false},
+      tooltip:{callbacks:{label:item=>{const d=item.raw;return[d.name,`POS: ${d.pos}`,`Businesses: ${fmt(d.biz)}`,`Density: ${d.y.toFixed(1)}%`]}}}
+    }
+  }
+});
+document.getElementById('posChart').parentElement.style.height='380px';
+
+// ---- POS DENSITY RANKED BAR ----
+const posSorted = B.slice().map(b=>({...b,den:b.biz>0?b.pos/b.biz*100:0})).sort((a,b)=>a.den-b.den);
+
+new Chart(document.getElementById('posDensityChart'), {
+  type:'bar',
+  data:{
+    labels:posSorted.map(b=>b.n),
+    datasets:[{
+      data:posSorted.map(b=>b.den),
+      backgroundColor:posSorted.map(b=>b.den===0?'#DC2626':b.den<2?'#F59E0B':b.den<5?'#60A5FA':'#059669'),
+      borderRadius:2,barThickness:14
+    }]
+  },
+  options:{
+    indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    scales:{
+      x:{beginAtZero:true,max:12,grid:{color:'#F1F5F9'},ticks:{font:{size:10},callback:v=>v+'%'}},
+      y:{grid:{display:false},ticks:{font:{size:9,family:'Inter'},autoSkip:false}}
+    },
+    plugins:{
+      legend:{display:false},
+      annotation:{annotations:{
+        avgLine:{type:'line',xMin:POS_AVG,xMax:POS_AVG,borderColor:'#002B49',borderWidth:2,borderDash:[6,4],
+          label:{display:true,content:'Avg 3.3%',position:'start',backgroundColor:'#002B49',color:'#fff',font:{size:9},padding:3,borderRadius:2}}
+      }}
+    }
+  }
+});
+document.getElementById('posDensityChart').parentElement.style.height=(posSorted.length*22+60)+'px';
+
+// ---- ACTION TABLE ----
+let currentFilter='all';
+
+function getConsumerAction(b){
+  if(b.cl_pen>=8)return{text:'Defend — strong',cls:'defend'};
+  if(b.cl_pen>=CL_MEDIAN)return{text:'Maintain — at median',cls:'defend'};
+  return{text:'Push growth',cls:'push'};
+}
+function getFundingAction(b){
+  if(b.tda>50)return{text:'Moderate TDA',cls:'weak'};
+  if(b.tda>42)return{text:'Monitor TDA',cls:'moderate'};
+  if(b.ca>65)return{text:'Protect low-cost',cls:'defend'};
+  return{text:'Balanced',cls:'defend'};
+}
+function getPosAction(b){
+  const den=b.biz>0?b.pos/b.biz*100:0;
+  if(b.pos===0)return{text:'Deploy POS',cls:'weak'};
+  if(den<2)return{text:'Accelerate POS',cls:'push'};
+  if(den<5)return{text:'Grow POS',cls:'moderate'};
+  return{text:'Defend POS',cls:'defend'};
+}
+
+function renderActionTable(){
+  let list=B.slice();
+  if(currentFilter==='push-consumer')list=list.filter(b=>b.cl_pen<CL_MEDIAN);
+  else if(currentFilter==='reduce-tda')list=list.filter(b=>b.tda>42);
+  else if(currentFilter==='push-pos')list=list.filter(b=>{const d=b.biz>0?b.pos/b.biz*100:0;return b.pos===0||d<2});
+
+  list.sort((a,b)=>a.cl_pen-b.cl_pen);
+
+  document.getElementById('actionBody').innerHTML=list.map(b=>{
+    const den=b.biz>0?(b.pos/b.biz*100).toFixed(1)+'%':'0.0%';
+    const ca=getConsumerAction(b),fa=getFundingAction(b),pa=getPosAction(b);
+    return `<tr>
+      <td style="font-weight:600;color:#002B49">${b.n}</td>
+      <td>${b.c}</td>
+      <td class="num" style="font-weight:700;color:${b.cl_pen>=CL_MEDIAN?'#059669':'#DC2626'}">${b.cl_pen.toFixed(1)}%</td>
+      <td class="num">${b.ca.toFixed(0)}%</td>
+      <td class="num" style="color:${b.tda>50?'#DC2626':b.tda>42?'#D97706':'#059669'}">${b.tda.toFixed(0)}%</td>
+      <td class="num">${den}</td>
+      <td class="num">${b.mclick>0?b.mclick.toFixed(0)+'%':'N/A'}</td>
+      <td class="num">${b.xsell.toFixed(3)}</td>
+      <td><span class="tag ${ca.cls}">${ca.text}</span></td>
+      <td><span class="tag ${fa.cls}">${fa.text}</span></td>
+      <td><span class="tag ${pa.cls}">${pa.text}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter=btn.dataset.filter;
+    renderActionTable();
+  });
+});
+renderActionTable();
+</script>
+</body>
+</html>
