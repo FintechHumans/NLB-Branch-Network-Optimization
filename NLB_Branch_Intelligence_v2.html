@@ -16,13 +16,14 @@
   --red:#DC2626;--red-bg:#FEF2F2;--blue-bg:#EFF6FF;--teal:#0D9488;--teal-bg:#F0FDFA;
   --font:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
   --shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 4px 16px rgba(0,0,0,.10);--radius:8px;
+  --header-h:95px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
 
 /* ============ UNIFIED HEADER ============ */
 .master-header{background:var(--navy);color:#fff;padding:0;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.2)}
-.master-header-top{display:flex;align-items:center;justify-content:space-between;padding:16px 40px}
+.master-header-top{display:flex;align-items:center;justify-content:space-between;padding:14px 40px}
 .master-header-top .logo{background:#fff;color:var(--navy);font-weight:800;font-size:20px;padding:6px 16px;border-radius:4px;letter-spacing:1px}
 .master-header-top h1{font-size:20px;font-weight:700;margin-left:20px;letter-spacing:-.3px}
 .master-header-top .header-meta{font-size:12px;opacity:.7}
@@ -30,7 +31,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 
 /* ============ TAB NAV ============ */
 .tab-nav{display:flex;gap:0;padding:0 40px;background:rgba(0,0,0,.15)}
-.tab-btn{padding:12px 28px;font-size:13px;font-weight:600;color:rgba(255,255,255,.6);cursor:pointer;border:none;background:none;font-family:var(--font);letter-spacing:-.2px;border-bottom:3px solid transparent;transition:all .2s}
+.tab-btn{padding:10px 28px;font-size:13px;font-weight:600;color:rgba(255,255,255,.6);cursor:pointer;border:none;background:none;font-family:var(--font);letter-spacing:-.2px;border-bottom:3px solid transparent;transition:all .2s}
 .tab-btn:hover{color:rgba(255,255,255,.9);background:rgba(255,255,255,.05)}
 .tab-btn.active{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,.08)}
 .tab-btn .tab-num{display:inline-block;background:rgba(255,255,255,.15);padding:1px 7px;border-radius:10px;font-size:10px;margin-right:6px}
@@ -56,14 +57,21 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .kpi-card.red{border-left:4px solid var(--red)}
 .kpi-card.navy{border-left:4px solid var(--navy)}
 .kpi-card.teal{border-left:4px solid var(--teal)}
-.chart-container,.chart-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:32px;box-shadow:var(--shadow)}
+
+/* CHART CONTAINERS — properly sized */
+.chart-container,.chart-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:32px;box-shadow:var(--shadow);position:relative}
 .chart-title,.chart-panel h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
 .chart-sub,.chart-panel .chart-sub{font-size:12px;color:var(--text-sec);margin-bottom:16px}
 .chart-note{font-size:11px;color:var(--text-sec);margin-top:12px;font-style:italic;border-top:1px solid var(--border);padding-top:10px}
 .two-charts,.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 @media(max-width:1100px){.two-charts,.two-col{grid-template-columns:1fr}}
+
+/* FIX: Remove max-height constraint — let charts size based on data count */
+canvas{display:block;width:100%!important}
+
+/* TABLE STYLES */
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:100px;z-index:10}
+th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;position:sticky;top:0;z-index:10}
 td{padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
 tr:hover{background:var(--blue-bg)}
 .tbl-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;max-height:700px;box-shadow:var(--shadow);margin-bottom:32px}
@@ -90,7 +98,11 @@ tr:hover{background:var(--blue-bg)}
 .method-box h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px}
 .method-box p,.method-box li{font-size:13px;color:var(--text-sec);line-height:1.7}
 .method-box ul{padding-left:20px;margin-top:8px}
-canvas{max-height:420px}
+
+/* ============ DOWNLOAD BUTTON ============ */
+.dl-btn{position:absolute;top:12px;right:12px;background:var(--navy);color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;opacity:.7;transition:opacity .2s;z-index:5}
+.dl-btn:hover{opacity:1}
+.dl-btn svg{width:14px;height:14px;fill:currentColor}
 
 /* ============ MODULE 1 SPECIFIC ============ */
 #module1 .city-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow)}
@@ -2121,6 +2133,84 @@ renderReco('all');
 
 <script>
 // ============================================================
+// DOWNLOAD UTILITY — export any canvas as PNG
+// ============================================================
+function downloadChart(canvasId, filename) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  // Create high-res export (2x)
+  const scale = 2;
+  const w = canvas.width, h = canvas.height;
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = w * scale;
+  exportCanvas.height = h * scale;
+  const ctx = exportCanvas.getContext('2d');
+  ctx.scale(scale, scale);
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(canvas, 0, 0, w, h);
+  const link = document.createElement('a');
+  link.download = filename + '.png';
+  link.href = exportCanvas.toDataURL('image/png', 1.0);
+  link.click();
+}
+
+// Add download buttons to all chart containers after charts init
+function addDownloadButtons() {
+  document.querySelectorAll('canvas').forEach(canvas => {
+    const parent = canvas.closest('.chart-container, .chart-panel');
+    if (!parent || parent.querySelector('.dl-btn')) return;
+    const btn = document.createElement('button');
+    btn.className = 'dl-btn';
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> PNG';
+    const name = (parent.querySelector('.chart-title, h3')?.textContent || canvas.id).replace(/[^a-zA-Z0-9]/g,'_').substring(0,40);
+    btn.onclick = () => downloadChart(canvas.id, 'NLB_' + name);
+    parent.style.position = 'relative';
+    parent.appendChild(btn);
+  });
+}
+
+// ============================================================
+// TABLE DOWNLOAD — export any visible table as CSV
+// ============================================================
+function downloadTableCSV(tableEl, filename) {
+  const rows = tableEl.querySelectorAll('tr');
+  let csv = '';
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('th, td');
+    const rowData = Array.from(cells).map(c => '"' + c.textContent.replace(/"/g,'""').trim() + '"');
+    csv += rowData.join(',') + '\n';
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename + '.csv';
+  link.click();
+}
+
+// Add CSV download to table wrappers
+function addTableDownloadButtons() {
+  document.querySelectorAll('.tbl-wrap, .table-container').forEach((wrap, i) => {
+    if (wrap.querySelector('.dl-btn')) return;
+    const tbl = wrap.querySelector('table');
+    if (!tbl) return;
+    wrap.style.position = 'relative';
+    const btn = document.createElement('button');
+    btn.className = 'dl-btn';
+    btn.style.top = '-30px';
+    btn.style.right = '0';
+    btn.style.position = 'relative';
+    btn.style.marginBottom = '-30px';
+    btn.style.marginLeft = 'auto';
+    btn.style.display = 'flex';
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> CSV';
+    const name = 'NLB_Table_' + (i+1);
+    btn.onclick = () => downloadTableCSV(tbl, name);
+    wrap.insertBefore(btn, wrap.firstChild);
+  });
+}
+
+// ============================================================
 // TAB SWITCHING — destroy & recreate charts on module switch
 // ============================================================
 let currentModule = 1;
@@ -2138,13 +2228,37 @@ function switchModule(n) {
   // Initialize charts on first visit
   if (!chartsInitialized[n]) {
     chartsInitialized[n] = true;
-    if (n === 1) initModule1();
-    else if (n === 2) initModule2();
-    else if (n === 3) initModule3();
+    if (n === 1) { initModule1(); }
+    else if (n === 2) { initModule2(); }
+    else if (n === 3) { initModule3(); }
+    // Add download buttons after charts render
+    setTimeout(() => {
+      addDownloadButtons();
+      addTableDownloadButtons();
+    }, 500);
   }
 
   currentModule = n;
   window.scrollTo(0, 0);
+}
+
+// ============================================================
+// FIX CHART HEIGHTS — set proper container heights for horizontal bars
+// ============================================================
+function fixChartHeights() {
+  // For horizontal bar charts, height should be ~28px per bar + 80px padding
+  document.querySelectorAll('canvas').forEach(canvas => {
+    const chart = Chart.getChart(canvas);
+    if (!chart) return;
+    const isHorizontal = chart.config?.options?.indexAxis === 'y';
+    if (isHorizontal) {
+      const count = chart.data?.labels?.length || 10;
+      const h = Math.max(400, count * 28 + 80);
+      canvas.parentElement.style.height = h + 'px';
+      canvas.style.height = h + 'px';
+      chart.resize();
+    }
+  });
 }
 
 // ============================================================
@@ -2637,6 +2751,7 @@ document.getElementById('cityBody').innerHTML = cityFiltered.map(c => {
   </tr>`;
 }).join('');
 
+setTimeout(fixChartHeights, 300);
 }
 
 // ============================================================
@@ -2924,6 +3039,7 @@ document.querySelectorAll('.filter-btn').forEach(btn=>{
 });
 renderActionTable();
 
+setTimeout(fixChartHeights, 300);
 }
 
 // ============================================================
@@ -3521,11 +3637,16 @@ renderTargetTable('all');
 renderRoleMix();
 renderReco('all');
 
+setTimeout(fixChartHeights, 300);
 }
 
 // Initialize Module 1 on load
 chartsInitialized[1] = true;
 initModule1();
+setTimeout(() => {
+  addDownloadButtons();
+  addTableDownloadButtons();
+}, 800);
 </script>
 </body>
 </html>
