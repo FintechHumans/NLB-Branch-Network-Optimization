@@ -75,12 +75,12 @@ th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-weig
 td{padding:8px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
 tr:hover{background:var(--blue-bg)}
 .tbl-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:auto;max-height:700px;box-shadow:var(--shadow);margin-bottom:32px}
-.cell-g{background:#ECFDF5;color:#059669;font-weight:600;text-align:center;border-radius:3px}
-.cell-a{background:#FFFBEB;color:#D97706;font-weight:600;text-align:center;border-radius:3px}
-.cell-r{background:#FEF2F2;color:#DC2626;font-weight:600;text-align:center;border-radius:3px}
-.cell-n{text-align:center;color:var(--text-sec)}
-.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
-.tag-green{background:#ECFDF5;color:#059669}.tag-amber{background:#FFFBEB;color:#D97706}.tag-red{background:#FEF2F2;color:#DC2626}.tag-navy{background:#EFF6FF;color:#002B49}.tag-teal{background:#F0FDFA;color:#0D9488}
+.cell-g{background:#059669;color:#fff;font-weight:700;text-align:center;border-radius:3px;padding:6px 10px}
+.cell-a{background:#D97706;color:#fff;font-weight:700;text-align:center;border-radius:3px;padding:6px 10px}
+.cell-r{background:#DC2626;color:#fff;font-weight:700;text-align:center;border-radius:3px;padding:6px 10px}
+.cell-n{text-align:center;color:#94A3B8;background:#F8FAFC;padding:6px 10px}
+.tag{display:inline-block;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700}
+.tag-green{background:#059669;color:#fff}.tag-amber{background:#D97706;color:#fff}.tag-red{background:#DC2626;color:#fff}.tag-navy{background:#002B49;color:#fff}.tag-teal{background:#0D9488;color:#fff}
 .callout{border-radius:var(--radius);padding:20px 24px;margin-bottom:24px;border-left:4px solid}
 .callout-red{background:var(--red-bg);border-color:var(--red)}.callout-amber{background:var(--amber-bg);border-color:var(--amber)}.callout-green{background:var(--green-bg);border-color:var(--green)}.callout-navy{background:var(--blue-bg);border-color:var(--navy)}
 .callout h4{font-size:14px;font-weight:700;margin-bottom:6px}
@@ -111,6 +111,13 @@ tr:hover{background:var(--blue-bg)}
 #module1 .prishtina-box h3{color:var(--navy);font-size:16px;margin-bottom:8px}
 #module1 .prishtina-box p{font-size:13px;color:var(--text-sec)}
 
+/* ============ PPTX DOWNLOAD BAR ============ */
+.dl-bar{display:flex;gap:10px;align-items:center;margin-left:auto}
+.pptx-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-family:var(--font);text-decoration:none;transition:all .2s}
+.pptx-btn:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.5)}
+.pptx-btn svg{width:14px;height:14px;fill:currentColor}
+.pptx-btn.active-dl{border-color:#fff;background:rgba(255,255,255,.15)}
+
 /* ============ FOOTER ============ */
 .master-footer{background:var(--navy);color:rgba(255,255,255,.5);padding:20px 40px;text-align:center;font-size:11px;margin-top:60px}
 </style>
@@ -126,6 +133,11 @@ tr:hover{background:var(--blue-bg)}
     </div>
     <div style="display:flex;align-items:center;gap:16px">
       <span class="header-meta">NLB Prishtina | 35 Outlets | 265 FTE | 31 Benchmarked</span>
+      <div class="dl-bar">
+        <a class="pptx-btn" href="Module1_Market_Share.pptx" download><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> M1 PPTX</a>
+        <a class="pptx-btn" href="Module2_Product_Mix.pptx" download><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> M2 PPTX</a>
+        <a class="pptx-btn" href="Module3_Staff_Efficiency.pptx" download><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> M3 PPTX</a>
+      </div>
       <span class="badge">Modules 1-3</span>
     </div>
   </div>
@@ -2238,6 +2250,11 @@ function switchModule(n) {
     }, 500);
   }
 
+  // Highlight matching PPTX download button
+  document.querySelectorAll('.pptx-btn').forEach((b,i) => {
+    b.classList.toggle('active-dl', i === n-1);
+  });
+
   currentModule = n;
   window.scrollTo(0, 0);
 }
@@ -3639,6 +3656,28 @@ renderReco('all');
 
 setTimeout(fixChartHeights, 300);
 }
+
+// ============================================================
+// GLOBAL CHART.JS DEFAULTS — fix aspect ratio & sizing
+// ============================================================
+Chart.defaults.maintainAspectRatio = false;
+Chart.defaults.responsive = true;
+Chart.defaults.plugins.legend.labels.font = {size:11, family:"Inter"};
+Chart.defaults.font.family = 'Inter';
+
+// After ANY chart creation, auto-size horizontal bars
+const _origBarCtrl = Chart.controllers.bar;
+const _origUpdate = Chart.prototype.update;
+Chart.prototype.update = function(...args) {
+  _origUpdate.apply(this, args);
+  if (this.config?.options?.indexAxis === 'y') {
+    const count = this.data?.labels?.length || 10;
+    const h = Math.max(450, count * 30 + 100);
+    this.canvas.parentElement.style.height = h + 'px';
+    this.canvas.style.height = h + 'px';
+    this.resize();
+  }
+};
 
 // Initialize Module 1 on load
 chartsInitialized[1] = true;
