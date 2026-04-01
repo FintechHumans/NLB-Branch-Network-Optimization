@@ -26,6 +26,9 @@ def extract_parts(filepath):
     # Remove the header from body (we'll use a unified header)
     body = re.sub(r'<div class="header">.*?</div>\s*</div>', '', body, count=1, flags=re.DOTALL)
 
+    # CRITICAL: Remove <script> blocks from body — they are extracted separately into JS
+    body = re.sub(r'<script[^>]*>.*?</script>', '', body, flags=re.DOTALL)
+
     return css, body, js
 
 print("Reading Module 1...")
@@ -149,6 +152,13 @@ tr:hover{{background:var(--blue-bg)}}
 .method-box p,.method-box li{{font-size:13px;color:var(--text-sec);line-height:1.7}}
 .method-box ul{{padding-left:20px;margin-top:8px}}
 
+/* ============ PPTX DOWNLOAD BAR ============ */
+.dl-bar{{display:flex;gap:10px;align-items:center;margin-left:auto}}
+.pptx-btn{{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-family:var(--font);text-decoration:none;transition:all .2s}}
+.pptx-btn:hover{{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.5)}}
+.pptx-btn svg{{width:14px;height:14px;fill:currentColor}}
+.pptx-btn.active-dl{{border-color:#fff;background:rgba(255,255,255,.15)}}
+
 /* ============ DOWNLOAD BUTTON ============ */
 .dl-btn{{position:absolute;top:12px;right:12px;background:var(--navy);color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;opacity:.7;transition:opacity .2s;z-index:5}}
 .dl-btn:hover{{opacity:1}}
@@ -176,6 +186,11 @@ tr:hover{{background:var(--blue-bg)}}
     </div>
     <div style="display:flex;align-items:center;gap:16px">
       <span class="header-meta">NLB Prishtina | 35 Outlets | 265 FTE | 31 Benchmarked</span>
+      <div class="dl-bar">
+        <a class="pptx-btn" href="Module1_Market_Share.pptx" download><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> M1 PPTX</a>
+        <a class="pptx-btn" href="Module2_Product_Mix.pptx" download><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> M2 PPTX</a>
+        <a class="pptx-btn" href="Module3_Staff_Efficiency.pptx" download><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> M3 PPTX</a>
+      </div>
       <span class="badge">Modules 1-3</span>
     </div>
   </div>
@@ -311,6 +326,11 @@ function switchModule(n) {{
       addTableDownloadButtons();
     }}, 500);
   }}
+
+  // Highlight matching PPTX download button
+  document.querySelectorAll('.pptx-btn').forEach((b,i) => {{
+    b.classList.toggle('active-dl', i === n-1);
+  }});
 
   currentModule = n;
   window.scrollTo(0, 0);
